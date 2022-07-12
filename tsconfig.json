@@ -1,0 +1,11 @@
+{
+  "extends": "@flutter-dom/tsconfig/base",
+  "compilerOptions": {
+    "noEmit": true,
+    "isolatedModules": false
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "__tests__/coverage/**", "packages"],
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Monorepo"
+}

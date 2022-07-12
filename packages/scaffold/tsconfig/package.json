@@ -1,0 +1,12 @@
+{
+  "name": "@flutter-dom/tsconfig",
+  "private": true,
+  "version": "0.0.1",
+  "description": "常用 tsconfig.json 配置",
+  "license": "MIT",
+  "main": "./base.json",
+  "keywords": [
+    "typescript",
+    "config"
+  ]
+}

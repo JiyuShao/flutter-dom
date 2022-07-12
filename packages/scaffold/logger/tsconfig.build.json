@@ -1,0 +1,6 @@
+{
+  "extends": "@flutter-dom/tsconfig/base",
+  "compilerOptions": {},
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

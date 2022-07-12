@@ -1,0 +1,12 @@
+{
+  "extends": "./base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": "../../../packages",
+    "paths": {
+      "@flutter-dom/*": ["./core/*/src", "./scaffold/*/src"]
+    }
+  },
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Monorepo Package"
+}

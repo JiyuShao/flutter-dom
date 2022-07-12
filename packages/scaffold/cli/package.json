@@ -1,0 +1,49 @@
+{
+  "name": "@flutter-dom/cli",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Osake Scaffold CLI Tool",
+  "exports": "./bin/index.js",
+  "bin": {
+    "flutter-dom-cli": "./bin/index.js"
+  },
+  "files": [
+    "bin"
+  ],
+  "scripts": {
+    ":cli": "ts-node --project ./tsconfig.json ./src/index.ts",
+    "build": "yarn run clean && yarn run build:cjs",
+    "build:cjs": "tsc --project ./tsconfig.build.json --rootDir src --outDir bin --module commonjs",
+    "clean": "rimraf bin"
+  },
+  "keywords": [
+    "CLI"
+  ],
+  "author": "JiyuShao",
+  "license": "MIT",
+  "dependencies": {
+    "@flutter-dom/logger": "workspace:^",
+    "@flutter-dom/tsconfig": "workspace:^",
+    "comment-json": "4.1.1",
+    "ink": "3.2.0",
+    "ink-select-input": "4.2.0",
+    "ink-spinner": "4.0.3",
+    "ink-text-input": "4.0.1",
+    "meow": "^9.0.0",
+    "react": "17.0.2",
+    "shelljs": "0.8.4",
+    "update-notifier": "5.1.0"
+  },
+  "devDependencies": {
+    "@types/ink-select-input": "^3.0.1",
+    "@types/ink-text-input": "^2.0.2",
+    "@types/node": "^16.11.1",
+    "@types/react": "^17.0.30",
+    "@types/rimraf": "^3",
+    "@types/shelljs": "^0.8.9",
+    "@types/update-notifier": "^5.1.0",
+    "rimraf": "^3.0.2",
+    "tsconfig-paths": "^4.0.0",
+    "typescript": "^4.4.4"
+  }
+}
