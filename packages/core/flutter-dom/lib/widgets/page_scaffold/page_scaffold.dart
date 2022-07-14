@@ -3,13 +3,17 @@
  * @Author: Jiyu Shao
  * @Date: 2021-07-02 17:39:20
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-31 17:20:33
+ * @Last Modified time: 2022-07-14 10:32:29
  */
 import 'package:flutter/material.dart';
 
 class PageScaffold extends StatelessWidget {
   // 页面元素
   final Widget body;
+  // 页面标题
+  final AppBar? appBar;
+  // 悬浮按钮
+  final FloatingActionButton? floatingActionButton;
   // 背景颜色
   final Color? backgroundColor;
   // 自定义的 bottomArea
@@ -19,31 +23,16 @@ class PageScaffold extends StatelessWidget {
   // safeArea的配置
   final Map<String, dynamic>? safeAreaOptions;
 
-  const PageScaffold(
-      {Key? key,
-      required this.body,
-      this.backgroundColor,
-      this.bottomArea,
-      this.resizeToAvoidBottomInset,
-      this.safeAreaOptions})
-      : super(key: key);
-
-  // 暴露构建响应式的安全的页面
-  static Widget responsive({required LayoutWidgetBuilder builder}) {
-    return _buildSafeScaffold(
-      child: LayoutBuilder(builder: (context, constraints) {
-        return builder(context, constraints);
-      }),
-    );
-  }
-
-  // 构建安全的页面
-  static _buildSafeScaffold({required Widget child}) {
-    return Scaffold(
-        body: SafeArea(
-      child: child,
-    ));
-  }
+  const PageScaffold({
+    Key? key,
+    required this.body,
+    this.appBar,
+    this.floatingActionButton,
+    this.backgroundColor,
+    this.bottomArea,
+    this.resizeToAvoidBottomInset,
+    this.safeAreaOptions,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +49,8 @@ class PageScaffold extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       backgroundColor: backgroundColor ?? Theme.of(context).backgroundColor,
+      appBar: appBar,
+      floatingActionButton: floatingActionButton,
       body: SafeArea(
         bottom: safeAreaOptions?['bottom'] == true,
         child: Column(

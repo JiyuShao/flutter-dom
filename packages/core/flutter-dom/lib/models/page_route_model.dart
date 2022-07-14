@@ -3,10 +3,11 @@
  * @Author: Jiyu Shao
  * @Date: 2021-06-30 15:29:29
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2022-07-05 15:58:06
+ * @Last Modified time: 2022-07-14 10:41:48
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_dom/screens/error_screen.dart';
+import 'package:flutter_dom/screens/js_example_screen.dart';
 import 'package:flutter_dom/screens/not_found_screen.dart';
 import 'package:flutter_dom/screens/entry_screen.dart';
 import 'package:flutter_dom/utils/routes/page_routes/fade_page_route.dart';
@@ -38,6 +39,14 @@ List<PageRouteModel> routeListConfig = [
     routeGenerator: (_) => FadePageRoute(
       pageBuilder: (_, __, ___) => const EntryScreen(),
       settings: const RouteSettings(name: EntryScreen.routeName),
+    ),
+  ),
+  // JS 示例页面路径
+  PageRouteModel(
+    path: JSExampleScreen.routeName,
+    routeGenerator: (_) => FadePageRoute(
+      pageBuilder: (_, __, ___) => const JSExampleScreen(),
+      settings: const RouteSettings(name: JSExampleScreen.routeName),
     ),
   ),
 ];

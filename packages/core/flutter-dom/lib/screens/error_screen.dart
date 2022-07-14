@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao
  * @Date: 2021-06-29 17:53:00
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2022-07-05 15:19:39
+ * @Last Modified time: 2022-07-14 10:14:54
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_dom/widgets/page_scaffold/page_scaffold.dart';
@@ -18,8 +18,7 @@ class ErrorScreen extends StatefulWidget {
   State<ErrorScreen> createState() => _ErrorScreenState();
 }
 
-class _ErrorScreenState extends State<ErrorScreen>
-    with TickerProviderStateMixin {
+class _ErrorScreenState extends State<ErrorScreen> {
   @override
   Widget build(BuildContext context) {
     return const PageScaffold(

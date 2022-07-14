@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: true,
       theme: AppThemeModel.materialTheme,
       // theme: ThemeData.dark(),
-      initialRoute: '/',
+      initialRoute: '/js_example',
       onGenerateRoute: RouteGenerator.generateRoute,
       builder: (BuildContext context, Widget? widget) {
         Widget error = const ErrorScreen();

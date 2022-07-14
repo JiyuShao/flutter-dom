@@ -34,6 +34,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   logger: ^1.1.0
+  js_runtime: ^0.0.1
 
 dev_dependencies:
   flutter_test:
@@ -45,6 +46,15 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+# When depending on this package from a real application,
+# you should remove the following overrides.
+# See https://dart.dev/tools/pub/dependencies#version-constraints
+# The example app is bundled with the plugin so we use a path dependency on
+# the parent directory to use the current plugin's version.
+dependency_overrides:
+  js_runtime:
+    path: ../js-runtime
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

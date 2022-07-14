@@ -1,9 +1,9 @@
 /*
- * 页面
+ * 入口页面
  * @Author: Jiyu Shao
  * @Date: 2021-06-29 17:53:00
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2022-07-12 11:33:35
+ * @Last Modified time: 2022-07-14 10:40:08
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_dom/widgets/page_scaffold/page_scaffold.dart';
@@ -18,8 +18,7 @@ class EntryScreen extends StatefulWidget {
   State<EntryScreen> createState() => _EntryScreenState();
 }
 
-class _EntryScreenState extends State<EntryScreen>
-    with TickerProviderStateMixin {
+class _EntryScreenState extends State<EntryScreen> {
   @override
   Widget build(BuildContext context) {
     return const PageScaffold(body: Text("Entry Page"));
