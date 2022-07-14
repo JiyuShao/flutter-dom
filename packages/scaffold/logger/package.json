@@ -3,7 +3,6 @@
   "private": true,
   "version": "0.0.1",
   "description": "logger模块",
-  "author": "Jiyu Shao <jiyu.shao@gmail.com>",
   "files": [
     "lib"
   ],
@@ -27,6 +26,7 @@
   "keywords": [
     "logger"
   ],
+  "author": "Jiyu Shao <jiyu.shao@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "pino": "^8.1.0",

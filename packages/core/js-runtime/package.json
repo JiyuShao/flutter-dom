@@ -1,0 +1,10 @@
+{
+  "name": "@flutter-dom/js-runtime",
+  "private": true,
+  "description": "A cross-platform Javascript engine to use with flutter.",
+  "scripts": {
+    "test": "sh test/integration_test_web.sh"
+  },
+  "author": "Jiyu Shao <jiyu.shao@gmail.com>",
+  "license": "MIT"
+}

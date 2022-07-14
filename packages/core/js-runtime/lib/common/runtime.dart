@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:js_runtime/common/eval_result.dart';
 
-abstract class Runtime {
+abstract class RuntimeInterface {
   // 是否开启调试模式
   static bool debugEnabled = true;
 
-  String getEngineInstanceId() {
+  String getInstanceId() {
     return "";
   }
 

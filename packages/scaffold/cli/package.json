@@ -19,7 +19,7 @@
   "keywords": [
     "CLI"
   ],
-  "author": "JiyuShao",
+  "author": "Jiyu Shao <jiyu.shao@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@flutter-dom/logger": "workspace:^",

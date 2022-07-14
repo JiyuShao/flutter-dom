@@ -1611,7 +1611,19 @@ __metadata:
     typescript: ^4.4.4
     update-notifier: 5.1.0
   bin:
-    osake-cli: ./bin/index.js
+    flutter-dom-cli: ./bin/index.js
+  languageName: unknown
+  linkType: soft
+
+"@flutter-dom/flutter-dom@workspace:packages/core/flutter-dom":
+  version: 0.0.0-use.local
+  resolution: "@flutter-dom/flutter-dom@workspace:packages/core/flutter-dom"
+  languageName: unknown
+  linkType: soft
+
+"@flutter-dom/js-runtime@workspace:packages/core/js-runtime":
+  version: 0.0.0-use.local
+  resolution: "@flutter-dom/js-runtime@workspace:packages/core/js-runtime"
   languageName: unknown
   linkType: soft
 

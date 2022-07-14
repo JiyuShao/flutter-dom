@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dom/utils/logger.dart';
 import 'package:flutter_dom/widgets/page_scaffold/page_scaffold.dart';
-import 'package:js_runtime/common/eval_result.dart';
 import 'package:js_runtime/js_runtime.dart';
 
 class JSExampleScreen extends StatefulWidget {

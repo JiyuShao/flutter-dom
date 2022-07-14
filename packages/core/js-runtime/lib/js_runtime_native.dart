@@ -3,7 +3,7 @@ import 'package:js_runtime/common/eval_result.dart';
 import 'package:js_runtime/common/runtime.dart';
 
 // 使用 flutter_js 实现原生的 js 运行环境
-class JsRuntime extends Runtime {
+class JsRuntime extends RuntimeInterface {
   late flutter_js.JavascriptRuntime _jsRuntime;
 
   JsRuntime() {
@@ -11,7 +11,7 @@ class JsRuntime extends Runtime {
   }
 
   @override
-  String getEngineInstanceId() {
+  String getInstanceId() {
     return _jsRuntime.getEngineInstanceId();
   }
 
