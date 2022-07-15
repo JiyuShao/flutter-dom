@@ -18,12 +18,9 @@ abstract class RuntimeInterface {
     return Future.value(EvalResult(""));
   }
 
-  void sendMessage({
-    required String channelName,
-    required List<String> args,
-  }) {}
+  void postMessage(List<String> args) {}
 
-  void onMessage(String channelName, dynamic Function(dynamic args) fn) {}
+  void onMessage(dynamic Function(List<String> args) fn) {}
 
   void dispose() {}
 }

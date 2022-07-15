@@ -37,16 +37,13 @@ class JsRuntime extends RuntimeInterface {
   }
 
   @override
-  void sendMessage({
-    required String channelName,
-    required List<String> args,
-  }) {
-    _jsRuntime.sendMessage(channelName: channelName, args: args);
+  void postMessage(List<String> args) {
+    _jsRuntime.sendMessage(channelName: 'message', args: args);
   }
 
   @override
-  void onMessage(String channelName, dynamic Function(dynamic args) fn) {
-    _jsRuntime.onMessage(channelName, fn);
+  void onMessage(dynamic Function(List<String> args) fn) {
+    _jsRuntime.onMessage('message', fn as dynamic);
   }
 
   @override

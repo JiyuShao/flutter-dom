@@ -14,25 +14,25 @@ void main() {
     });
 
     testWidgets('variable defination and adding is correct', (tester) async {
-      JsRuntime jsRuntime1 = JsRuntime();
+      JsRuntime jsRuntime = JsRuntime();
 
-      jsRuntime1.evaluate("let result = 1");
-      EvalResult result1 = jsRuntime.evaluate("result++");
-      expect(result1.isError, false);
-      expect(result1.isPromise, false);
-      expect(result1.stringResult, "1");
+      jsRuntime.evaluate("let a = 1");
+      EvalResult result = jsRuntime.evaluate("a++");
+      expect(result.isError, false);
+      expect(result.isPromise, false);
+      expect(result.stringResult, "1");
     });
 
     testWidgets('variable defination and adding is correct', (tester) async {
       JsRuntime jsRuntime = JsRuntime();
 
-      jsRuntime.evaluate("let result = 1");
-      EvalResult result1 = jsRuntime.evaluate("result++");
+      jsRuntime.evaluate("let a = 1");
+      EvalResult result1 = jsRuntime.evaluate("a++");
       expect(result1.isError, false);
       expect(result1.isPromise, false);
       expect(result1.stringResult, "1");
 
-      EvalResult result2 = jsRuntime.evaluate("result++");
+      EvalResult result2 = jsRuntime.evaluate("a++");
       expect(result2.isError, false);
       expect(result2.isPromise, false);
       expect(result2.stringResult, "2");

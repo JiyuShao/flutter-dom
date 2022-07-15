@@ -30,8 +30,8 @@
     "test:watch": "jest --no-cache --watch",
     "test:staged": "jest --bail --findRelatedTests",
     "test:coverage": "jest --no-cache --coverage",
-    "test:js-runtime": "yarn workspace @flutter-dom/js-runtime run test",
-    "test:flutter-dom": "yarn workspace @flutter-dom/flutter-dom run test"
+    "test:js-runtime:web": "yarn workspace @flutter-dom/js-runtime run test:web",
+    "test:js-runtime:android": "yarn workspace @flutter-dom/js-runtime run test:android"
   },
   "engines": {
     "node": ">=14.17.6"
