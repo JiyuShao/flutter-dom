@@ -13,33 +13,34 @@ void main() {
       jsRuntime = JsRuntime();
     });
 
-    testWidgets('variable defination and adding is correct', (tester) async {
+    testWidgets('variable defination and adding', (tester) async {
       JsRuntime jsRuntime = JsRuntime();
 
-      jsRuntime.evaluate("let a = 1");
-      EvalResult result = jsRuntime.evaluate("a++");
-      expect(result.isError, false);
+      // await jsRuntime.evaluate("let a = 1");
+      EvalResult result = await jsRuntime.evaluate("let a = 1;a++");
+      expect(result.isError, true);
       expect(result.isPromise, false);
       expect(result.stringResult, "1");
     });
 
-    testWidgets('variable defination and adding is correct', (tester) async {
+    testWidgets('variable defination and adding', (tester) async {
       JsRuntime jsRuntime = JsRuntime();
 
-      jsRuntime.evaluate("let a = 1");
-      EvalResult result1 = jsRuntime.evaluate("a++");
+      await jsRuntime.evaluate("let a = 1");
+      EvalResult result1 = await jsRuntime.evaluate("a++");
       expect(result1.isError, false);
       expect(result1.isPromise, false);
       expect(result1.stringResult, "1");
 
-      EvalResult result2 = jsRuntime.evaluate("a++");
+      EvalResult result2 = await jsRuntime.evaluate("a++");
       expect(result2.isError, false);
       expect(result2.isPromise, false);
       expect(result2.stringResult, "2");
     });
 
-    tearDown(() {
-      jsRuntime.dispose();
+    tearDown(() async {
+      // jsRuntime.dispose();
+      await Future.delayed(const Duration(seconds: 1000), () {});
     });
   });
 }

@@ -191,4 +191,5 @@ dist
 packages/**/lib
 packages/**/bin
 packages/**/dist
+packages/core/*/web
 __tests__/coverage

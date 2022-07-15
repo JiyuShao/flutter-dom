@@ -16,17 +16,7 @@ class JsRuntime extends RuntimeInterface {
   }
 
   @override
-  EvalResult evaluate(String code) {
-    flutter_js.JsEvalResult result = _jsRuntime.evaluate(code);
-    return EvalResult(
-      result.stringResult,
-      isError: result.isError,
-      isPromise: result.isPromise,
-    );
-  }
-
-  @override
-  Future<EvalResult> evaluateAsync(String code) {
+  Future<EvalResult> evaluate(String code) {
     Future<flutter_js.JsEvalResult> resultFuture =
         _jsRuntime.evaluateAsync(code);
     return resultFuture.then((result) => EvalResult(

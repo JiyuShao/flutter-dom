@@ -76,7 +76,7 @@ class _JSExampleScreenState extends State<JSExampleScreen> {
         ),
         onPressed: () async {
           try {
-            EvalResult result = jsRuntime.evaluate("a++");
+            EvalResult result = await jsRuntime.evaluate("a++");
             setState(() {
               _result = result.stringResult;
             });

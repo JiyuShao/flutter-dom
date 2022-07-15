@@ -10,11 +10,7 @@ abstract class RuntimeInterface {
     return "";
   }
 
-  EvalResult evaluate(String code) {
-    return EvalResult("");
-  }
-
-  Future<EvalResult> evaluateAsync(String code) {
+  Future<EvalResult> evaluate(String code) {
     return Future.value(EvalResult(""));
   }
 

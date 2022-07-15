@@ -3,4 +3,4 @@ include: package:flutter_lints/flutter.yaml
 # https://dart.dev/guides/language/analysis-options
 
 analyzer:
-  exclude: [web_installers/**]
+  exclude: [test/web_installers/**]
