@@ -1,0 +1,29 @@
+{
+  "name": "@flutter-dom/polyfill",
+  "private": true,
+  "version": "0.0.1",
+  "description": "",
+  "author": "Jiyu Shao <jiyu.shao@gmail.com>",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development ts-node --project ./tsconfig.json ./scripts/debug.ts",
+    "build": "yarn run clean && yarn run build:webpack",
+    "build:webpack": "cross-env NODE_ENV=production ts-node --project ./tsconfig.json ./scripts/build.ts",
+    "clean": "rimraf lib"
+  },
+  "keywords": [
+    "polyfill"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/rimraf": "^3",
+    "@types/uuid": "^8",
+    "cross-env": "^7.0.3",
+    "esm-quickjs-emscripten": "^0.11.4",
+    "quickjs-emscripten": "^0.21.0",
+    "rimraf": "^3.0.2",
+    "ts-loader": "^9.3.1",
+    "uuid": "^8.3.2",
+    "webpack": "^5.73.0",
+    "webpack-dev-server": "^4.9.3"
+  }
+}
