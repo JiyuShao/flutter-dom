@@ -9,38 +9,42 @@ void main() {
     late JsRuntime jsRuntime;
 
     // Throw error in setUp will cause All tests passed.
-    setUp(() {
+    setUpAll(() async {
       jsRuntime = JsRuntime();
+      await jsRuntime.waitUntilInited;
     });
 
-    testWidgets('variable defination and adding', (tester) async {
-      JsRuntime jsRuntime = JsRuntime();
+    testWidgets('Support variable defination and adding', (tester) async {
+      jsRuntime.evaluate("let a = 1");
+      dynamic result1 = jsRuntime.evaluate("a++");
+      expect(result1, 1);
 
-      // await jsRuntime.evaluate("let a = 1");
-      EvalResult result = await jsRuntime.evaluate("let a = 1;a++");
-      expect(result.isError, true);
-      expect(result.isPromise, false);
-      expect(result.stringResult, "1");
+      dynamic result2 = jsRuntime.evaluate("a++");
+      expect(result2, 2);
     });
 
-    testWidgets('variable defination and adding', (tester) async {
-      JsRuntime jsRuntime = JsRuntime();
-
-      await jsRuntime.evaluate("let a = 1");
-      EvalResult result1 = await jsRuntime.evaluate("a++");
-      expect(result1.isError, false);
-      expect(result1.isPromise, false);
-      expect(result1.stringResult, "1");
-
-      EvalResult result2 = await jsRuntime.evaluate("a++");
-      expect(result2.isError, false);
-      expect(result2.isPromise, false);
-      expect(result2.stringResult, "2");
+    testWidgets('Support throw error', (tester) async {
+      try {
+        jsRuntime.evaluate("throw new Error(123)");
+      } catch (e) {
+        expect(e.toString().contains('123'), true);
+      }
     });
 
-    tearDown(() async {
-      // jsRuntime.dispose();
+    testWidgets('Support promise value', (tester) async {
+      dynamic result = jsRuntime.evaluate("""
+        new Promise((resolve) => {
+          for(let i = 0; i < 10000; i++){}
+          resolve(true);
+        })
+      """);
+      expect(result is Future, true);
+      expect(await result, true);
+    });
+
+    tearDownAll(() async {
       await Future.delayed(const Duration(seconds: 1000), () {});
+      jsRuntime.dispose();
     });
   });
 }

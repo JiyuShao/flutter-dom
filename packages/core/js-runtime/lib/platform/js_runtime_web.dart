@@ -1,32 +1,54 @@
+import 'dart:async';
+
 import 'package:js_runtime/common/logger.dart';
 import 'package:js_runtime/common/polyfill.dart' as polyfill;
 import 'package:js_runtime/js_runtime.dart';
 
 class JsRuntime extends RuntimeInterface {
   String? _instanceId;
+  Future? _initPromise;
+  Timer? _eventLoopTimer;
 
   JsRuntime() {
+    _init();
+  }
+
+  _init() async {
     loggerNoStack.d("Creating JsRuntime...");
-    _instanceId = polyfill.createRuntime();
+    _initPromise = polyfill.createRuntime();
+    _instanceId = await _initPromise;
     loggerNoStack.d("JsRuntime Created($_instanceId)");
+    _defineEventLoop();
+  }
+
+  _defineEventLoop() {
+    Timer.periodic(RuntimeInterface.eventLoopDuration, (timer) {
+      _eventLoopTimer = timer;
+      polyfill.executePendingJobs(_instanceId!);
+    });
   }
 
   @override
-  Future<EvalResult> evaluate(String code) {
-    loggerNoStack.d("Evaluate JsRuntime($_instanceId): $code");
-    if (_instanceId != null) {
-      dynamic result = polyfill.evaluate(_instanceId!, code);
-      print('### $result');
+  Future get waitUntilInited => _initPromise ?? Future.value();
+
+  @override
+  dynamic evaluate(String code) {
+    if (_instanceId == null) {
+      throw "JsRuntime not inited, please using \"await waitUntilInited\"";
     }
-    return Future.value(EvalResult(""));
+    loggerNoStack.d("Evaluate JsRuntime($_instanceId): $code");
+    dynamic result = polyfill.evaluate(_instanceId!, code);
+    return result;
   }
 
   @override
   void dispose() {
-    loggerNoStack.d("Destorying JsRuntime($_instanceId)");
-    if (_instanceId != null) {
-      polyfill.destoryRuntime(_instanceId!);
-      _instanceId = null;
+    if (_instanceId == null) {
+      throw "JsRuntime not inited, please using \"await waitUntilInited\"";
     }
+    loggerNoStack.d("Destorying JsRuntime($_instanceId)");
+    _eventLoopTimer?.cancel();
+    polyfill.destoryRuntime(_instanceId!);
+    _instanceId = null;
   }
 }

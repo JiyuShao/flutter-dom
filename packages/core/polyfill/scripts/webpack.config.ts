@@ -1,5 +1,5 @@
 import path from 'path';
-import { Configuration } from 'webpack';
+import { Configuration, DefinePlugin } from 'webpack';
 
 export default function getWebpackConfig(
   mode: Configuration['mode']
@@ -25,16 +25,16 @@ export default function getWebpackConfig(
     devtool: 'source-map',
     resolve: {
       extensions: ['.js', '.ts'],
-      // fallback: {
-      //   fs: false,
-      //   process: false,
-      //   path: false,
-      //   perf_hooks: false,
-      //   buffer: false,
-      //   worker_threads: false,
-      //   stream: false,
-      //   crypto: require.resolve('crypto-browserify'),
-      // },
+      fallback: {
+        fs: false,
+        process: false,
+        path: false,
+        perf_hooks: false,
+        buffer: false,
+        worker_threads: false,
+        stream: false,
+        crypto: require.resolve('crypto-browserify'),
+      },
     },
     module: {
       rules: [
@@ -45,6 +45,11 @@ export default function getWebpackConfig(
         },
       ],
     },
+    plugins: [
+      new DefinePlugin({
+        'process.env': {},
+      }),
+    ],
   };
   return config;
 }

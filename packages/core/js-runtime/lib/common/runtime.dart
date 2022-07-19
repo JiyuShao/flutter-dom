@@ -1,20 +1,23 @@
 import 'dart:async';
 
-import 'package:js_runtime/common/eval_result.dart';
-
 abstract class RuntimeInterface {
-  // 是否开启调试模式
   static bool debugEnabled = true;
+  static Duration eventLoopDuration = const Duration(milliseconds: 100);
 
+  // must wait before calling other functions
+  Future get waitUntilInited => Future.value();
+
+  // get instance id
   String getInstanceId() {
     return "";
   }
 
-  Future<EvalResult> evaluate(String code) {
-    return Future.value(EvalResult(""));
+  // evaluate code
+  dynamic evaluate(String code) {
+    return "";
   }
 
-  void postMessage(List<String> args) {}
+  void postMessage(List<String> args) async {}
 
   void onMessage(dynamic Function(List<String> args) fn) {}
 

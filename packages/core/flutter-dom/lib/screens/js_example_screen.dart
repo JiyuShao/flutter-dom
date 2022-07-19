@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao
  * @Date: 2021-06-29 17:53:00
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2022-07-14 14:52:44
+ * @Last Modified time: 2022-07-19 19:15:34
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,9 +76,9 @@ class _JSExampleScreenState extends State<JSExampleScreen> {
         ),
         onPressed: () async {
           try {
-            EvalResult result = await jsRuntime.evaluate("a++");
+            dynamic result = jsRuntime.evaluate("a++");
             setState(() {
-              _result = result.stringResult;
+              _result = result.toString();
             });
           } on PlatformException catch (e) {
             loggerNoStack.e('ERRO: ${e.details}');

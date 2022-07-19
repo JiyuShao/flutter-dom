@@ -1,14 +1,12 @@
 class EvalResult {
-  final String stringResult;
+  final dynamic result;
   final bool isPromise;
-  final bool isError;
 
   EvalResult(
-    this.stringResult, {
-    this.isError = false,
+    this.result, {
     this.isPromise = false,
   });
 
   @override
-  toString() => stringResult;
+  toString() => result.toString();
 }

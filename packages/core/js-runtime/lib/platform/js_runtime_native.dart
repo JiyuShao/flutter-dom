@@ -16,14 +16,12 @@ class JsRuntime extends RuntimeInterface {
   }
 
   @override
-  Future<EvalResult> evaluate(String code) {
-    Future<flutter_js.JsEvalResult> resultFuture =
-        _jsRuntime.evaluateAsync(code);
-    return resultFuture.then((result) => EvalResult(
-          result.stringResult,
-          isError: result.isError,
-          isPromise: result.isPromise,
-        ));
+  dynamic evaluate(String code) {
+    flutter_js.JsEvalResult result = _jsRuntime.evaluate(code);
+    return EvalResult(
+      result.stringResult,
+      isPromise: result.isPromise,
+    );
   }
 
   @override
@@ -37,7 +35,7 @@ class JsRuntime extends RuntimeInterface {
   }
 
   @override
-  void dispose() {
+  Future<void> dispose() async {
     _jsRuntime.dispose();
   }
 }
