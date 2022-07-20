@@ -1,13 +1,23 @@
+import 'dart:async';
+
 import 'package:flutter_js/flutter_js.dart' as flutter_js;
-import 'package:js_runtime/common/eval_result.dart';
 import 'package:js_runtime/common/runtime.dart';
 
 // 使用 flutter_js 实现原生的 js 运行环境
 class JsRuntime extends RuntimeInterface {
   late flutter_js.JavascriptRuntime _jsRuntime;
+  Timer? _eventLoopTimer;
 
   JsRuntime() {
     _jsRuntime = flutter_js.getJavascriptRuntime();
+    _defineEventLoop();
+  }
+
+  _defineEventLoop() {
+    Timer.periodic(RuntimeInterface.eventLoopDuration, (timer) {
+      _eventLoopTimer = timer;
+      _jsRuntime.executePendingJob();
+    });
   }
 
   @override
@@ -18,10 +28,12 @@ class JsRuntime extends RuntimeInterface {
   @override
   dynamic evaluate(String code) {
     flutter_js.JsEvalResult result = _jsRuntime.evaluate(code);
-    return EvalResult(
-      result.stringResult,
-      isPromise: result.isPromise,
-    );
+    if (result.isPromise) {
+      return _jsRuntime
+          .handlePromise(result)
+          .then((value) => _jsRuntime.convertValue(value));
+    }
+    return result.rawResult;
   }
 
   @override
@@ -35,7 +47,9 @@ class JsRuntime extends RuntimeInterface {
   }
 
   @override
-  Future<void> dispose() async {
+  void dispose() {
+    _eventLoopTimer?.cancel();
+    _eventLoopTimer = null;
     _jsRuntime.dispose();
   }
 }

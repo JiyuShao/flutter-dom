@@ -32,6 +32,11 @@ class JsRuntime extends RuntimeInterface {
   Future get waitUntilInited => _initPromise ?? Future.value();
 
   @override
+  String getInstanceId() {
+    return _instanceId ?? "";
+  }
+
+  @override
   dynamic evaluate(String code) {
     if (_instanceId == null) {
       throw "JsRuntime not inited, please using \"await waitUntilInited\"";
@@ -48,6 +53,7 @@ class JsRuntime extends RuntimeInterface {
     }
     loggerNoStack.d("Destorying JsRuntime($_instanceId)");
     _eventLoopTimer?.cancel();
+    _eventLoopTimer = null;
     polyfill.destoryRuntime(_instanceId!);
     _instanceId = null;
   }

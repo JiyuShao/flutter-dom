@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_web_libraries_in_flutter
+import 'dart:convert';
 import 'dart:js_util';
 import 'package:js/js.dart';
 
@@ -19,14 +20,16 @@ Future<String> createRuntime() async {
 
 // sync evaluate code
 @JS('$libraryName.evaluate')
-external dynamic evaluateSyncOrigional(String instanceId, String code);
+external dynamic evaluateOrigional(String instanceId, String code);
 
 dynamic evaluate(String instanceId, String code) {
-  dynamic result = evaluateSyncOrigional(instanceId, code);
-  if (result.isPromise == true) {
-    return promiseToFuture(result.result);
+  try {
+    dynamic resultString = evaluateOrigional(instanceId, code);
+    dynamic result = jsonDecode(resultString);
+    return result['value'];
+  } catch (e) {
+    throw Exception(e.toString());
   }
-  return result.result;
 }
 
 // sync evaluate code

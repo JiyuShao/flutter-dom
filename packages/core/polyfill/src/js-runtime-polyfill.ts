@@ -6,11 +6,6 @@ import {
 } from 'quickjs-emscripten';
 import { Arena, complexity } from 'quickjs-emscripten-sync';
 
-interface EvalResult {
-  result: string;
-  isPromise: boolean;
-}
-
 /** JS 运行环境实例 mapping */
 const RUNTIME_INSTANCE_MAPPING: Record<string, Runtime> = {};
 class Runtime {
@@ -60,24 +55,23 @@ class Runtime {
     return this._instanceId || '';
   }
 
-  public evaluate(code: string): EvalResult | Error {
+  public evaluate(code: string): string | Error {
     if (!this._ctx || !this._arena) {
       return new Error('VM is undefined');
     }
     try {
       const result = this._arena.evalCode(code);
-      const finalResult = {
-        isPromise: result instanceof Promise,
-        result,
-      };
 
       console.debug('Evaluate code succeed', {
         instanceId: this._instanceId,
         code,
-        result: finalResult,
+        result,
       });
 
-      return finalResult;
+      return JSON.stringify({
+        type: typeof result,
+        value: result,
+      });
     } catch (error) {
       console.debug('Evaluate code failed', {
         instanceId: this._instanceId,
@@ -113,7 +107,7 @@ export default {
     await instance.waitUntilInited;
     return instance.getInstanceId();
   },
-  evaluate: (instanceId: string, code: string): EvalResult | Error => {
+  evaluate: (instanceId: string, code: string): string | Error => {
     return RUNTIME_INSTANCE_MAPPING[instanceId]?.evaluate(code);
   },
   executePendingJobs: (instanceId: string): number | Error => {
