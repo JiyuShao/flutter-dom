@@ -55,7 +55,7 @@ class Runtime {
     return this._instanceId || '';
   }
 
-  public evaluate(code: string): any | Error {
+  public evaluate(code: string): string | Error {
     if (!this._ctx || !this._arena) {
       return new Error('VM is undefined');
     }
@@ -68,7 +68,10 @@ class Runtime {
         result,
       });
 
-      return result;
+      return JSON.stringify({
+        type: typeof result,
+        value: result,
+      });
     } catch (error) {
       console.debug('Evaluate code failed', {
         instanceId: this._instanceId,
@@ -104,7 +107,7 @@ export default {
     await instance.waitUntilInited;
     return instance.getInstanceId();
   },
-  evaluate: (instanceId: string, code: string): any | Error => {
+  evaluate: (instanceId: string, code: string): string | Error => {
     return RUNTIME_INSTANCE_MAPPING[instanceId]?.evaluate(code);
   },
   executePendingJobs: (instanceId: string): number | Error => {
