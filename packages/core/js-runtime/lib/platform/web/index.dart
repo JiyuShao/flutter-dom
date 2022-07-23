@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:js_runtime/common/logger.dart';
-import 'package:js_runtime/common/polyfill.dart' as polyfill;
-import 'package:js_runtime/js_runtime.dart';
+import 'package:js_runtime/common/runtime.dart';
+import './polyfill.dart' as polyfill;
 
 class JsRuntime extends RuntimeInterface {
   String? _instanceId;
@@ -32,11 +32,6 @@ class JsRuntime extends RuntimeInterface {
   Future get waitUntilInited => _initPromise ?? Future.value();
 
   @override
-  String getInstanceId() {
-    return _instanceId ?? "";
-  }
-
-  @override
   dynamic evaluate(String code) {
     if (_instanceId == null) {
       throw "JsRuntime not inited, please using \"await waitUntilInited\"";
@@ -45,6 +40,12 @@ class JsRuntime extends RuntimeInterface {
     dynamic result = polyfill.evaluate(_instanceId!, code);
     return result;
   }
+
+  @override
+  void postMessage(List<String> args) {}
+
+  @override
+  void onMessage(dynamic Function(List<String> args) fn) {}
 
   @override
   void dispose() {

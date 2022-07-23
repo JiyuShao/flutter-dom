@@ -1,7 +1,5 @@
 library js_runtime;
 
-export 'platform/js_runtime_main.dart'
-    if (dart.library.js) 'platform/js_runtime_web.dart'
-    if (dart.library.io) 'platform/js_runtime_native.dart';
-
-export 'common/runtime.dart';
+export 'platform/default/index.dart'
+    if (dart.library.js) 'platform/web/index.dart'
+    if (dart.library.io) 'platform/native/index.dart';

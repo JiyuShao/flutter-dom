@@ -7,11 +7,6 @@ abstract class RuntimeInterface {
   // must wait before calling other functions
   Future get waitUntilInited => Future.value();
 
-  // get instance id
-  String getInstanceId() {
-    return "";
-  }
-
   // evaluate code
   dynamic evaluate(String code) {
     return "";
