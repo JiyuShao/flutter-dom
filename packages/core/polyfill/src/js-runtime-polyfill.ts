@@ -69,7 +69,6 @@ class Runtime {
       });
 
       return JSON.stringify({
-        type: typeof result,
         value: result,
       });
     } catch (error) {

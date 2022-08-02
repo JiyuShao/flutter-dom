@@ -4,7 +4,8 @@
   "description": "A cross-platform Javascript engine to use with flutter.",
   "scripts": {
     "test:web": "sh test/integration_test_web.sh",
-    "test:android": "sh test/integration_test_android.sh"
+    "test:android": "sh test/integration_test_android.sh",
+    "test:macos": "sh test/integration_test_macos.sh"
   },
   "author": "Jiyu Shao <jiyu.shao@gmail.com>",
   "license": "MIT"

@@ -1,7 +1,4 @@
 // import 'dart:io';
-
-import 'dart:developer';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:js_runtime/js_runtime.dart';
@@ -27,21 +24,23 @@ void main() {
     //   expect(Platform.isWindows, false);
     // });
 
-    testWidgets('Support result types(JSON)', (tester) async {
+    testWidgets('Support result types(similar to JSON)', (tester) async {
       dynamic result = jsRuntime.evaluate("""
         const supportResultTypes = {
           undefined: undefined,
           nulltype: null,
           boolean: false,
-          number1: 123,
-          number2: 123.123,
+          int: 123,
+          double: 123.123,
           string: "string",
           symbol: Symbol(),
           function: () => 123,
+          list: [],
           promise: new Promise((resolve) => {
             for(let i = 0; i < 10000; i++){}
             resolve(true);
-          })
+          }),
+          error: Error(),
         };
         supportResultTypes;
       """);
@@ -49,11 +48,13 @@ void main() {
       expect(result['undefined'], null);
       expect(result['nulltype'], null);
       expect(result['boolean'], false);
-      expect(result['number1'], 123);
-      expect(result['number2'], 123.123);
+      expect(result['int'], 123);
+      expect(result['double'], 123.123);
       expect(result['string'], 'string');
       expect(result['function'], null);
+      expect(result['list'] is List, true);
       expect(result['promise'], {});
+      expect(result['error'], {});
     });
 
     testWidgets('Support variable defination and adding', (tester) async {

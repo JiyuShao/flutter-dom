@@ -1,5 +1,6 @@
 import 'package:flutter_qjs/flutter_qjs.dart' as flutter_qjs;
 import 'package:js_runtime/common/runtime.dart';
+import 'package:js_runtime/platform/native/helper.dart';
 
 // 使用 flutter_qjs 实现原生的 js 运行环境
 class JsRuntime extends RuntimeInterface {
@@ -18,7 +19,11 @@ class JsRuntime extends RuntimeInterface {
 
   @override
   dynamic evaluate(String code) {
-    return _jsRuntime.evaluate(code);
+    try {
+      return jsToDart(_jsRuntime.evaluate(code));
+    } catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
   @override
