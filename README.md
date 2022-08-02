@@ -12,11 +12,9 @@ npm i -g corepack
 yarn
 ```
 
-## 技术栈栈
+## 技术栈
 
-- yarn 3.1+
-- ~~PnP 包管理~~
-
-## Reference
-
-- [Yarn Installation](https://yarnpkg.com/getting-started/install)
+- yarn workspace
+- git submodule
+- flutter 3.0.4
+- cmake 3.23.2

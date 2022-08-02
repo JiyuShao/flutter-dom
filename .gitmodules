@@ -1,0 +1,3 @@
+[submodule "packages/core/flutter-qjs"]
+	path = packages/core/flutter-qjs
+	url = git@github.com:JiyuShao/flutter_qjs.git

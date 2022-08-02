@@ -11,7 +11,7 @@
   },
   "description": "基于 W3C 标准与 Flutter 渲染的多端渲染引擎",
   "scripts": {
-    "preinstall": "npx only-allow yarn",
+    "preinstall": "npx only-allow yarn && git submodule update --init --recursive",
     "postinstall": "husky install",
     "commit": "cz",
     "lint-staged": "lint-staged",
