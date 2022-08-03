@@ -5,21 +5,21 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "flutter-dom",
-      "cwd": "packages/core/flutter-dom",
+      "name": "flutter_dom",
+      "cwd": "packages/core/flutter_dom",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "flutter-dom (profile mode)",
-      "cwd": "packages/core/flutter-dom",
+      "name": "flutter_dom (profile mode)",
+      "cwd": "packages/core/flutter_dom",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "flutter-dom (release mode)",
-      "cwd": "packages/core/flutter-dom",
+      "name": "flutter_dom (release mode)",
+      "cwd": "packages/core/flutter_dom",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

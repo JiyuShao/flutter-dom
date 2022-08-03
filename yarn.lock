@@ -1615,15 +1615,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@flutter-dom/flutter-dom@workspace:packages/core/flutter-dom":
+"@flutter-dom/flutter_dom@workspace:packages/core/flutter_dom":
   version: 0.0.0-use.local
-  resolution: "@flutter-dom/flutter-dom@workspace:packages/core/flutter-dom"
+  resolution: "@flutter-dom/flutter_dom@workspace:packages/core/flutter_dom"
   languageName: unknown
   linkType: soft
 
-"@flutter-dom/js-runtime@workspace:packages/core/js-runtime":
+"@flutter-dom/js_runtime@workspace:packages/core/js_runtime":
   version: 0.0.0-use.local
-  resolution: "@flutter-dom/js-runtime@workspace:packages/core/js-runtime"
+  resolution: "@flutter-dom/js_runtime@workspace:packages/core/js_runtime"
   languageName: unknown
   linkType: soft
 

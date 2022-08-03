@@ -98,7 +98,7 @@ packages:
   js_runtime:
     dependency: "direct main"
     description:
-      path: "../js-runtime"
+      path: "../js_runtime"
       relative: true
     source: path
     version: "0.0.1"

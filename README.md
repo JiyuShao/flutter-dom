@@ -15,6 +15,5 @@ yarn
 ## 技术栈
 
 - yarn workspace
-- git submodule
 - flutter 3.0.4
 - cmake 3.10.2

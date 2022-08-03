@@ -54,7 +54,7 @@ dev_dependencies:
 # the parent directory to use the current plugin's version.
 dependency_overrides:
   js_runtime:
-    path: ../js-runtime
+    path: ../js_runtime
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

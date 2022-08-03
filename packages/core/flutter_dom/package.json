@@ -1,5 +1,5 @@
 {
-  "name": "@flutter-dom/flutter-dom",
+  "name": "@flutter-dom/flutter_dom",
   "private": true,
   "description": "Cross-platform rendering engine based on W3C standard and Flutter",
   "scripts": {

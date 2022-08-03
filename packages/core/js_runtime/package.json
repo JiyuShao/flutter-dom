@@ -1,5 +1,5 @@
 {
-  "name": "@flutter-dom/js-runtime",
+  "name": "@flutter-dom/js_runtime",
   "private": true,
   "description": "A cross-platform Javascript engine to use with flutter.",
   "scripts": {
