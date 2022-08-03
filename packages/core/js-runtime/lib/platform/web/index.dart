@@ -10,13 +10,14 @@ class JsRuntime extends RuntimeInterface {
   Timer? _eventLoopTimer;
 
   JsRuntime() {
-    _init();
+    _initPromise = _init();
   }
 
   _init() async {
+    loggerNoStack.d("Loading JsRuntime Polyfill...");
+    await polyfill.loadPolyfillScript();
     loggerNoStack.d("Creating JsRuntime...");
-    _initPromise = polyfill.createRuntime();
-    _instanceId = await _initPromise;
+    _instanceId = await polyfill.createRuntime();
     loggerNoStack.d("JsRuntime Created($_instanceId)");
     _defineEventLoop();
   }

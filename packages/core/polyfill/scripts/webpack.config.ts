@@ -1,5 +1,6 @@
 import path from 'path';
 import { Configuration, DefinePlugin } from 'webpack';
+import 'webpack-dev-server';
 
 export default function getWebpackConfig(
   mode: Configuration['mode']
@@ -16,7 +17,8 @@ export default function getWebpackConfig(
       path: path.resolve(__dirname, '../dist'),
       filename: '[name].js',
       library: ['__FLUTTER_DOM_POLYFILL__', '[name]'],
-      libraryTarget: 'umd',
+      // 如果设置的是 umd 的话，在 flutter web 中会走 amd define 导致逻辑出错
+      libraryTarget: 'window',
       libraryExport: 'default',
     },
     devServer: {
@@ -42,6 +44,18 @@ export default function getWebpackConfig(
           test: /\.ts$/,
           loader: 'ts-loader',
           include: path.resolve(__dirname, '../src'),
+          options: {
+            // 与 tsconfig 配置的不同，只需要编译需要的文件
+            onlyCompileBundledFiles: true,
+            compilerOptions: {
+              // 需要输出，否则会编译失败
+              noEmit: false,
+              // 输出类型文件
+              declaration: true,
+              // 指定类型文件输出目录
+              outDir: path.resolve(__dirname, '../dist'),
+            },
+          },
         },
       ],
     },

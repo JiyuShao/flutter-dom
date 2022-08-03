@@ -25,11 +25,16 @@ class _JSExampleScreenState extends State<JSExampleScreen> {
   String _result = '';
   late JsRuntime jsRuntime;
 
+  _init() async {
+    jsRuntime = JsRuntime();
+    await jsRuntime.waitUntilInited;
+    jsRuntime.evaluate("let a = 1");
+  }
+
   @override
   void initState() {
     super.initState();
-    jsRuntime = JsRuntime();
-    jsRuntime.evaluate("let a = 1");
+    _init();
   }
 
   @override
