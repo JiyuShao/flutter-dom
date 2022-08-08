@@ -1,11 +1,11 @@
-import OrigionalSpinner from 'ink-spinner';
-import OrigionalSelectInput from 'ink-select-input';
-import OrigionalTextInput from 'ink-text-input';
+import OriginalSpinner from 'ink-spinner';
+import OriginalSelectInput from 'ink-select-input';
+import OriginalTextInput from 'ink-text-input';
 
-export const Spinner = OrigionalSpinner;
+export const Spinner = OriginalSpinner;
 
-export const SelectInput = OrigionalSelectInput;
+export const SelectInput = OriginalSelectInput;
 
-export const TextInput = OrigionalTextInput;
+export const TextInput = OriginalTextInput;
 
-export const ConfirmInput = OrigionalTextInput;
+export const ConfirmInput = OriginalTextInput;
