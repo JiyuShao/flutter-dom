@@ -1,4 +1,4 @@
-import pino, { Logger as OrigionalLogger } from 'pino';
+import pino, { Logger as OriginalLogger } from 'pino';
 
 const logger: Logger = pino({
   level: 'debug',
@@ -33,4 +33,4 @@ const logger: Logger = pino({
 
 export default logger;
 
-export type Logger = OrigionalLogger;
+export type Logger = OriginalLogger;

@@ -12,20 +12,20 @@ external List<String> getAllRuntimeIds();
 
 // create js runtime
 @JS('$libraryName.createRuntime')
-external dynamic createRuntimeOrigional();
+external dynamic createRuntimeOriginal();
 
 Future<String> createRuntime() async {
-  var result = await promiseToFuture(createRuntimeOrigional());
+  var result = await promiseToFuture(createRuntimeOriginal());
   return result;
 }
 
 // sync evaluate code
 @JS('$libraryName.evaluate')
-external dynamic evaluateOrigional(String instanceId, String code);
+external dynamic evaluateOriginal(String instanceId, String code);
 
 dynamic evaluate(String instanceId, String code) {
   try {
-    dynamic resultString = evaluateOrigional(instanceId, code);
+    dynamic resultString = evaluateOriginal(instanceId, code);
     dynamic result = jsonDecode(resultString);
     return result['value'];
   } catch (e) {
