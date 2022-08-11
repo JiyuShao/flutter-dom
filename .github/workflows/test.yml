@@ -3,11 +3,11 @@ name: Test
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   test-js-runtime:
-    name: Test js-runtime on ${{ matrix.os }}
+    name: Test js_runtime on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -15,14 +15,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest]
     steps:
-      - uses: actions/checkout@v2
-      - name: Update submodules
-        run: git submodule update --init --recursive
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Flutter action
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.0.4'
       - run: flutter pub get
-      - run: sh test/integration_test_android.sh
+      - run: sh test/integration_test_macos.sh

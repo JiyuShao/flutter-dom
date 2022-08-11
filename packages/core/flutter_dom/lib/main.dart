@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dom/screens/error_screen.dart';
+import 'package:flutter_dom/screens/js_example_screen.dart';
 import 'models/app_theme_model.dart';
 import 'utils/logger.dart';
 import 'utils/routes/routes_generator.dart';
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: true,
       theme: AppThemeModel.materialTheme,
       // theme: ThemeData.dark(),
-      initialRoute: '/js_example',
+      initialRoute: JSExampleScreen.routeName,
       onGenerateRoute: RouteGenerator.generateRoute,
       builder: (BuildContext context, Widget? widget) {
         Widget error = const ErrorScreen();
