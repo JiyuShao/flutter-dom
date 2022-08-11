@@ -76,7 +76,7 @@ void main() {
     });
 
     tearDownAll(() async {
-      await Future.delayed(const Duration(seconds: 1000), () {});
+      // await Future.delayed(const Duration(seconds: 1000), () {});
       jsRuntime.dispose();
     });
   });
