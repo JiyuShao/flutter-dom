@@ -3,25 +3,79 @@ name: Test JS Runtime
 on:
   push:
     branches:
-      - 'feat/workflows_test'
+      - main
 
 jobs:
-  integration_test:
+  integration_test_macos:
     name: Test js_runtime on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        working-directory: packages/core/js_runtime
+        working-directory: ${{ matrix.wd }}
     strategy:
       fail-fast: false
       matrix:
         os: [macos-latest]
+        wd: [packages/core/js_runtime]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Flutter action
+
+      - name: Flutter Action
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.0.4'
-      - run: flutter pub get
-      - run: sh test/integration_test_macos.sh
+
+      - name: Install Packages
+        run: flutter pub get
+
+      - name: Run Integration Test
+        run: sh test/integration_test_macos.sh
+
+  integration_test_android:
+    name: Test js_runtime on Android Emulator
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.wd }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+        # 2021.12.17  sdkmanager --list| grep --color=auto -w "default;x86"
+        # api-level: [15, 16, 17, 18, 19,  21, 22, 23, 24, 25, 26, 27, 28, 29 ]
+        api-level: [29]
+        target: [default]
+        arch: [x86]
+        wd: [packages/core/js_runtime]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '18'
+
+      - name: Flutter Action
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.0.4'
+
+      - name: Install Packages
+        run: flutter pub get
+
+      - name: Run Integration Test
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          arch: ${{ matrix.arch }}
+          profile: Nexus 6
+          avd-name: ${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          working-directory: ${{ matrix.wd }}
+          script: sh test/integration_test_android.sh

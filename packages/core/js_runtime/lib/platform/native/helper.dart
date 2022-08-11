@@ -22,5 +22,11 @@ dynamic jsToDart(jsValue) {
   if (jsValue is Future || jsValue is JSError) {
     return {};
   }
+
+  if (jsValue is JSInvokable) {
+    // fix function reference leak
+    jsValue.free();
+    return null;
+  }
   return null;
 }
