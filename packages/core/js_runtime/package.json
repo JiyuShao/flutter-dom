@@ -3,6 +3,7 @@
   "private": true,
   "description": "A cross-platform Javascript engine to use with flutter.",
   "scripts": {
+    "postinstall": "flutter pub get",
     "test:web": "sh test/integration_test_web.sh",
     "test:android": "sh test/integration_test_android.sh",
     "test:macos": "sh test/integration_test_macos.sh"

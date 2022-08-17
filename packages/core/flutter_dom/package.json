@@ -3,6 +3,7 @@
   "private": true,
   "description": "Cross-platform rendering engine based on W3C standard and Flutter",
   "scripts": {
+    "postinstall": "flutter pub get",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jiyu Shao <jiyu.shao@gmail.com>",
