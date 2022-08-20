@@ -57,7 +57,7 @@ class _JSExampleScreenState extends State<JSExampleScreen> {
             const Padding(
               padding: EdgeInsets.all(10),
               child: Text(
-                  'Click on the big JS Yellow Button to evaluate the expression bellow using the flutter_js plugin'),
+                  'Click on the big JS Yellow Button to evaluate the expression bellow using the js_runtime plugin'),
             ),
             const Padding(
               padding: EdgeInsets.all(8.0),
