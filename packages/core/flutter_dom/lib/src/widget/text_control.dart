@@ -1,11 +1,12 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 import 'package:flutter_dom/rendering.dart';
 import 'package:flutter_dom/dom.dart' as dom;
 import 'package:flutter_dom/css.dart';
@@ -30,7 +31,7 @@ typedef GetCursorRadius = Radius Function();
 
 /// Get the text selection controls according to the target platform.
 typedef GetTextSelectionControls = TextSelectionControls Function();
-typedef OnControllerCreated = void Function(WebFController controller);
+typedef OnControllerCreated = void Function(FlutterDomController controller);
 
 /// Delegate methods of widget
 class WidgetDelegate {
@@ -54,16 +55,16 @@ class WidgetDelegate {
 }
 
 // Widget involves actions of text control elements(input, textarea).
-class WebFTextControl extends StatefulWidget {
-  WebFTextControl(this.parentContext);
+class FlutterDomTextControl extends StatefulWidget {
+  FlutterDomTextControl(this.parentContext);
 
   final BuildContext parentContext;
 
   @override
-  _WebFTextControlState createState() => _WebFTextControlState();
+  _FlutterDomTextControlState createState() => _FlutterDomTextControlState();
 }
 
-class _WebFTextControlState extends State<WebFTextControl> with _FindElementFromContextMixin {
+class _FlutterDomTextControlState extends State<FlutterDomTextControl> with _FindElementFromContextMixin {
   @override
   void initState() {
     super.initState();
@@ -77,8 +78,8 @@ class _WebFTextControlState extends State<WebFTextControl> with _FindElementFrom
             actions: _actionMap,
             focusNode: _focusNode,
             onFocusChange: _handleFocusChange,
-            child: WebFRenderObjectWidget(
-              widget.parentContext.widget as WebF,
+            child: FlutterDomRenderObjectWidget(
+              widget.parentContext.widget as FlutterDom,
               widgetDelegate,
             )));
   }
@@ -99,7 +100,7 @@ class _WebFTextControlState extends State<WebFTextControl> with _FindElementFrom
     );
   }
 
-  FocusableActionDetector createTextControlDetector(WebFRenderObjectWidget child) {
+  FocusableActionDetector createTextControlDetector(FlutterDomRenderObjectWidget child) {
     return FocusableActionDetector(
         actions: _actionMap, focusNode: _focusNode, onFocusChange: _handleFocusChange, child: child);
   }
@@ -414,7 +415,7 @@ mixin _FindElementFromContextMixin {
   dom.Element _findRootElement(BuildContext context) {
     RenderObject? _rootRenderObject = context.findRenderObject();
     RenderViewportBox? renderViewportBox = _findRenderViewportBox(_rootRenderObject!);
-    WebFController controller = (renderViewportBox as RenderObjectWithControllerMixin).controller!;
+    FlutterDomController controller = (renderViewportBox as RenderObjectWithControllerMixin).controller!;
     dom.Element documentElement = controller.view.document.documentElement!;
     return documentElement;
   }

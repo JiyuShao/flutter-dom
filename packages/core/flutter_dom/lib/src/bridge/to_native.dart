@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:async';
@@ -12,7 +13,7 @@ import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_dom/dom.dart';
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 
 // Steps for using dart:ffi to call a C function from Dart:
 // 1. Import dart:ffi.
@@ -22,41 +23,41 @@ import 'package:flutter_dom/webf.dart';
 // 5. Get a reference to the C function, and put it into a variable.
 // 6. Call the C function.
 
-class WebFInfo {
-  final Pointer<NativeWebFInfo> _nativeWebFInfo;
+class FlutterDomInfo {
+  final Pointer<NativeFlutterDomInfo> _nativeFlutterDomInfo;
 
-  WebFInfo(Pointer<NativeWebFInfo> info) : _nativeWebFInfo = info;
+  FlutterDomInfo(Pointer<NativeFlutterDomInfo> info) : _nativeFlutterDomInfo = info;
 
   String get appName {
-    if (_nativeWebFInfo.ref.app_name == nullptr) return '';
-    return _nativeWebFInfo.ref.app_name.toDartString();
+    if (_nativeFlutterDomInfo.ref.app_name == nullptr) return '';
+    return _nativeFlutterDomInfo.ref.app_name.toDartString();
   }
 
   String get appVersion {
-    if (_nativeWebFInfo.ref.app_version == nullptr) return '';
-    return _nativeWebFInfo.ref.app_version.toDartString();
+    if (_nativeFlutterDomInfo.ref.app_version == nullptr) return '';
+    return _nativeFlutterDomInfo.ref.app_version.toDartString();
   }
 
   String get appRevision {
-    if (_nativeWebFInfo.ref.app_revision == nullptr) return '';
-    return _nativeWebFInfo.ref.app_revision.toDartString();
+    if (_nativeFlutterDomInfo.ref.app_revision == nullptr) return '';
+    return _nativeFlutterDomInfo.ref.app_revision.toDartString();
   }
 
   String get systemName {
-    if (_nativeWebFInfo.ref.system_name == nullptr) return '';
-    return _nativeWebFInfo.ref.system_name.toDartString();
+    if (_nativeFlutterDomInfo.ref.system_name == nullptr) return '';
+    return _nativeFlutterDomInfo.ref.system_name.toDartString();
   }
 }
 
-typedef NativeGetWebFInfo = Pointer<NativeWebFInfo> Function();
-typedef DartGetWebFInfo = Pointer<NativeWebFInfo> Function();
+typedef NativeGetFlutterDomInfo = Pointer<NativeFlutterDomInfo> Function();
+typedef DartGetFlutterDomInfo = Pointer<NativeFlutterDomInfo> Function();
 
-final DartGetWebFInfo _getWebFInfo =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeGetWebFInfo>>('getWebFInfo').asFunction();
+final DartGetFlutterDomInfo _getFlutterDomInfo =
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeGetFlutterDomInfo>>('getFlutterDomInfo').asFunction();
 
-final WebFInfo _cachedInfo = WebFInfo(_getWebFInfo());
+final FlutterDomInfo _cachedInfo = FlutterDomInfo(_getFlutterDomInfo());
 
-WebFInfo getWebFInfo() {
+FlutterDomInfo getFlutterDomInfo() {
   return _cachedInfo;
 }
 
@@ -67,10 +68,10 @@ typedef DartInvokeEventListener = void Function(
     int contextId, Pointer<NativeString>, Pointer<Utf8> eventType, Pointer<Void> nativeEvent, Pointer<NativeString>);
 
 final DartInvokeEventListener _invokeModuleEvent =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeInvokeEventListener>>('invokeModuleEvent').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeInvokeEventListener>>('invokeModuleEvent').asFunction();
 
 void invokeModuleEvent(int contextId, String moduleName, Event? event, String extra) {
-  if (WebFController.getControllerOfJSContextId(contextId) == null) {
+  if (FlutterDomController.getControllerOfJSContextId(contextId) == null) {
     return;
   }
   Pointer<NativeString> nativeModuleName = stringToNativeString(moduleName);
@@ -84,7 +85,7 @@ typedef DartDispatchEvent = int Function(int contextId, Pointer<NativeBindingObj
     Pointer<NativeString> eventType, Pointer<Void> nativeEvent, int isCustomEvent);
 
 void emitUIEvent(int contextId, Pointer<NativeBindingObject> nativeBindingObject, Event event) {
-  if (WebFController.getControllerOfJSContextId(contextId) == null) {
+  if (FlutterDomController.getControllerOfJSContextId(contextId) == null) {
     return;
   }
   DartDispatchEvent dispatchEvent = nativeBindingObject.ref.dispatchEvent.asFunction();
@@ -107,7 +108,7 @@ typedef NativeCreateScreen = Pointer<Void> Function(Double, Double);
 typedef DartCreateScreen = Pointer<Void> Function(double, double);
 
 final DartCreateScreen _createScreen =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeCreateScreen>>('createScreen').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeCreateScreen>>('createScreen').asFunction();
 
 Pointer<Void> createScreen(double width, double height) {
   return _createScreen(width, height);
@@ -124,14 +125,14 @@ typedef NativeParseHTML = Void Function(Int32 contextId, Pointer<Utf8> code, Int
 typedef DartParseHTML = void Function(int contextId, Pointer<Utf8> code, int length);
 
 final DartEvaluateScripts _evaluateScripts =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeEvaluateScripts>>('evaluateScripts').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeEvaluateScripts>>('evaluateScripts').asFunction();
 
 final DartParseHTML _parseHTML =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeParseHTML>>('parseHTML').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeParseHTML>>('parseHTML').asFunction();
 
 int _anonymousScriptEvaluationId = 0;
 void evaluateScripts(int contextId, String code, {String? url, int line = 0}) {
-  if (WebFController.getControllerOfJSContextId(contextId) == null) {
+  if (FlutterDomController.getControllerOfJSContextId(contextId) == null) {
     return;
   }
   // Assign `vm://$id` for no url (anonymous scripts).
@@ -153,12 +154,12 @@ void evaluateScripts(int contextId, String code, {String? url, int line = 0}) {
 typedef NativeEvaluateQuickjsByteCode = Void Function(Int32 contextId, Pointer<Uint8> bytes, Int32 byteLen);
 typedef DartEvaluateQuickjsByteCode = void Function(int contextId, Pointer<Uint8> bytes, int byteLen);
 
-final DartEvaluateQuickjsByteCode _evaluateQuickjsByteCode = WebFDynamicLibrary.ref
+final DartEvaluateQuickjsByteCode _evaluateQuickjsByteCode = FlutterDomDynamicLibrary.ref
     .lookup<NativeFunction<NativeEvaluateQuickjsByteCode>>('evaluateQuickjsByteCode')
     .asFunction();
 
 void evaluateQuickjsByteCode(int contextId, Uint8List bytes) {
-  if (WebFController.getControllerOfJSContextId(contextId) == null) {
+  if (FlutterDomController.getControllerOfJSContextId(contextId) == null) {
     return;
   }
   Pointer<Uint8> byteData = malloc.allocate(sizeOf<Uint8>() * bytes.length);
@@ -168,7 +169,7 @@ void evaluateQuickjsByteCode(int contextId, Uint8List bytes) {
 }
 
 void parseHTML(int contextId, String code) {
-  if (WebFController.getControllerOfJSContextId(contextId) == null) {
+  if (FlutterDomController.getControllerOfJSContextId(contextId) == null) {
     return;
   }
   Pointer<Utf8> nativeCode = code.toNativeUtf8();
@@ -185,7 +186,7 @@ typedef NativeInitJSPagePool = Void Function(Int32 poolSize);
 typedef DartInitJSPagePool = void Function(int poolSize);
 
 final DartInitJSPagePool _initJSPagePool =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeInitJSPagePool>>('initJSPagePool').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeInitJSPagePool>>('initJSPagePool').asFunction();
 
 void initJSPagePool(int poolSize) {
   _initJSPagePool(poolSize);
@@ -195,7 +196,7 @@ typedef NativeDisposePage = Void Function(Int32 contextId);
 typedef DartDisposePage = void Function(int contextId);
 
 final DartDisposePage _disposePage =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeDisposePage>>('disposePage').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeDisposePage>>('disposePage').asFunction();
 
 void disposePage(int contextId) {
   _disposePage(contextId);
@@ -205,7 +206,7 @@ typedef NativeAllocateNewPage = Int32 Function(Int32);
 typedef DartAllocateNewPage = int Function(int);
 
 final DartAllocateNewPage _allocateNewPage =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeAllocateNewPage>>('allocateNewPage').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeAllocateNewPage>>('allocateNewPage').asFunction();
 
 int allocateNewPage([int targetContextId = -1]) {
   return _allocateNewPage(targetContextId);
@@ -215,7 +216,7 @@ typedef NativeRegisterPluginByteCode = Void Function(Pointer<Uint8> bytes, Int32
 typedef DartRegisterPluginByteCode = void Function(Pointer<Uint8> bytes, int length, Pointer<Utf8> pluginName);
 
 final DartRegisterPluginByteCode _registerPluginByteCode =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeRegisterPluginByteCode>>('registerPluginByteCode').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeRegisterPluginByteCode>>('registerPluginByteCode').asFunction();
 
 void registerPluginByteCode(Uint8List bytecode, String name) {
   Pointer<Uint8> bytes = malloc.allocate(sizeOf<Uint8>() * bytecode.length);
@@ -227,7 +228,7 @@ typedef NativeProfileModeEnabled = Int32 Function();
 typedef DartProfileModeEnabled = int Function();
 
 final DartProfileModeEnabled _profileModeEnabled =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeProfileModeEnabled>>('profileModeEnabled').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeProfileModeEnabled>>('profileModeEnabled').asFunction();
 
 const _CODE_ENABLED = 1;
 
@@ -240,7 +241,7 @@ typedef NativeReloadJSContext = Void Function(Int32 contextId);
 typedef DartReloadJSContext = void Function(int contextId);
 
 final DartReloadJSContext _reloadJSContext =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeReloadJSContext>>('reloadJsContext').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeReloadJSContext>>('reloadJsContext').asFunction();
 
 Future<void> reloadJSContext(int contextId) async {
   Completer completer = Completer<void>();
@@ -255,7 +256,7 @@ typedef NativeFlushUICommandCallback = Void Function();
 typedef DartFlushUICommandCallback = void Function();
 
 final DartFlushUICommandCallback _flushUICommandCallback =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeFlushUICommandCallback>>('flushUICommandCallback').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeFlushUICommandCallback>>('flushUICommandCallback').asFunction();
 
 void flushUICommandCallback() {
   _flushUICommandCallback();
@@ -265,7 +266,7 @@ typedef NativeDispatchUITask = Void Function(Int32 contextId, Pointer<Void> cont
 typedef DartDispatchUITask = void Function(int contextId, Pointer<Void> context, Pointer<Void> callback);
 
 final DartDispatchUITask _dispatchUITask =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeDispatchUITask>>('dispatchUITask').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeDispatchUITask>>('dispatchUITask').asFunction();
 
 void dispatchUITask(int contextId, Pointer<Void> context, Pointer<Void> callback) {
   _dispatchUITask(contextId, context, callback);
@@ -306,19 +307,19 @@ typedef NativeGetUICommandItems = Pointer<Uint64> Function(Int32 contextId);
 typedef DartGetUICommandItems = Pointer<Uint64> Function(int contextId);
 
 final DartGetUICommandItems _getUICommandItems =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeGetUICommandItems>>('getUICommandItems').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeGetUICommandItems>>('getUICommandItems').asFunction();
 
 typedef NativeGetUICommandItemSize = Int64 Function(Int64 contextId);
 typedef DartGetUICommandItemSize = int Function(int contextId);
 
 final DartGetUICommandItemSize _getUICommandItemSize =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeGetUICommandItemSize>>('getUICommandItemSize').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeGetUICommandItemSize>>('getUICommandItemSize').asFunction();
 
 typedef NativeClearUICommandItems = Void Function(Int32 contextId);
 typedef DartClearUICommandItems = void Function(int contextId);
 
 final DartClearUICommandItems _clearUICommandItems =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeClearUICommandItems>>('clearUICommandItems').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeClearUICommandItems>>('clearUICommandItems').asFunction();
 
 class UICommand {
   late final UICommandType type;
@@ -348,7 +349,7 @@ const int args01StringMemOffset = 2;
 const int args02StringMemOffset = 3;
 const int nativePtrMemOffset = 4;
 
-final bool isEnabledLog = kDebugMode && Platform.environment['ENABLE_WEBF_JS_LOG'] == 'true';
+final bool isEnabledLog = kDebugMode && Platform.environment['ENABLE_FLUTTER_DOM_JS_LOG'] == 'true';
 
 // We found there are performance bottleneck of reading native memory with Dart FFI API.
 // So we align all UI instructions to a whole block of memory, and then convert them into a dart array at one time,
@@ -420,8 +421,8 @@ void clearUICommand(int contextId) {
 }
 
 void flushUICommand() {
-  Map<int, WebFController?> controllerMap = WebFController.getControllerMap();
-  for (WebFController? controller in controllerMap.values) {
+  Map<int, FlutterDomController?> controllerMap = FlutterDomController.getControllerMap();
+  for (FlutterDomController? controller in controllerMap.values) {
     if (controller == null) continue;
     Pointer<Uint64> nativeCommandItems = _getUICommandItems(controller.view.contextId);
     int commandLength = _getUICommandItemSize(controller.view.contextId);

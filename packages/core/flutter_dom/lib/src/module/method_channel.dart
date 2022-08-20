@@ -1,16 +1,17 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 
 typedef MethodCallCallback = Future<dynamic> Function(String method, Object? arguments);
 const String METHOD_CHANNEL_NOT_INITIALIZED = 'MethodChannel not initialized.';
-const String CONTROLLER_NOT_INITIALIZED = 'WebF controller not initialized.';
+const String CONTROLLER_NOT_INITIALIZED = 'FlutterDom controller not initialized.';
 const String METHOD_CHANNEL_NAME = 'MethodChannel';
 
 class MethodChannelModule extends BaseModule {
@@ -34,7 +35,7 @@ class MethodChannelModule extends BaseModule {
   }
 }
 
-void setJSMethodCallCallback(WebFController controller) {
+void setJSMethodCallCallback(FlutterDomController controller) {
   if (controller.methodChannel == null) return;
 
   controller.methodChannel!._onJSMethodCall = (String method, arguments) async {
@@ -46,7 +47,7 @@ void setJSMethodCallCallback(WebFController controller) {
   };
 }
 
-abstract class WebFMethodChannel {
+abstract class FlutterDomMethodChannel {
   MethodCallCallback? _onJSMethodCallCallback;
 
   set _onJSMethodCall(MethodCallCallback? value) {
@@ -56,14 +57,14 @@ abstract class WebFMethodChannel {
 
   Future<dynamic> invokeMethodFromJavaScript(String method, List arguments);
 
-  static void setJSMethodCallCallback(WebFController controller) {
+  static void setJSMethodCallCallback(FlutterDomController controller) {
     controller.methodChannel?._onJSMethodCall = (String method, arguments) async {
       controller.module.moduleManager.emitModuleEvent(METHOD_CHANNEL_NAME, data: [method, arguments]);
     };
   }
 }
 
-class WebFJavaScriptChannel extends WebFMethodChannel {
+class FlutterDomJavaScriptChannel extends FlutterDomMethodChannel {
   Future<dynamic> invokeMethod(String method, arguments) async {
     MethodCallCallback? jsMethodCallCallback = _onJSMethodCallCallback;
     if (jsMethodCallCallback != null) {
@@ -93,14 +94,14 @@ class WebFJavaScriptChannel extends WebFMethodChannel {
   }
 }
 
-class WebFNativeChannel extends WebFMethodChannel {
+class FlutterDomNativeChannel extends FlutterDomMethodChannel {
   // Flutter method channel used to communicate with public SDK API
   // Only works when integration wieh public SDK API
 
-  static final MethodChannel _nativeChannel = getWebFMethodChannel()
+  static final MethodChannel _nativeChannel = getFlutterDomMethodChannel()
     ..setMethodCallHandler((call) async {
       String method = call.method;
-      WebFController? controller = WebFController.getControllerOfJSContextId(0);
+      FlutterDomController? controller = FlutterDomController.getControllerOfJSContextId(0);
 
       if (controller == null) return;
 
@@ -136,15 +137,15 @@ class WebFNativeChannel extends WebFMethodChannel {
   static Future<void> syncDynamicLibraryPath() async {
     String? path = await _nativeChannel.invokeMethod('getDynamicLibraryPath');
     if (path != null) {
-      WebFDynamicLibrary.dynamicLibraryPath = path;
+      FlutterDomDynamicLibrary.dynamicLibraryPath = path;
     }
   }
 }
 
-Future<dynamic> _invokeMethodFromJavaScript(WebFController? controller, String method, List args) {
-  WebFMethodChannel? webFMethodChannel = controller?.methodChannel;
-  if (webFMethodChannel != null) {
-    return webFMethodChannel.invokeMethodFromJavaScript(method, args);
+Future<dynamic> _invokeMethodFromJavaScript(FlutterDomController? controller, String method, List args) {
+  FlutterDomMethodChannel? flutterDomMethodChannel = controller?.methodChannel;
+  if (flutterDomMethodChannel != null) {
+    return flutterDomMethodChannel.invokeMethodFromJavaScript(method, args);
   } else {
     return Future.error(FlutterError(METHOD_CHANNEL_NOT_INITIALIZED));
   }

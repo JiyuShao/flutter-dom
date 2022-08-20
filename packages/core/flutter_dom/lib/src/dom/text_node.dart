@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'package:flutter/rendering.dart';
 import 'package:flutter_dom/dom.dart';
@@ -58,7 +59,7 @@ class TextNode extends Node {
       _renderTextBox!.renderStyle = _parentElement.renderStyle;
       _renderTextBox!.data = data;
 
-      WebFRenderParagraph renderParagraph = _renderTextBox!.child as WebFRenderParagraph;
+      FlutterDomRenderParagraph renderParagraph = _renderTextBox!.child as FlutterDomRenderParagraph;
       renderParagraph.markNeedsLayout();
 
       RenderLayoutBox parentRenderLayoutBox = _parentElement.renderBoxModel as RenderLayoutBox;
@@ -82,7 +83,7 @@ class TextNode extends Node {
     createRenderer();
 
     // If element attach WidgetElement, render object should be attach to render tree when mount.
-    if (parent.renderObjectManagerType == RenderObjectManagerType.WEBF_NODE &&
+    if (parent.renderObjectManagerType == RenderObjectManagerType.FLUTTER_DOM_NODE &&
         parent.renderBoxModel is RenderLayoutBox) {
       RenderLayoutBox parentRenderLayoutBox = parent.renderBoxModel as RenderLayoutBox;
       parentRenderLayoutBox = parentRenderLayoutBox.renderScrollingContent ?? parentRenderLayoutBox;

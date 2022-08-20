@@ -1,17 +1,18 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter_dom/dom.dart';
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 
 class HistoryItem {
   HistoryItem(this.bundle, this.state, this.needJump);
-  final WebFBundle bundle;
+  final FlutterDomBundle bundle;
   final dynamic state;
   final bool needJump;
 }
@@ -25,7 +26,7 @@ class HistoryModule extends BaseModule {
   Queue<HistoryItem> get _previousStack => moduleManager!.controller.previousHistoryStack;
   Queue<HistoryItem> get _nextStack => moduleManager!.controller.nextHistoryStack;
 
-  WebFBundle? get stackTop {
+  FlutterDomBundle? get stackTop {
     if (_previousStack.isEmpty) {
       return null;
     } else {
@@ -33,7 +34,7 @@ class HistoryModule extends BaseModule {
     }
   }
 
-  void add(WebFBundle bundle) {
+  void add(FlutterDomBundle bundle) {
     HistoryItem history = HistoryItem(bundle, null, true);
     _addItem(history);
   }
@@ -113,7 +114,7 @@ class HistoryModule extends BaseModule {
   }
 
   void _pushState(List<dynamic> params) {
-    WebFController controller = moduleManager!.controller;
+    FlutterDomController controller = moduleManager!.controller;
     dynamic state = params[0];
     String? url = null;
 
@@ -132,14 +133,14 @@ class HistoryModule extends BaseModule {
         return;
       }
 
-      WebFBundle bundle = WebFBundle.fromUrl(uri.toString());
+      FlutterDomBundle bundle = FlutterDomBundle.fromUrl(uri.toString());
       HistoryItem history = HistoryItem(bundle, state, false);
       _addItem(history);
     }
   }
 
   void _replaceState(List<dynamic> params) {
-    WebFController controller = moduleManager!.controller;
+    FlutterDomController controller = moduleManager!.controller;
     dynamic state = params[0];
     String? url = null;
 
@@ -158,7 +159,7 @@ class HistoryModule extends BaseModule {
         return;
       }
 
-      WebFBundle bundle = WebFBundle.fromUrl(uri.toString());
+      FlutterDomBundle bundle = FlutterDomBundle.fromUrl(uri.toString());
       HistoryItem history = HistoryItem(bundle, state, false);
 
       _previousStack.removeFirst();

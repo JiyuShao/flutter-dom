@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'dart:convert';
 import 'dart:io';
@@ -78,7 +79,7 @@ class UIInspector {
     String remoteAddress = await UIInspector.getConnectedLocalNetworkAddress();
     String inspectorURL = '$INSPECTOR_URL?ws=$remoteAddress:$port';
 
-    print('WebF DevTool listening at ws://$remoteAddress:$port');
+    print('FlutterDom DevTool listening at ws://$remoteAddress:$port');
     print('Open Chrome/Edge and enter following url to your navigator:');
     print('    $inspectorURL');
   }

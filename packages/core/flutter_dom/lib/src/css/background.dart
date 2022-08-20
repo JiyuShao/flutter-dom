@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:math' as math;
@@ -178,7 +179,7 @@ class CSSColorStop {
 class CSSBackgroundImage {
   List<CSSFunctionalNotation> functions;
   RenderStyle renderStyle;
-  WebFController controller;
+  FlutterDomController controller;
   CSSBackgroundImage(this.functions, this.renderStyle, this.controller);
 
   ImageProvider? get image {
@@ -483,7 +484,7 @@ class CSSBackground {
     }
   }
 
-  static resolveBackgroundImage(String present, RenderStyle renderStyle, String property, WebFController controller) {
+  static resolveBackgroundImage(String present, RenderStyle renderStyle, String property, FlutterDomController controller) {
     List<CSSFunctionalNotation> functions = CSSFunction.parseFunction(present);
     return CSSBackgroundImage(functions, renderStyle, controller);
   }

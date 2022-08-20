@@ -1,12 +1,13 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_dom/css.dart';
 import 'package:flutter_dom/dom.dart';
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 
 // Children of the <head> element all have display:none
 const Map<String, dynamic> _defaultStyle = {
@@ -138,7 +139,7 @@ class LinkElement extends Element {
         isConnected &&
         !_stylesheetLoaded.containsKey(_resolvedHyperlink.toString())) {
       String url = _resolvedHyperlink.toString();
-      WebFBundle bundle = WebFBundle.fromUrl(url);
+      FlutterDomBundle bundle = FlutterDomBundle.fromUrl(url);
       _stylesheetLoaded[url] = true;
       try {
         // Increment count when request.

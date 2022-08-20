@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
@@ -16,7 +17,7 @@ enum NodeType {
   DOCUMENT_FRAGMENT_NODE,
 }
 
-enum RenderObjectManagerType { FLUTTER_ELEMENT, WEBF_NODE }
+enum RenderObjectManagerType { FLUTTER_ELEMENT, FLUTTER_DOM_NODE }
 
 /// [RenderObjectNode] provide the renderObject related abstract life cycle for
 /// [Node] or [Element]s, which wrap [RenderObject]s, which provide the actual
@@ -74,8 +75,8 @@ abstract class LifecycleCallbacks {
 }
 
 abstract class Node extends EventTarget implements RenderObjectNode, LifecycleCallbacks {
-  WebFElementToFlutterElementAdaptor? flutterElement;
-  WebFElementToWidgetAdaptor? flutterWidget;
+  FlutterDomElementToFlutterElementAdaptor? flutterElement;
+  FlutterDomElementToWidgetAdaptor? flutterWidget;
   List<Node> childNodes = [];
 
   /// The Node.parentNode read-only property returns the parent of the specified node in the DOM tree.
@@ -294,7 +295,7 @@ abstract class Node extends EventTarget implements RenderObjectNode, LifecycleCa
   EventTarget? get parentEventTarget => parentNode;
 
   // Whether Kraken Node need to manage render object.
-  RenderObjectManagerType get renderObjectManagerType => RenderObjectManagerType.WEBF_NODE;
+  RenderObjectManagerType get renderObjectManagerType => RenderObjectManagerType.FLUTTER_DOM_NODE;
 }
 
 /// https://dom.spec.whatwg.org/#dom-node-nodetype

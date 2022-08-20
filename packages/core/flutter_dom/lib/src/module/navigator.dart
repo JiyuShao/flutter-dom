@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'dart:io' show Platform;
 import 'dart:ui';
@@ -59,12 +60,12 @@ class NavigatorModule extends BaseModule {
   }
 
   static String getAppName() {
-    WebFInfo info = getWebFInfo();
+    FlutterDomInfo info = getFlutterDomInfo();
     return info.appName;
   }
 
   static String getAppVersion() {
-    WebFInfo info = getWebFInfo();
+    FlutterDomInfo info = getFlutterDomInfo();
     return info.appVersion;
   }
 
@@ -80,7 +81,7 @@ class NavigatorModule extends BaseModule {
   }
 
   static String getDefaultUserAgent() {
-    WebFInfo info = getWebFInfo();
+    FlutterDomInfo info = getFlutterDomInfo();
     String appName = info.appName;
     String appVersion = info.appVersion;
     String appRevision = info.appRevision;

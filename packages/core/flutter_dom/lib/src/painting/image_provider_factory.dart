@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:io';
@@ -179,8 +180,8 @@ ImageProviderFactory _getImageProviderFactory(ImageType imageType) {
   }
 }
 
-class WebFResizeImage extends ResizeImage {
-  WebFResizeImage(
+class FlutterDomResizeImage extends ResizeImage {
+  FlutterDomResizeImage(
     ImageProvider<Object> imageProvider, {
     int? width,
     int? height,
@@ -192,7 +193,7 @@ class WebFResizeImage extends ResizeImage {
   static ImageProvider<Object> resizeIfNeeded(
       int? cacheWidth, int? cacheHeight, BoxFit? objectFit, ImageProvider provider) {
     if (cacheWidth != null || cacheHeight != null) {
-      return WebFResizeImage(provider, width: cacheWidth, height: cacheHeight, objectFit: objectFit);
+      return FlutterDomResizeImage(provider, width: cacheWidth, height: cacheHeight, objectFit: objectFit);
     }
     return provider;
   }
@@ -310,7 +311,7 @@ class WebFResizeImage extends ResizeImage {
 
 /// default ImageProviderFactory implementation of [ImageType.cached]
 ImageProvider defaultCachedProviderFactory(Uri uri, ImageProviderParams params) {
-  return WebFResizeImage.resizeIfNeeded(params.cachedWidth, params.cachedHeight, params.objectFit,
+  return FlutterDomResizeImage.resizeIfNeeded(params.cachedWidth, params.cachedHeight, params.objectFit,
       CachedNetworkImage(uri.toString(), contextId: (params as CachedNetworkImageProviderParams).contextId));
 }
 
@@ -320,18 +321,18 @@ ImageProvider defaultNetworkProviderFactory(Uri uri, ImageProviderParams params)
     HttpHeaders.userAgentHeader: NavigatorModule.getUserAgent(),
     HttpHeaderContext: (params as CachedNetworkImageProviderParams).contextId.toString(),
   });
-  return WebFResizeImage.resizeIfNeeded(params.cachedWidth, params.cachedHeight, params.objectFit, networkImage);
+  return FlutterDomResizeImage.resizeIfNeeded(params.cachedWidth, params.cachedHeight, params.objectFit, networkImage);
 }
 
 /// default ImageProviderFactory implementation of [ImageType.file]
 ImageProvider? defaultFileProviderFactory(Uri uri, ImageProviderParams params) {
-  return WebFResizeImage.resizeIfNeeded(
+  return FlutterDomResizeImage.resizeIfNeeded(
       params.cachedWidth, params.cachedHeight, params.objectFit, FileImage((params as FileImageProviderParams).file));
 }
 
 /// default ImageProviderFactory implementation of [ImageType.dataUrl].
 ImageProvider? defaultDataUrlProviderFactory(Uri uri, ImageProviderParams params) {
-  return WebFResizeImage.resizeIfNeeded(params.cachedWidth, params.cachedHeight, params.objectFit,
+  return FlutterDomResizeImage.resizeIfNeeded(params.cachedWidth, params.cachedHeight, params.objectFit,
       MemoryImage((params as DataUrlImageProviderParams).bytes));
 }
 
@@ -344,6 +345,6 @@ ImageProvider? defaultBlobProviderFactory(Uri uri, ImageProviderParams params) {
 /// default ImageProviderFactory implementation of [ImageType.assets].
 ImageProvider defaultAssetsProvider(Uri uri, ImageProviderParams params) {
   final String assetName = AssetsBundle.getAssetName(uri);
-  return WebFResizeImage.resizeIfNeeded(
+  return FlutterDomResizeImage.resizeIfNeeded(
       params.cachedWidth, params.cachedHeight, params.objectFit, AssetImage(assetName));
 }

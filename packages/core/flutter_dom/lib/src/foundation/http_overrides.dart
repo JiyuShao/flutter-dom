@@ -1,21 +1,22 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'dart:io';
 
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 
 // TODO: Don't use header to mark context.
 const String HttpHeaderContext = 'x-context';
 
-class WebFHttpOverrides extends HttpOverrides {
-  static WebFHttpOverrides? _instance;
+class FlutterDomHttpOverrides extends HttpOverrides {
+  static FlutterDomHttpOverrides? _instance;
 
-  WebFHttpOverrides._();
+  FlutterDomHttpOverrides._();
 
-  factory WebFHttpOverrides.instance() {
-    _instance ??= WebFHttpOverrides._();
+  factory FlutterDomHttpOverrides.instance() {
+    _instance ??= FlutterDomHttpOverrides._();
     return _instance!;
   }
 
@@ -34,11 +35,11 @@ class WebFHttpOverrides extends HttpOverrides {
   final HttpOverrides? parentHttpOverrides = HttpOverrides.current;
   final Map<int, HttpClientInterceptor> _contextIdToHttpClientInterceptorMap = <int, HttpClientInterceptor>{};
 
-  void registerWebFContext(int contextId, HttpClientInterceptor httpClientInterceptor) {
+  void registerFlutterDomContext(int contextId, HttpClientInterceptor httpClientInterceptor) {
     _contextIdToHttpClientInterceptorMap[contextId] = httpClientInterceptor;
   }
 
-  bool unregisterWebFContext(int contextId) {
+  bool unregisterFlutterDomContext(int contextId) {
     // Returns true if [value] was in the map, false otherwise.
     return _contextIdToHttpClientInterceptorMap.remove(contextId) != null;
   }
@@ -77,11 +78,11 @@ class WebFHttpOverrides extends HttpOverrides {
   }
 }
 
-WebFHttpOverrides setupHttpOverrides(HttpClientInterceptor? httpClientInterceptor, {required int contextId}) {
-  final WebFHttpOverrides httpOverrides = WebFHttpOverrides.instance();
+FlutterDomHttpOverrides setupHttpOverrides(HttpClientInterceptor? httpClientInterceptor, {required int contextId}) {
+  final FlutterDomHttpOverrides httpOverrides = FlutterDomHttpOverrides.instance();
 
   if (httpClientInterceptor != null) {
-    httpOverrides.registerWebFContext(contextId, httpClientInterceptor);
+    httpOverrides.registerFlutterDomContext(contextId, httpClientInterceptor);
   }
 
   HttpOverrides.global = httpOverrides;
@@ -99,7 +100,7 @@ String getOrigin(Uri uri) {
 
 // @TODO: Remove controller dependency.
 Uri getEntrypointUri(int? contextId) {
-  WebFController? controller = WebFController.getControllerOfJSContextId(contextId);
+  FlutterDomController? controller = FlutterDomController.getControllerOfJSContextId(contextId);
   String url = controller?.url ?? '';
-  return Uri.tryParse(url) ?? WebFController.fallbackBundleUri(contextId ?? 0);
+  return Uri.tryParse(url) ?? FlutterDomController.fallbackBundleUri(contextId ?? 0);
 }

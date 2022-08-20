@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:ffi';
@@ -14,7 +15,7 @@ import 'native_value.dart';
 // All the class which extends Struct class has a corresponding struct in C++ code.
 // All class members include variables and functions must be follow the same order with C++ struct, to keep the same memory layout cross dart and C++ code.
 
-class NativeWebFInfo extends Struct {
+class NativeFlutterDomInfo extends Struct {
   external Pointer<Utf8> app_name;
   external Pointer<Utf8> app_version;
   external Pointer<Utf8> app_revision;

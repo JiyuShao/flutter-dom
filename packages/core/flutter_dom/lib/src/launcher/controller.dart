@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:async';
@@ -29,7 +30,7 @@ const int WINDOW_ID = -1;
 const int DOCUMENT_ID = -2;
 
 // Error handler when load bundle failed.
-typedef LoadHandler = void Function(WebFController controller);
+typedef LoadHandler = void Function(FlutterDomController controller);
 typedef LoadErrorHandler = void Function(FlutterError error, StackTrace stack);
 typedef JSErrorHandler = void Function(String message);
 typedef JSLogHandler = void Function(int level, String message);
@@ -57,22 +58,22 @@ void setTargetPlatformForDesktop() {
 }
 
 abstract class DevToolsService {
-  void init(WebFController controller);
+  void init(FlutterDomController controller);
   void willReload();
   void didReload();
   void dispose();
 }
 
 // An kraken View Controller designed for multiple kraken view control.
-class WebFViewController implements WidgetsBindingObserver, ElementsBindingObserver {
+class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindingObserver {
   static Map<int, Pointer<NativeBindingObject>> documentNativePtrMap = {};
   static Map<int, Pointer<NativeBindingObject>> windowNativePtrMap = {};
 
-  WebFController rootController;
+  FlutterDomController rootController;
 
   // The methods of the KrakenNavigateDelegation help you implement custom behaviors that are triggered
   // during a kraken view's process of loading, and completing a navigation request.
-  WebFNavigationDelegate? navigationDelegate;
+  FlutterDomNavigationDelegate? navigationDelegate;
 
   GestureListener? gestureListener;
 
@@ -98,7 +99,7 @@ class WebFViewController implements WidgetsBindingObserver, ElementsBindingObser
 
   WidgetDelegate? widgetDelegate;
 
-  WebFViewController(this._viewportWidth, this._viewportHeight,
+  FlutterDomViewController(this._viewportWidth, this._viewportHeight,
       {this.background,
       this.enableDebug = false,
       int? contextId,
@@ -207,7 +208,7 @@ class WebFViewController implements WidgetsBindingObserver, ElementsBindingObser
   late Window window;
 
   void evaluateJavaScripts(String code) {
-    assert(!_disposed, 'WebF have already disposed');
+    assert(!_disposed, 'FlutterDom have already disposed');
     evaluateScripts(_contextId, code);
   }
 
@@ -345,7 +346,7 @@ class WebFViewController implements WidgetsBindingObserver, ElementsBindingObser
 
   // export Uint8List bytes from rendered result.
   Future<Uint8List> toImage(double devicePixelRatio, [int? eventTargetId]) {
-    assert(!_disposed, 'WebF have already disposed');
+    assert(!_disposed, 'FlutterDom have already disposed');
     Completer<Uint8List> completer = Completer();
     try {
       if (eventTargetId != null && !_existsTarget(eventTargetId)) {
@@ -642,20 +643,20 @@ class WebFViewController implements WidgetsBindingObserver, ElementsBindingObser
     }
   }
 
-  Future<void> handleNavigationAction(String? sourceUrl, String targetUrl, WebFNavigationType navigationType) async {
-    WebFNavigationAction action = WebFNavigationAction(sourceUrl, targetUrl, navigationType);
+  Future<void> handleNavigationAction(String? sourceUrl, String targetUrl, FlutterDomNavigationType navigationType) async {
+    FlutterDomNavigationAction action = FlutterDomNavigationAction(sourceUrl, targetUrl, navigationType);
 
-    WebFNavigationDelegate _delegate = navigationDelegate!;
+    FlutterDomNavigationDelegate _delegate = navigationDelegate!;
 
     try {
-      WebFNavigationActionPolicy policy = await _delegate.dispatchDecisionHandler(action);
-      if (policy == WebFNavigationActionPolicy.cancel) return;
+      FlutterDomNavigationActionPolicy policy = await _delegate.dispatchDecisionHandler(action);
+      if (policy == FlutterDomNavigationActionPolicy.cancel) return;
 
       switch (action.navigationType) {
-        case WebFNavigationType.navigate:
-          await rootController.load(WebFBundle.fromUrl(action.target));
+        case FlutterDomNavigationType.navigate:
+          await rootController.load(FlutterDomBundle.fromUrl(action.target));
           break;
-        case WebFNavigationType.reload:
+        case FlutterDomNavigationType.reload:
           await rootController.reload();
           break;
         default:
@@ -665,7 +666,7 @@ class WebFViewController implements WidgetsBindingObserver, ElementsBindingObser
       if (_delegate.errorHandler != null) {
         _delegate.errorHandler!(e, stack);
       } else {
-        print('WebF navigation failed: $e\n$stack');
+        print('FlutterDom navigation failed: $e\n$stack');
       }
     }
   }
@@ -766,11 +767,11 @@ class WebFViewController implements WidgetsBindingObserver, ElementsBindingObser
 }
 
 // An controller designed to control kraken's functional modules.
-class WebFModuleController with TimerMixin, ScheduleFrameMixin {
+class FlutterDomModuleController with TimerMixin, ScheduleFrameMixin {
   late ModuleManager _moduleManager;
   ModuleManager get moduleManager => _moduleManager;
 
-  WebFModuleController(WebFController controller, int contextId) {
+  FlutterDomModuleController(FlutterDomController controller, int contextId) {
     _moduleManager = ModuleManager(controller, contextId);
   }
 
@@ -781,15 +782,15 @@ class WebFModuleController with TimerMixin, ScheduleFrameMixin {
   }
 }
 
-class WebFController {
-  static final SplayTreeMap<int, WebFController?> _controllerMap = SplayTreeMap();
+class FlutterDomController {
+  static final SplayTreeMap<int, FlutterDomController?> _controllerMap = SplayTreeMap();
   static final Map<String, int> _nameIdMap = {};
 
   UriParser? uriParser;
 
   late RenderObjectElement rootFlutterElement;
 
-  static WebFController? getControllerOfJSContextId(int? contextId) {
+  static FlutterDomController? getControllerOfJSContextId(int? contextId) {
     if (!_controllerMap.containsKey(contextId)) {
       return null;
     }
@@ -797,11 +798,11 @@ class WebFController {
     return _controllerMap[contextId];
   }
 
-  static SplayTreeMap<int, WebFController?> getControllerMap() {
+  static SplayTreeMap<int, FlutterDomController?> getControllerMap() {
     return _controllerMap;
   }
 
-  static WebFController? getControllerOfName(String name) {
+  static FlutterDomController? getControllerOfName(String name) {
     if (!_nameIdMap.containsKey(name)) return null;
     int? contextId = _nameIdMap[name];
     return getControllerOfJSContextId(contextId);
@@ -822,9 +823,9 @@ class WebFController {
   final DevToolsService? devToolsService;
   final HttpClientInterceptor? httpClientInterceptor;
 
-  WebFMethodChannel? _methodChannel;
+  FlutterDomMethodChannel? _methodChannel;
 
-  WebFMethodChannel? get methodChannel => _methodChannel;
+  FlutterDomMethodChannel? get methodChannel => _methodChannel;
 
   JSLogHandler? _onJSLog;
   JSLogHandler? get onJSLog => _onJSLog;
@@ -847,9 +848,9 @@ class WebFController {
   final GestureListener? _gestureListener;
 
   // The kraken view entrypoint bundle.
-  WebFBundle? _entrypoint;
+  FlutterDomBundle? _entrypoint;
 
-  WebFController(
+  FlutterDomController(
     String? name,
     double viewportWidth,
     double viewportHeight, {
@@ -858,9 +859,9 @@ class WebFController {
     bool autoExecuteEntrypoint = true,
     Color? background,
     GestureListener? gestureListener,
-    WebFNavigationDelegate? navigationDelegate,
-    WebFMethodChannel? methodChannel,
-    WebFBundle? entrypoint,
+    FlutterDomNavigationDelegate? navigationDelegate,
+    FlutterDomMethodChannel? methodChannel,
+    FlutterDomBundle? entrypoint,
     this.widgetDelegate,
     this.onLoad,
     this.onLoadError,
@@ -877,15 +878,15 @@ class WebFController {
     }
 
     _methodChannel = methodChannel;
-    WebFMethodChannel.setJSMethodCallCallback(this);
+    FlutterDomMethodChannel.setJSMethodCallCallback(this);
 
-    _view = WebFViewController(
+    _view = FlutterDomViewController(
       viewportWidth,
       viewportHeight,
       background: background,
       enableDebug: enableDebug,
       rootController: this,
-      navigationDelegate: navigationDelegate ?? WebFNavigationDelegate(),
+      navigationDelegate: navigationDelegate ?? FlutterDomNavigationDelegate(),
       gestureListener: _gestureListener,
       widgetDelegate: widgetDelegate,
     );
@@ -896,16 +897,16 @@ class WebFController {
 
     final int contextId = _view.contextId;
 
-    _module = WebFModuleController(this, contextId);
+    _module = FlutterDomModuleController(this, contextId);
 
     if (entrypoint != null) {
       HistoryModule historyModule = module.moduleManager.getModule<HistoryModule>('History')!;
       historyModule.add(entrypoint);
     }
 
-    assert(!_controllerMap.containsKey(contextId), 'found exist contextId of WebFController, contextId: $contextId');
+    assert(!_controllerMap.containsKey(contextId), 'found exist contextId of FlutterDomController, contextId: $contextId');
     _controllerMap[contextId] = this;
-    assert(!_nameIdMap.containsKey(name), 'found exist name of WebFController, name: $name');
+    assert(!_nameIdMap.containsKey(name), 'found exist name of FlutterDomController, name: $name');
     if (name != null) {
       _nameIdMap[name] = contextId;
     }
@@ -923,15 +924,15 @@ class WebFController {
     }
   }
 
-  late WebFViewController _view;
+  late FlutterDomViewController _view;
 
-  WebFViewController get view {
+  FlutterDomViewController get view {
     return _view;
   }
 
-  late WebFModuleController _module;
+  late FlutterDomModuleController _module;
 
-  WebFModuleController get module {
+  FlutterDomModuleController get module {
     return _module;
   }
 
@@ -943,12 +944,12 @@ class WebFController {
     return Uri(scheme: 'vm', host: 'bundle', path: id != null ? '$id' : null);
   }
 
-  void setNavigationDelegate(WebFNavigationDelegate delegate) {
+  void setNavigationDelegate(FlutterDomNavigationDelegate delegate) {
     _view.navigationDelegate = delegate;
   }
 
   Future<void> unload() async {
-    assert(!_view._disposed, 'WebF have already disposed');
+    assert(!_view._disposed, 'FlutterDom have already disposed');
     // Should clear previous page cached ui commands
     clearUICommand(_view.contextId);
 
@@ -960,7 +961,7 @@ class WebFController {
 
       allocateNewPage(_view.contextId);
 
-      _view = WebFViewController(view.viewportWidth, view.viewportHeight,
+      _view = FlutterDomViewController(view.viewportWidth, view.viewportHeight,
           background: _view.background,
           enableDebug: _view.enableDebug,
           contextId: _view.contextId,
@@ -970,7 +971,7 @@ class WebFController {
           widgetDelegate: _view.widgetDelegate,
           originalViewport: _view.viewport);
 
-      _module = WebFModuleController(this, _view.contextId);
+      _module = FlutterDomModuleController(this, _view.contextId);
 
       completer.complete();
     });
@@ -985,13 +986,13 @@ class WebFController {
 
   String get url => _url ?? '';
 
-  _addHistory(WebFBundle bundle) {
+  _addHistory(FlutterDomBundle bundle) {
     HistoryModule historyModule = module.moduleManager.getModule<HistoryModule>('History')!;
     historyModule.add(bundle);
   }
 
   Future<void> reload() async {
-    assert(!_view._disposed, 'WebF have already disposed');
+    assert(!_view._disposed, 'FlutterDom have already disposed');
 
     if (devToolsService != null) {
       devToolsService!.willReload();
@@ -1005,8 +1006,8 @@ class WebFController {
     }
   }
 
-  Future<void> load(WebFBundle bundle) async {
-    assert(!_view._disposed, 'WebF have already disposed');
+  Future<void> load(FlutterDomBundle bundle) async {
+    assert(!_view._disposed, 'FlutterDom have already disposed');
 
     if (devToolsService != null) {
       devToolsService!.willReload();
@@ -1026,7 +1027,7 @@ class WebFController {
   }
 
   String? getResourceContent(String? url) {
-    WebFBundle? entrypoint = _entrypoint;
+    FlutterDomBundle? entrypoint = _entrypoint;
     if (url == this.url && entrypoint != null && entrypoint.isResolved) {
       return utf8.decode(entrypoint.data!);
     }
@@ -1090,13 +1091,13 @@ class WebFController {
   // Resolve the entrypoint bundle.
   // In general you should use executeEntrypoint, which including resolving and evaluating.
   Future<void> _resolveEntrypoint() async {
-    assert(!_view._disposed, 'WebF have already disposed');
+    assert(!_view._disposed, 'FlutterDom have already disposed');
 
     if (kProfileMode) {
       PerformanceTiming.instance().mark(PERF_JS_BUNDLE_LOAD_START);
     }
 
-    WebFBundle? bundleToLoad = _entrypoint;
+    FlutterDomBundle? bundleToLoad = _entrypoint;
     if (bundleToLoad == null) {
       // Do nothing if bundle is null.
       return;
@@ -1131,11 +1132,11 @@ class WebFController {
       return;
     }
 
-    assert(!_view._disposed, 'WebF have already disposed');
+    assert(!_view._disposed, 'FlutterDom have already disposed');
     if (_entrypoint != null) {
-      WebFBundle entrypoint = _entrypoint!;
+      FlutterDomBundle entrypoint = _entrypoint!;
       int contextId = _view.contextId;
-      assert(entrypoint.isResolved, 'The webf bundle $entrypoint is not resolved to evaluate.');
+      assert(entrypoint.isResolved, 'The flutterDom bundle $entrypoint is not resolved to evaluate.');
 
       if (kProfileMode) {
         PerformanceTiming.instance().mark(PERF_JS_BUNDLE_EVAL_START);
@@ -1234,5 +1235,5 @@ class WebFController {
 
 mixin RenderObjectWithControllerMixin {
   // Kraken controller reference which control all kraken created renderObjects.
-  WebFController? controller;
+  FlutterDomController? controller;
 }

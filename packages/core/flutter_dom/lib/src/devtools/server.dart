@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:convert';
@@ -9,7 +10,7 @@ import 'dart:isolate';
 import 'dart:ffi';
 import 'dart:typed_data';
 
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 import 'package:flutter_dom/devtools.dart';
 import 'package:ffi/ffi.dart';
 
@@ -66,12 +67,12 @@ void _postTaskToUIThread(int contextId, Pointer<Void> context, Pointer<Void> cal
 
 void attachInspector(int contextId) {
   final DartAttachInspector _attachInspector =
-      WebFDynamicLibrary.ref.lookup<NativeFunction<NativeAttachInspector>>('attachInspector').asFunction();
+      FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeAttachInspector>>('attachInspector').asFunction();
   _attachInspector(contextId);
 }
 
 void initInspectorServerNativeBinding(int contextId) {
-  final DartRegisterDartMethods _registerInspectorServerDartMethods = WebFDynamicLibrary.ref
+  final DartRegisterDartMethods _registerInspectorServerDartMethods = FlutterDomDynamicLibrary.ref
       .lookup<NativeFunction<NativeRegisterDartMethods>>('registerInspectorDartMethods')
       .asFunction();
   final Pointer<NativeFunction<NativeInspectorMessage>> _nativeInspectorMessage =
@@ -135,7 +136,7 @@ void serverIsolateEntryPoint(SendPort isolateToMainStream) {
       } else if (data is InspectorMethodResult) {
         server!.sendToFrontend(data.id, data.result);
       } else if (data is InspectorPostTaskMessage) {
-        final DartDispatchInspectorTask _dispatchInspectorTask = WebFDynamicLibrary.ref
+        final DartDispatchInspectorTask _dispatchInspectorTask = FlutterDomDynamicLibrary.ref
             .lookup<NativeFunction<NativeDispatchInspectorTask>>('dispatchInspectorTask')
             .asFunction();
         _dispatchInspectorTask(
@@ -316,7 +317,7 @@ class IsolateInspectorServer {
       {
         'faviconUrl': FAVICON,
         'devtoolsFrontendUrl': '$INSPECTOR_URL?ws=$entryURL',
-        'title': 'WebF App',
+        'title': 'FlutterDom App',
         'id': pageId,
         'type': 'page',
         'url': bundleURL,

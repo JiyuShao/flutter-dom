@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'package:flutter/gestures.dart';
@@ -58,7 +59,7 @@ class _CustomTicker extends Ticker {
   }
 }
 
-class WebFScrollable with _CustomTickerProviderStateMixin implements ScrollContext {
+class FlutterDomScrollable with _CustomTickerProviderStateMixin implements ScrollContext {
   late AxisDirection _axisDirection;
   ScrollPositionWithSingleContext? position;
   final ScrollPhysics _physics = ScrollPhysics.createScrollPhysics();
@@ -66,7 +67,7 @@ class WebFScrollable with _CustomTickerProviderStateMixin implements ScrollConte
   ScrollListener? scrollListener;
   final Set<PointerDeviceKind> dragDevices;
 
-  WebFScrollable(
+  FlutterDomScrollable(
       {AxisDirection axisDirection = AxisDirection.down,
       this.dragStartBehavior = DragStartBehavior.start,
       this.scrollListener,

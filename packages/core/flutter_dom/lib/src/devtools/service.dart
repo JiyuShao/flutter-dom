@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:isolate';
@@ -8,7 +9,7 @@ import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:ffi/ffi.dart';
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 import 'package:flutter_dom/devtools.dart';
 
 typedef NativePostTaskToInspectorThread = Void Function(Int32 contextId, Pointer<Void> context, Pointer<Void> callback);
@@ -26,7 +27,7 @@ final Pointer<NativeFunction<NativePostTaskToInspectorThread>> _nativePostTaskTo
 
 final List<int> _dartNativeMethods = [_nativePostTaskToInspectorThread.address];
 
-void spawnIsolateInspectorServer(ChromeDevToolsService devTool, WebFController controller,
+void spawnIsolateInspectorServer(ChromeDevToolsService devTool, FlutterDomController controller,
     {int port = INSPECTOR_DEFAULT_PORT, String? address}) {
   ReceivePort serverIsolateReceivePort = ReceivePort();
 
@@ -72,8 +73,8 @@ class ChromeDevToolsService extends DevToolsService {
   UIInspector? _uiInspector;
   UIInspector? get uiInspector => _uiInspector;
 
-  WebFController? _controller;
-  WebFController? get controller => _controller;
+  FlutterDomController? _controller;
+  FlutterDomController? get controller => _controller;
 
   bool get isReloading => _reloading;
   bool _reloading = false;
@@ -88,7 +89,7 @@ class ChromeDevToolsService extends DevToolsService {
   }
 
   @override
-  void init(WebFController controller) {
+  void init(FlutterDomController controller) {
     _contextDevToolMap[controller.view.contextId] = this;
     _controller = controller;
     // @TODO: Add JS debug support for QuickJS.
@@ -118,7 +119,7 @@ class ChromeDevToolsService extends DevToolsService {
   // ignore: unused_element
   static bool _registerUIDartMethodsToCpp() {
     final DartRegisterDartMethods _registerDartMethods =
-        WebFDynamicLibrary.ref.lookup<NativeFunction<NativeRegisterDartMethods>>('registerUIDartMethods').asFunction();
+        FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeRegisterDartMethods>>('registerUIDartMethods').asFunction();
     Pointer<Uint64> bytes = malloc.allocate<Uint64>(_dartNativeMethods.length * sizeOf<Uint64>());
     Uint64List nativeMethodList = bytes.asTypedList(_dartNativeMethods.length);
     nativeMethodList.setAll(0, _dartNativeMethods);

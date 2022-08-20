@@ -1,12 +1,13 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'dart:convert';
 
 import 'package:flutter_dom/bridge.dart' as bridge;
 import 'package:flutter_dom/dom.dart';
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 
 abstract class BaseModule {
   String get name;
@@ -22,7 +23,7 @@ typedef ModuleCreator = BaseModule Function(ModuleManager? moduleManager);
 
 class ModuleManager {
   final int contextId;
-  final WebFController controller;
+  final FlutterDomController controller;
 
   static final Map<String, ModuleCreator> _creatorMap = {};
   static bool inited = false;

@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'package:flutter/rendering.dart';
@@ -383,7 +384,7 @@ mixin CSSTextMixin on RenderStyle {
             _markNestChildrenTextAndLayoutNeedsLayout(child, styleProperty);
           }
         } else if (child is RenderTextBox) {
-          WebFRenderParagraph renderParagraph = child.child as WebFRenderParagraph;
+          FlutterDomRenderParagraph renderParagraph = child.child as FlutterDomRenderParagraph;
           renderParagraph.markNeedsLayout();
         }
       });
@@ -396,7 +397,7 @@ mixin CSSTextMixin on RenderStyle {
   void _markTextNeedsLayout() {
     renderBoxModel!.visitChildren((RenderObject child) {
       if (child is RenderTextBox) {
-        WebFRenderParagraph renderParagraph = child.child as WebFRenderParagraph;
+        FlutterDomRenderParagraph renderParagraph = child.child as FlutterDomRenderParagraph;
         renderParagraph.markNeedsLayout();
       }
     });
@@ -413,7 +414,7 @@ mixin CSSTextMixin on RenderStyle {
           _markChildrenTextNeedsLayout(child, styleProperty);
         }
       } else if (child is RenderTextBox) {
-        WebFRenderParagraph renderParagraph = child.child as WebFRenderParagraph;
+        FlutterDomRenderParagraph renderParagraph = child.child as FlutterDomRenderParagraph;
         renderParagraph.markNeedsLayout();
       }
     });
@@ -430,7 +431,7 @@ mixin CSSTextMixin on RenderStyle {
           _markChildrenTextNeedsPaint(child, styleProperty);
         }
       } else if (child is RenderTextBox) {
-        WebFRenderParagraph renderParagraph = child.child as WebFRenderParagraph;
+        FlutterDomRenderParagraph renderParagraph = child.child as FlutterDomRenderParagraph;
         if (renderParagraph.hasSize) {
           // Manually layout text before text paint cause text style only
           // takes effect after text has been layouted.

@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:ui' show ImageFilter;
@@ -266,7 +267,7 @@ mixin CSSFilterEffectsMixin on RenderStyle {
       if (imageFilter == null && colorFilter == null) {
         print('[WARNING] Parse CSS Filter failed or not supported: "$functions"');
         String supportedFilters = '$GRAYSCALE $SEPIA $BLUR';
-        print('WebF only support following filters: $supportedFilters');
+        print('FlutterDom only support following filters: $supportedFilters');
       }
     }
   }

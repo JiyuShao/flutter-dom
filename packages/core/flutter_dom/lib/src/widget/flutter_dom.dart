@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'dart:io';
 import 'dart:ui';
@@ -9,41 +10,41 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 import 'package:flutter_dom/gesture.dart';
 import 'package:flutter_dom/css.dart';
 import 'package:flutter_dom/src/dom/element_registry.dart';
 
-class WebF extends StatefulWidget {
+class FlutterDom extends StatefulWidget {
   // The background color for viewport, default to transparent.
   final Color? background;
 
-  // the width of webFWidget
+  // the width of flutterDomWidget
   final double? viewportWidth;
 
-  // the height of webFWidget
+  // the height of flutterDomWidget
   final double? viewportHeight;
 
   //  The initial bundle to load.
-  final WebFBundle? bundle;
+  final FlutterDomBundle? bundle;
 
   // The animationController of Flutter Route object.
-  // Pass this object to webFWidget to make sure webF execute JavaScripts scripts after route transition animation completed.
+  // Pass this object to flutterDomWidget to make sure flutterDom execute JavaScripts scripts after route transition animation completed.
   final AnimationController? animationController;
 
-  // The methods of the webFNavigateDelegation help you implement custom behaviors that are triggered
-  // during a webf view's process of loading, and completing a navigation request.
-  final WebFNavigationDelegate? navigationDelegate;
+  // The methods of the flutterDomNavigateDelegation help you implement custom behaviors that are triggered
+  // during a flutterDom view's process of loading, and completing a navigation request.
+  final FlutterDomNavigationDelegate? navigationDelegate;
 
   // A method channel for receiving messaged from JavaScript code and sending message to JavaScript.
-  final WebFMethodChannel? javaScriptChannel;
+  final FlutterDomMethodChannel? javaScriptChannel;
 
   // Register the RouteObserver to observer page navigation.
-  // This is useful if you wants to pause webf timers and callbacks when webf widget are hidden by page route.
+  // This is useful if you wants to pause flutterDom timers and callbacks when flutterDom widget are hidden by page route.
   // https://api.flutter.dev/flutter/widgets/RouteObserver-class.html
   final RouteObserver<ModalRoute<void>>? routeObserver;
 
-  // Trigger when webf controller once created.
+  // Trigger when flutterDom controller once created.
   final OnControllerCreated? onControllerCreated;
 
   final LoadErrorHandler? onLoadError;
@@ -61,15 +62,15 @@ class WebF extends StatefulWidget {
 
   final UriParser? uriParser;
 
-  WebFController? get controller {
-    return WebFController.getControllerOfName(shortHash(this));
+  FlutterDomController? get controller {
+    return FlutterDomController.getControllerOfName(shortHash(this));
   }
 
-  // Set webf http cache mode.
+  // Set flutterDom http cache mode.
   static void setHttpCacheMode(HttpCacheMode mode) {
     HttpCacheController.mode = mode;
     if (kDebugMode) {
-      print('WebF http cache mode set to $mode.');
+      print('FlutterDom http cache mode set to $mode.');
     }
   }
 
@@ -84,7 +85,7 @@ class WebF extends StatefulWidget {
     defineElement(tagName.toUpperCase(), creator);
   }
 
-  Future<void> load(WebFBundle bundle) async {
+  Future<void> load(FlutterDomBundle bundle) async {
     await controller?.load(bundle);
   }
 
@@ -92,7 +93,7 @@ class WebF extends StatefulWidget {
     await controller?.reload();
   }
 
-  WebF(
+  FlutterDom(
       {Key? key,
       this.viewportWidth,
       this.viewportHeight,
@@ -104,16 +105,16 @@ class WebF extends StatefulWidget {
       this.background,
       this.gestureListener,
       this.devToolsService,
-      // webf's http client interceptor.
+      // flutterDom's http client interceptor.
       this.httpClientInterceptor,
       this.uriParser,
       this.routeObserver,
-      // webf's viewportWidth options only works fine when viewportWidth is equal to window.physicalSize.width / window.devicePixelRatio.
+      // flutterDom's viewportWidth options only works fine when viewportWidth is equal to window.physicalSize.width / window.devicePixelRatio.
       // Maybe got unexpected error when change to other values, use this at your own risk!
       // We will fixed this on next version released. (v0.6.0)
       // Disable viewportWidth check and no assertion error report.
       bool disableViewportWidthAssertion = false,
-      // webf's viewportHeight options only works fine when viewportHeight is equal to window.physicalSize.height / window.devicePixelRatio.
+      // flutterDom's viewportHeight options only works fine when viewportHeight is equal to window.physicalSize.height / window.devicePixelRatio.
       // Maybe got unexpected error when change to other values, use this at your own risk!
       // We will fixed this on next version release. (v0.6.0)
       // Disable viewportHeight check and no assertion error report.
@@ -132,13 +133,13 @@ class WebF extends StatefulWidget {
   }
 
   @override
-  _WebFState createState() => _WebFState();
+  _FlutterDomState createState() => _FlutterDomState();
 }
 
-class _WebFState extends State<WebF> with RouteAware {
+class _FlutterDomState extends State<FlutterDom> with RouteAware {
   @override
   Widget build(BuildContext context) {
-    return WebFTextControl(context);
+    return FlutterDomTextControl(context);
   }
 
   @override
@@ -149,14 +150,14 @@ class _WebFState extends State<WebF> with RouteAware {
     }
   }
 
-  // Resume call timer and callbacks when webf widget change to visible.
+  // Resume call timer and callbacks when flutterDom widget change to visible.
   @override
   void didPopNext() {
     assert(widget.controller != null);
     widget.controller!.resume();
   }
 
-  // Pause all timer and callbacks when webf widget has been invisible.
+  // Pause all timer and callbacks when flutterDom widget has been invisible.
   @override
   void didPushNext() {
     assert(widget.controller != null);
@@ -173,21 +174,21 @@ class _WebFState extends State<WebF> with RouteAware {
 
   @override
   void deactivate() {
-    // Deactivate all WidgetElements in webf when webf Widget is deactivated.
+    // Deactivate all WidgetElements in flutterDom when flutterDom Widget is deactivated.
     widget.controller!.view.deactivateWidgetElements();
 
     super.deactivate();
   }
 }
 
-class WebFRenderObjectWidget extends SingleChildRenderObjectWidget {
+class FlutterDomRenderObjectWidget extends SingleChildRenderObjectWidget {
   // Creates a widget that visually hides its child.
-  const WebFRenderObjectWidget(WebF widget, WidgetDelegate widgetDelegate, {Key? key})
-      : _webfWidget = widget,
+  const FlutterDomRenderObjectWidget(FlutterDom widget, WidgetDelegate widgetDelegate, {Key? key})
+      : _flutterDomWidget = widget,
         _widgetDelegate = widgetDelegate,
         super(key: key);
 
-  final WebF _webfWidget;
+  final FlutterDom _flutterDomWidget;
   final WidgetDelegate _widgetDelegate;
 
   @override
@@ -196,32 +197,32 @@ class WebFRenderObjectWidget extends SingleChildRenderObjectWidget {
       PerformanceTiming.instance().mark(PERF_CONTROLLER_INIT_START);
     }
 
-    double viewportWidth = _webfWidget.viewportWidth ?? window.physicalSize.width / window.devicePixelRatio;
-    double viewportHeight = _webfWidget.viewportHeight ?? window.physicalSize.height / window.devicePixelRatio;
+    double viewportWidth = _flutterDomWidget.viewportWidth ?? window.physicalSize.width / window.devicePixelRatio;
+    double viewportHeight = _flutterDomWidget.viewportHeight ?? window.physicalSize.height / window.devicePixelRatio;
 
     if (viewportWidth == 0.0 && viewportHeight == 0.0) {
       throw FlutterError('''Can't get viewportSize from window. Please set viewportWidth and viewportHeight manually.
-This situation often happened when you trying creating webf when FlutterView not initialized.''');
+This situation often happened when you trying creating flutterDom when FlutterView not initialized.''');
     }
 
-    WebFController controller = WebFController(shortHash(_webfWidget.hashCode), viewportWidth, viewportHeight,
-        background: _webfWidget.background,
+    FlutterDomController controller = FlutterDomController(shortHash(_flutterDomWidget.hashCode), viewportWidth, viewportHeight,
+        background: _flutterDomWidget.background,
         showPerformanceOverlay: Platform.environment[ENABLE_PERFORMANCE_OVERLAY] != null,
-        entrypoint: _webfWidget.bundle,
+        entrypoint: _flutterDomWidget.bundle,
         // Execute entrypoint when mount manually.
         autoExecuteEntrypoint: false,
-        onLoad: _webfWidget.onLoad,
-        onLoadError: _webfWidget.onLoadError,
-        onJSError: _webfWidget.onJSError,
-        methodChannel: _webfWidget.javaScriptChannel,
-        gestureListener: _webfWidget.gestureListener,
-        navigationDelegate: _webfWidget.navigationDelegate,
-        devToolsService: _webfWidget.devToolsService,
-        httpClientInterceptor: _webfWidget.httpClientInterceptor,
+        onLoad: _flutterDomWidget.onLoad,
+        onLoadError: _flutterDomWidget.onLoadError,
+        onJSError: _flutterDomWidget.onJSError,
+        methodChannel: _flutterDomWidget.javaScriptChannel,
+        gestureListener: _flutterDomWidget.gestureListener,
+        navigationDelegate: _flutterDomWidget.navigationDelegate,
+        devToolsService: _flutterDomWidget.devToolsService,
+        httpClientInterceptor: _flutterDomWidget.httpClientInterceptor,
         widgetDelegate: _widgetDelegate,
-        uriParser: _webfWidget.uriParser);
+        uriParser: _flutterDomWidget.uriParser);
 
-    OnControllerCreated? onControllerCreated = _webfWidget.onControllerCreated;
+    OnControllerCreated? onControllerCreated = _flutterDomWidget.onControllerCreated;
     if (onControllerCreated != null) {
       onControllerCreated(controller);
     }
@@ -236,14 +237,14 @@ This situation often happened when you trying creating webf when FlutterView not
   @override
   void updateRenderObject(BuildContext context, covariant RenderObject renderObject) {
     super.updateRenderObject(context, renderObject);
-    WebFController controller = (renderObject as RenderObjectWithControllerMixin).controller!;
-    controller.name = shortHash(_webfWidget.hashCode);
+    FlutterDomController controller = (renderObject as RenderObjectWithControllerMixin).controller!;
+    controller.name = shortHash(_flutterDomWidget.hashCode);
 
-    bool viewportWidthHasChanged = controller.view.viewportWidth != _webfWidget.viewportWidth;
-    bool viewportHeightHasChanged = controller.view.viewportHeight != _webfWidget.viewportHeight;
+    bool viewportWidthHasChanged = controller.view.viewportWidth != _flutterDomWidget.viewportWidth;
+    bool viewportHeightHasChanged = controller.view.viewportHeight != _flutterDomWidget.viewportHeight;
 
-    double viewportWidth = _webfWidget.viewportWidth ?? window.physicalSize.width / window.devicePixelRatio;
-    double viewportHeight = _webfWidget.viewportHeight ?? window.physicalSize.height / window.devicePixelRatio;
+    double viewportWidth = _flutterDomWidget.viewportWidth ?? window.physicalSize.width / window.devicePixelRatio;
+    double viewportHeight = _flutterDomWidget.viewportHeight ?? window.physicalSize.height / window.devicePixelRatio;
 
     if (controller.view.document.documentElement == null) return;
 
@@ -260,32 +261,32 @@ This situation often happened when you trying creating webf when FlutterView not
 
   @override
   void didUnmountRenderObject(covariant RenderObject renderObject) {
-    WebFController controller = (renderObject as RenderObjectWithControllerMixin).controller!;
+    FlutterDomController controller = (renderObject as RenderObjectWithControllerMixin).controller!;
     controller.dispose();
   }
 
   @override
-  _WebFRenderObjectElement createElement() {
-    return _WebFRenderObjectElement(this);
+  _FlutterDomRenderObjectElement createElement() {
+    return _FlutterDomRenderObjectElement(this);
   }
 }
 
-class _WebFRenderObjectElement extends SingleChildRenderObjectElement {
-  _WebFRenderObjectElement(WebFRenderObjectWidget widget) : super(widget);
+class _FlutterDomRenderObjectElement extends SingleChildRenderObjectElement {
+  _FlutterDomRenderObjectElement(FlutterDomRenderObjectWidget widget) : super(widget);
 
   @override
   void mount(Element? parent, Object? newSlot) async {
     super.mount(parent, newSlot);
 
-    WebFController controller = (renderObject as RenderObjectWithControllerMixin).controller!;
+    FlutterDomController controller = (renderObject as RenderObjectWithControllerMixin).controller!;
 
-    // We should make sure every flutter elements created under webf can be walk up to the root.
-    // So we bind _WebFRenderObjectElement into WebFController, and widgetElements created by controller can follow this to the root.
+    // We should make sure every flutter elements created under flutterDom can be walk up to the root.
+    // So we bind _FlutterDomRenderObjectElement into FlutterDomController, and widgetElements created by controller can follow this to the root.
     controller.rootFlutterElement = this;
-    await controller.executeEntrypoint(animationController: widget._webfWidget.animationController);
+    await controller.executeEntrypoint(animationController: widget._flutterDomWidget.animationController);
   }
 
-  // RenderObjects created by webf are manager by webf itself. There are no needs to operate renderObjects on _WebFRenderObjectElement.
+  // RenderObjects created by flutterDom are manager by flutterDom itself. There are no needs to operate renderObjects on _FlutterDomRenderObjectElement.
   @override
   void insertRenderObjectChild(RenderObject child, Object? slot) {}
   @override
@@ -294,5 +295,5 @@ class _WebFRenderObjectElement extends SingleChildRenderObjectElement {
   void removeRenderObjectChild(RenderObject child, Object? slot) {}
 
   @override
-  WebFRenderObjectWidget get widget => super.widget as WebFRenderObjectWidget;
+  FlutterDomRenderObjectWidget get widget => super.widget as FlutterDomRenderObjectWidget;
 }

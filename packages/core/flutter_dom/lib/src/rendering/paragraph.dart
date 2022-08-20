@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:ui' as ui show LineMetrics, Gradient, Shader, TextBox, TextHeightBehavior;
@@ -15,7 +16,7 @@ const String _kEllipsis = '\u2026';
 /// Use multiple line text painters to controll the leading of font in paint stage
 /// A render object that displays a paragraph of text.
 /// W3C line-height spec: https://www.w3.org/TR/css-inline-3/#inline-height
-class WebFRenderParagraph extends RenderBox
+class FlutterDomRenderParagraph extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, TextParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, TextParentData>,
@@ -27,7 +28,7 @@ class WebFRenderParagraph extends RenderBox
   ///
   /// The [maxLines] property may be null (and indeed defaults to null), but if
   /// it is not null, it must be greater than zero.
-  WebFRenderParagraph(
+  FlutterDomRenderParagraph(
     InlineSpan text, {
     TextAlign textAlign = TextAlign.start,
     required TextDirection textDirection,

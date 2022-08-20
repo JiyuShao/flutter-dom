@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:async';
@@ -8,7 +9,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_dom/dom.dart';
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 import 'package:flutter_dom/css.dart';
 import 'package:path/path.dart';
 
@@ -35,7 +36,7 @@ class ScriptRunner {
   // Indicate the sync pending scripts.
   int _resolvingCount = 0;
 
-  static void _evaluateScriptBundle(int contextId, WebFBundle bundle, {bool async = false}) async {
+  static void _evaluateScriptBundle(int contextId, FlutterDomBundle bundle, {bool async = false}) async {
     // Evaluate bundle.
     if (bundle.isJavascript) {
       final String contentInString = await resolveStringFromData(bundle.data!, preferSync: !async);
@@ -63,7 +64,7 @@ class ScriptRunner {
     String url = element.src.toString();
 
     // Obtain bundle.
-    WebFBundle bundle = WebFBundle.fromUrl(url);
+    FlutterDomBundle bundle = FlutterDomBundle.fromUrl(url);
 
     // The bundle execution task.
     void task(bool async) {

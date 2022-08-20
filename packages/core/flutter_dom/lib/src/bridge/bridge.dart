@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:async';
@@ -13,9 +14,9 @@ import 'binding.dart';
 import 'from_native.dart';
 import 'to_native.dart';
 
-/// The maximum webf pages running in the same times.
+/// The maximum flutterDom pages running in the same times.
 /// Can be upgrade to larger amount if you have enough memory spaces.
-int kWebFJSPagePoolSize = 1024;
+int kFlutterDomJSPagePoolSize = 1024;
 
 bool _firstView = true;
 
@@ -50,13 +51,13 @@ int initBridge() {
   }
 
   if (_firstView) {
-    initJSPagePool(kWebFJSPagePoolSize);
+    initJSPagePool(kFlutterDomJSPagePoolSize);
     _firstView = false;
     contextId = 0;
   } else {
     contextId = allocateNewPage();
     if (contextId == -1) {
-      throw Exception('Can\' allocate new webf bridge: bridge count had reach the maximum size.');
+      throw Exception('Can\' allocate new flutterDom bridge: bridge count had reach the maximum size.');
     }
   }
 

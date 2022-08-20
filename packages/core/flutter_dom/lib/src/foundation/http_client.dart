@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:async';
@@ -10,11 +11,11 @@ import 'http_client_request.dart';
 import 'http_overrides.dart';
 
 class ProxyHttpClient implements HttpClient {
-  ProxyHttpClient(HttpClient nativeHttpClient, WebFHttpOverrides httpOverrides)
+  ProxyHttpClient(HttpClient nativeHttpClient, FlutterDomHttpOverrides httpOverrides)
       : _nativeHttpClient = nativeHttpClient,
         _httpOverrides = httpOverrides;
 
-  final WebFHttpOverrides _httpOverrides;
+  final FlutterDomHttpOverrides _httpOverrides;
   final HttpClient _nativeHttpClient;
 
   bool _closed = false;

@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'dart:core';
 
@@ -349,12 +350,12 @@ class CSSBorderRadius {
   }
 }
 
-class WebFBoxShadow extends BoxShadow {
+class FlutterDomBoxShadow extends BoxShadow {
   /// Creates a box shadow.
   ///
   /// By default, the shadow is solid black with zero [offset], [blurRadius],
   /// and [spreadRadius].
-  const WebFBoxShadow({
+  const FlutterDomBoxShadow({
     Color color = const Color(0xFF000000),
     Offset offset = Offset.zero,
     double blurRadius = 0.0,
@@ -383,13 +384,13 @@ class CSSBoxShadow {
   CSSLengthValue? blurRadius;
   CSSLengthValue? spreadRadius;
 
-  WebFBoxShadow get computedBoxShadow {
+  FlutterDomBoxShadow get computedBoxShadow {
     color ??= const Color(0xFF000000);
     offsetX ??= CSSLengthValue.zero;
     offsetY ??= CSSLengthValue.zero;
     blurRadius ??= CSSLengthValue.zero;
     spreadRadius ??= CSSLengthValue.zero;
-    return WebFBoxShadow(
+    return FlutterDomBoxShadow(
       color: color!,
       offset: Offset(offsetX!.computedValue, offsetY!.computedValue),
       blurRadius: blurRadius!.computedValue,

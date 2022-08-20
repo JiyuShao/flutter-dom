@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'dart:async';
 import 'dart:typed_data';
@@ -29,7 +30,7 @@ const Map<String, dynamic> _defaultStyle = {
 // The HTMLImageElement.
 class ImageElement extends Element {
   // The render box to draw image.
-  WebFRenderImage? _renderImage;
+  FlutterDomRenderImage? _renderImage;
 
   ImageProvider? _currentImageProvider;
 
@@ -359,8 +360,8 @@ class ImageElement extends Element {
     }
   }
 
-  WebFRenderImage _createRenderImageBox() {
-    return WebFRenderImage(
+  FlutterDomRenderImage _createRenderImageBox() {
+    return FlutterDomRenderImage(
       image: _cachedImageInfo?.image,
       fit: renderStyle.objectFit,
       alignment: renderStyle.objectPosition,
@@ -640,7 +641,7 @@ class ImageRequest {
       state == _ImageRequestState.completelyAvailable || state == _ImageRequestState.partiallyAvailable;
 
   Future<Uint8List> _obtainImage(int? contextId) async {
-    final WebFBundle bundle = WebFBundle.fromUrl(currentUri.toString());
+    final FlutterDomBundle bundle = FlutterDomBundle.fromUrl(currentUri.toString());
 
     await bundle.resolve(contextId);
 

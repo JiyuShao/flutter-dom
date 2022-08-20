@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'package:flutter/rendering.dart';
@@ -27,7 +28,7 @@ class RenderTextBox extends RenderBox with RenderObjectWithChildMixin<RenderBox>
     required this.renderStyle,
   }) : _data = data {
     TextSpan text = CSSTextMixin.createTextSpan(_data, renderStyle);
-    _renderParagraph = child = WebFRenderParagraph(
+    _renderParagraph = child = FlutterDomRenderParagraph(
       text,
       textDirection: TextDirection.ltr,
     );
@@ -110,7 +111,7 @@ class RenderTextBox extends RenderBox with RenderObjectWithChildMixin<RenderBox>
     return _data;
   }
 
-  late WebFRenderParagraph _renderParagraph;
+  late FlutterDomRenderParagraph _renderParagraph;
   CSSRenderStyle renderStyle;
 
   BoxSizeType? widthSizeType;
@@ -316,7 +317,7 @@ class RenderTextBox extends RenderBox with RenderObjectWithChildMixin<RenderBox>
 
   @override
   void performLayout() {
-    WebFRenderParagraph? paragraph = child as WebFRenderParagraph?;
+    FlutterDomRenderParagraph? paragraph = child as FlutterDomRenderParagraph?;
     if (paragraph != null) {
       paragraph.overflow = renderStyle.effectiveTextOverflow;
       paragraph.textAlign = renderStyle.textAlign;

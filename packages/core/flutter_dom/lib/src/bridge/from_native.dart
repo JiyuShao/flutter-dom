@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:convert';
@@ -88,7 +89,7 @@ typedef NativeInvokeModule = Pointer<NativeString> Function(
 
 String invokeModule(Pointer<Void> callbackContext, int contextId, String moduleName, String method, String? params,
     DartAsyncModuleCallback callback) {
-  WebFController controller = WebFController.getControllerOfJSContextId(contextId)!;
+  FlutterDomController controller = FlutterDomController.getControllerOfJSContextId(contextId)!;
   String result = '';
 
   try {
@@ -136,7 +137,7 @@ final Pointer<NativeFunction<NativeInvokeModule>> _nativeInvokeModule = Pointer.
 typedef NativeReloadApp = Void Function(Int32 contextId);
 
 void _reloadApp(int contextId) async {
-  WebFController controller = WebFController.getControllerOfJSContextId(contextId)!;
+  FlutterDomController controller = FlutterDomController.getControllerOfJSContextId(contextId)!;
 
   try {
     await controller.reload();
@@ -157,7 +158,7 @@ typedef DartRAFAsyncCallback = void Function(Pointer<Void>, int contextId, doubl
 typedef NativeRequestBatchUpdate = Void Function(Int32 contextId);
 
 void _requestBatchUpdate(int contextId) {
-  WebFController? controller = WebFController.getControllerOfJSContextId(contextId);
+  FlutterDomController? controller = FlutterDomController.getControllerOfJSContextId(contextId);
   return controller?.module.requestBatchUpdate();
 }
 
@@ -170,7 +171,7 @@ typedef NativeSetTimeout = Int32 Function(
 
 int _setTimeout(
     Pointer<Void> callbackContext, int contextId, Pointer<NativeFunction<NativeAsyncCallback>> callback, int timeout) {
-  WebFController controller = WebFController.getControllerOfJSContextId(contextId)!;
+  FlutterDomController controller = FlutterDomController.getControllerOfJSContextId(contextId)!;
 
   return controller.module.setTimeout(timeout, () {
     DartAsyncCallback func = callback.asFunction();
@@ -185,7 +186,7 @@ int _setTimeout(
       }
     }
 
-    // Pause if webf page paused.
+    // Pause if flutterDom page paused.
     if (controller.paused) {
       controller.pushPendingCallbacks(_runCallback);
     } else {
@@ -204,7 +205,7 @@ typedef NativeSetInterval = Int32 Function(
 
 int _setInterval(
     Pointer<Void> callbackContext, int contextId, Pointer<NativeFunction<NativeAsyncCallback>> callback, int timeout) {
-  WebFController controller = WebFController.getControllerOfJSContextId(contextId)!;
+  FlutterDomController controller = FlutterDomController.getControllerOfJSContextId(contextId)!;
   return controller.module.setInterval(timeout, () {
     void _runCallbacks() {
       DartAsyncCallback func = callback.asFunction();
@@ -217,7 +218,7 @@ int _setInterval(
       }
     }
 
-    // Pause if webf page paused.
+    // Pause if flutterDom page paused.
     if (controller.paused) {
       controller.pushPendingCallbacks(_runCallbacks);
     } else {
@@ -234,7 +235,7 @@ final Pointer<NativeFunction<NativeSetInterval>> _nativeSetInterval =
 typedef NativeClearTimeout = Void Function(Int32 contextId, Int32);
 
 void _clearTimeout(int contextId, int timerId) {
-  WebFController controller = WebFController.getControllerOfJSContextId(contextId)!;
+  FlutterDomController controller = FlutterDomController.getControllerOfJSContextId(contextId)!;
   return controller.module.clearTimeout(timerId);
 }
 
@@ -246,7 +247,7 @@ typedef NativeRequestAnimationFrame = Int32 Function(
 
 int _requestAnimationFrame(
     Pointer<Void> callbackContext, int contextId, Pointer<NativeFunction<NativeRAFAsyncCallback>> callback) {
-  WebFController controller = WebFController.getControllerOfJSContextId(contextId)!;
+  FlutterDomController controller = FlutterDomController.getControllerOfJSContextId(contextId)!;
   return controller.module.requestAnimationFrame((double highResTimeStamp) {
     void _runCallback() {
       DartRAFAsyncCallback func = callback.asFunction();
@@ -259,7 +260,7 @@ int _requestAnimationFrame(
       }
     }
 
-    // Pause if webf page paused.
+    // Pause if flutterDom page paused.
     if (controller.paused) {
       controller.pushPendingCallbacks(_runCallback);
     } else {
@@ -276,7 +277,7 @@ final Pointer<NativeFunction<NativeRequestAnimationFrame>> _nativeRequestAnimati
 typedef NativeCancelAnimationFrame = Void Function(Int32 contextId, Int32 id);
 
 void _cancelAnimationFrame(int contextId, int timerId) {
-  WebFController controller = WebFController.getControllerOfJSContextId(contextId)!;
+  FlutterDomController controller = FlutterDomController.getControllerOfJSContextId(contextId)!;
   controller.module.cancelAnimationFrame(timerId);
 }
 
@@ -302,7 +303,7 @@ typedef NativeToBlob = Void Function(
 void _toBlob(Pointer<Void> callbackContext, int contextId, Pointer<NativeFunction<NativeAsyncBlobCallback>> callback,
     int id, double devicePixelRatio) {
   DartAsyncBlobCallback func = callback.asFunction();
-  WebFController controller = WebFController.getControllerOfJSContextId(contextId)!;
+  FlutterDomController controller = FlutterDomController.getControllerOfJSContextId(contextId)!;
   controller.view.toImage(devicePixelRatio, id).then((Uint8List bytes) {
     Pointer<Uint8> bytePtr = malloc.allocate<Uint8>(sizeOf<Uint8>() * bytes.length);
     Uint8List byteList = bytePtr.asTypedList(bytes.length);
@@ -336,7 +337,7 @@ typedef NativeInitWindow = Void Function(Int32 contextId, Pointer<NativeBindingO
 typedef DartInitWindow = void Function(int contextId, Pointer<NativeBindingObject> nativePtr);
 
 void _initWindow(int contextId, Pointer<NativeBindingObject> nativePtr) {
-  WebFViewController.windowNativePtrMap[contextId] = nativePtr;
+  FlutterDomViewController.windowNativePtrMap[contextId] = nativePtr;
 }
 
 final Pointer<NativeFunction<NativeInitWindow>> _nativeInitWindow = Pointer.fromFunction(_initWindow);
@@ -345,7 +346,7 @@ typedef NativeInitDocument = Void Function(Int32 contextId, Pointer<NativeBindin
 typedef DartInitDocument = void Function(int contextId, Pointer<NativeBindingObject> nativePtr);
 
 void _initDocument(int contextId, Pointer<NativeBindingObject> nativePtr) {
-  WebFViewController.documentNativePtrMap[contextId] = nativePtr;
+  FlutterDomViewController.documentNativePtrMap[contextId] = nativePtr;
 }
 
 final Pointer<NativeFunction<NativeInitDocument>> _nativeInitDocument = Pointer.fromFunction(_initDocument);
@@ -366,7 +367,7 @@ final Pointer<NativeFunction<NativePerformanceGetEntries>> _nativeGetEntries =
 typedef NativeJSError = Void Function(Int32 contextId, Pointer<Utf8>);
 
 void _onJSError(int contextId, Pointer<Utf8> charStr) {
-  WebFController controller = WebFController.getControllerOfJSContextId(contextId)!;
+  FlutterDomController controller = FlutterDomController.getControllerOfJSContextId(contextId)!;
   JSErrorHandler? handler = controller.onJSError;
   if (handler != null) {
     String msg = charStr.toDartString();
@@ -380,7 +381,7 @@ typedef NativeJSLog = Void Function(Int32 contextId, Int32 level, Pointer<Utf8>)
 
 void _onJSLog(int contextId, int level, Pointer<Utf8> charStr) {
   String msg = charStr.toDartString();
-  WebFController? controller = WebFController.getControllerOfJSContextId(contextId);
+  FlutterDomController? controller = FlutterDomController.getControllerOfJSContextId(contextId);
   if (controller != null) {
     JSLogHandler? jsLogHandler = controller.onJSLog;
     if (jsLogHandler != null) {
@@ -414,7 +415,7 @@ typedef NativeRegisterDartMethods = Void Function(Pointer<Uint64> methodBytes, I
 typedef DartRegisterDartMethods = void Function(Pointer<Uint64> methodBytes, int length);
 
 final DartRegisterDartMethods _registerDartMethods =
-    WebFDynamicLibrary.ref.lookup<NativeFunction<NativeRegisterDartMethods>>('registerDartMethods').asFunction();
+    FlutterDomDynamicLibrary.ref.lookup<NativeFunction<NativeRegisterDartMethods>>('registerDartMethods').asFunction();
 
 void registerDartMethodsToCpp() {
   Pointer<Uint64> bytes = malloc.allocate<Uint64>(sizeOf<Uint64>() * _dartNativeMethods.length);

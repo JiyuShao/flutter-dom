@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'dart:async';
 import 'dart:math' as math;
@@ -64,7 +65,7 @@ class EditableTextDelegate implements TextSelectionDelegate {
 
   @override
   void bringIntoView(TextPosition position) {
-    WebFScrollable _scrollable = _textFormControlElement._scrollable;
+    FlutterDomScrollable _scrollable = _textFormControlElement._scrollable;
     final Rect localRect = renderEditable.getLocalRectForCaret(position);
     final RevealedOffset targetOffset = _textFormControlElement._getOffsetToRevealCaret(localRect);
     _scrollable.position!.jumpTo(targetOffset.offset);
@@ -290,7 +291,7 @@ class TextFormControlElement extends Element implements TextInputClient, TickerP
   }) : super(context, defaultStyle: _defaultStyle, isReplacedElement: true) {
     textSelectionDelegate = EditableTextDelegate(this);
     _textInputType = isMultiline ? TextInputType.multiline : TextInputType.text;
-    _scrollable = WebFScrollable(axisDirection: isMultiline ? AxisDirection.down : AxisDirection.right);
+    _scrollable = FlutterDomScrollable(axisDirection: isMultiline ? AxisDirection.down : AxisDirection.right);
     scrollOffset = _scrollable.position;
   }
 
@@ -313,7 +314,7 @@ class TextFormControlElement extends Element implements TextInputClient, TickerP
   AnimationController? _cursorBlinkOpacityController;
   int _obscureShowCharTicksPending = 0;
 
-  late WebFScrollable _scrollable;
+  late FlutterDomScrollable _scrollable;
 
   ViewportOffset get scrollOffset => _scrollOffset;
   late ViewportOffset _scrollOffset = ViewportOffset.zero();

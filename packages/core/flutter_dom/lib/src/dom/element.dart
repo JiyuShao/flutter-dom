@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:async';
@@ -774,7 +775,7 @@ abstract class Element extends Node with ElementBase, ElementEventMixin, Element
 
     if (renderer != null) {
       // If element attach WidgetElement, render object should be attach to render tree when mount.
-      if (parent.renderObjectManagerType == RenderObjectManagerType.WEBF_NODE) {
+      if (parent.renderObjectManagerType == RenderObjectManagerType.FLUTTER_DOM_NODE) {
         RenderBoxModel.attachRenderBox(parent.renderer!, renderer!, after: after);
       }
 
@@ -845,7 +846,7 @@ abstract class Element extends Node with ElementBase, ElementEventMixin, Element
       // Only append child renderer when which is not attached.
       if (!child.isRendererAttached &&
           renderLayoutBox != null &&
-          renderObjectManagerType == RenderObjectManagerType.WEBF_NODE) {
+          renderObjectManagerType == RenderObjectManagerType.FLUTTER_DOM_NODE) {
         RenderBox? after;
         RenderLayoutBox? scrollingContentBox = renderLayoutBox.renderScrollingContent;
         if (scrollingContentBox != null) {
@@ -1018,7 +1019,7 @@ abstract class Element extends Node with ElementBase, ElementEventMixin, Element
     // Attach renderBoxModel to parent if change from `display: none` to other values.
     if (!isRendererAttached && parentElement != null && parentElement!.isRendererAttached) {
       // If element attach WidgetElement, render object should be attach to render tree when mount.
-      if (parentElement!.renderObjectManagerType == RenderObjectManagerType.WEBF_NODE) {
+      if (parentElement!.renderObjectManagerType == RenderObjectManagerType.FLUTTER_DOM_NODE) {
         RenderBoxModel _renderBoxModel = renderBoxModel!;
         // Find the renderBox of its containing block.
         RenderBox? containingBlockRenderBox = getContainingBlockRenderBox();

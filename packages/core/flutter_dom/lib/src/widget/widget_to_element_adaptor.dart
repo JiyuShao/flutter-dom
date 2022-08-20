@@ -1,19 +1,20 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 import 'package:flutter_dom/dom.dart' as dom;
 
-class WebFRenderObjectToWidgetAdapter<T extends RenderObject> extends RenderObjectWidget {
+class FlutterDomRenderObjectToWidgetAdapter<T extends RenderObject> extends RenderObjectWidget {
   /// Creates a bridge from a [RenderObject] to an [Element] tree.
   ///
   /// Used by [WidgetsBinding] to attach the root widget to the [RenderView].
-  WebFRenderObjectToWidgetAdapter({
+  FlutterDomRenderObjectToWidgetAdapter({
     this.child,
     required this.container,
     this.debugShortDescription,
@@ -31,7 +32,7 @@ class WebFRenderObjectToWidgetAdapter<T extends RenderObject> extends RenderObje
   final String? debugShortDescription;
 
   @override
-  WebFRenderObjectToWidgetElement<T> createElement() => WebFRenderObjectToWidgetElement<T>(this);
+  FlutterDomRenderObjectToWidgetElement<T> createElement() => FlutterDomRenderObjectToWidgetElement<T>(this);
 
   @override
   ContainerRenderObjectMixin<RenderBox, ContainerBoxParentData<RenderBox>> createRenderObject(BuildContext context) =>
@@ -42,7 +43,7 @@ class WebFRenderObjectToWidgetAdapter<T extends RenderObject> extends RenderObje
 
   /// Inflate this widget and actually set the resulting [RenderObject] as the
   /// child of [container].
-  WebFRenderObjectToWidgetElement<T> attachToRenderTree(
+  FlutterDomRenderObjectToWidgetElement<T> attachToRenderTree(
       BuildOwner owner, RenderObjectElement parentElement, bool needBuild) {
     Element? element;
 
@@ -64,23 +65,23 @@ class WebFRenderObjectToWidgetAdapter<T extends RenderObject> extends RenderObje
       });
     }
 
-    return element! as WebFRenderObjectToWidgetElement<T>;
+    return element! as FlutterDomRenderObjectToWidgetElement<T>;
   }
 
   @override
   String toStringShort() => debugShortDescription ?? super.toStringShort();
 }
 
-class WebFRenderObjectToWidgetElement<T extends RenderObject> extends RenderObjectElement {
+class FlutterDomRenderObjectToWidgetElement<T extends RenderObject> extends RenderObjectElement {
   /// Creates an element that is hosted by a [RenderObject].
   ///
   /// The [RenderObject] created by this element is not automatically set as a
   /// child of the hosting [RenderObject]. To actually attach this element to
   /// the render tree, call [RenderObjectToWidgetAdapter.attachToRenderTree].
-  WebFRenderObjectToWidgetElement(WebFRenderObjectToWidgetAdapter<T> widget) : super(widget);
+  FlutterDomRenderObjectToWidgetElement(FlutterDomRenderObjectToWidgetAdapter<T> widget) : super(widget);
 
   @override
-  WebFRenderObjectToWidgetAdapter get widget => super.widget as WebFRenderObjectToWidgetAdapter<T>;
+  FlutterDomRenderObjectToWidgetAdapter get widget => super.widget as FlutterDomRenderObjectToWidgetAdapter<T>;
 
   Element? _child;
 
@@ -168,7 +169,7 @@ class WebFRenderObjectToWidgetElement<T extends RenderObject> extends RenderObje
 
 abstract class WidgetElement extends dom.Element {
   late Widget _widget;
-  _WebFAdapterWidgetState? _state;
+  _FlutterDomAdapterWidgetState? _state;
 
   WidgetElement(
     BindingContext? context, {
@@ -185,8 +186,8 @@ abstract class WidgetElement extends dom.Element {
           isDefaultRepaintBoundary: isDefaultRepaintBoundary,
         ) {
     WidgetsFlutterBinding.ensureInitialized();
-    _state = _WebFAdapterWidgetState(this, attributes, childNodes);
-    _widget = _WebFAdapterWidget(_state!);
+    _state = _FlutterDomAdapterWidgetState(this, attributes, childNodes);
+    _widget = _FlutterDomAdapterWidget(_state!);
   }
 
   Widget build(BuildContext context, Map<String, String> attributes, List<Widget> children);
@@ -249,7 +250,7 @@ abstract class WidgetElement extends dom.Element {
   void _attachWidget(Widget widget) {
     RenderObjectElement rootFlutterElement = ownerDocument.controller.rootFlutterElement;
 
-    WebFRenderObjectToWidgetAdapter adaptor = WebFRenderObjectToWidgetAdapter(
+    FlutterDomRenderObjectToWidgetAdapter adaptor = FlutterDomRenderObjectToWidgetAdapter(
         child: widget,
         container: renderBoxModel as ContainerRenderObjectMixin<RenderBox, ContainerBoxParentData<RenderBox>>);
 
@@ -285,10 +286,10 @@ abstract class WidgetElement extends dom.Element {
   }
 }
 
-class _WebFAdapterWidget extends StatefulWidget {
-  final _WebFAdapterWidgetState _state;
+class _FlutterDomAdapterWidget extends StatefulWidget {
+  final _FlutterDomAdapterWidgetState _state;
 
-  _WebFAdapterWidget(this._state);
+  _FlutterDomAdapterWidget(this._state);
 
   @override
   State<StatefulWidget> createState() {
@@ -296,12 +297,12 @@ class _WebFAdapterWidget extends StatefulWidget {
   }
 }
 
-class _WebFAdapterWidgetState extends State<_WebFAdapterWidget> {
+class _FlutterDomAdapterWidgetState extends State<_FlutterDomAdapterWidget> {
   Map<String, String> _attributes;
   final WidgetElement _element;
   late List<dom.Node> _childNodes;
 
-  _WebFAdapterWidgetState(this._element, this._attributes, this._childNodes) {}
+  _FlutterDomAdapterWidgetState(this._element, this._attributes, this._childNodes) {}
 
   void onAttributeChanged(Map<String, String> attributes) {
     if (mounted) {
@@ -316,11 +317,11 @@ class _WebFAdapterWidgetState extends State<_WebFAdapterWidget> {
   List<Widget> convertNodeListToWidgetList(List<dom.Node> childNodes) {
     List<Widget> children = List.generate(childNodes.length, (index) {
       if (childNodes[index] is WidgetElement) {
-        _WebFAdapterWidgetState state = (childNodes[index] as WidgetElement)._state!;
+        _FlutterDomAdapterWidgetState state = (childNodes[index] as WidgetElement)._state!;
         return state.build(context);
       } else {
         return childNodes[index].flutterWidget ??
-            WebFElementToWidgetAdaptor(childNodes[index], key: Key(index.toString()));
+            FlutterDomElementToWidgetAdaptor(childNodes[index], key: Key(index.toString()));
       }
     });
 

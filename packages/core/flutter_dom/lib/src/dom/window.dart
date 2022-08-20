@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'dart:ui';
 
@@ -63,7 +64,7 @@ class Window extends EventTarget {
 
   void open(String url) {
     String? sourceUrl = document.controller.view.rootController.url;
-    document.controller.view.handleNavigationAction(sourceUrl, url, WebFNavigationType.navigate);
+    document.controller.view.handleNavigationAction(sourceUrl, url, FlutterDomNavigationType.navigate);
   }
 
   double get scrollX => document.documentElement!.scrollLeft;

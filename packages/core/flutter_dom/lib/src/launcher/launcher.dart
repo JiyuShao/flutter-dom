@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'dart:io';
@@ -8,14 +9,14 @@ import 'dart:ui';
 import 'dart:async';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_dom/dom.dart';
-import 'package:flutter_dom/webf.dart';
+import 'package:flutter_dom/flutter_dom.dart';
 
 typedef ConnectedCallback = void Function();
 
-const String BUNDLE_URL = 'WEBF_BUNDLE_URL';
-const String BUNDLE_PATH = 'WEBF_BUNDLE_PATH';
-const String ENABLE_DEBUG = 'WEBF_ENABLE_DEBUG';
-const String ENABLE_PERFORMANCE_OVERLAY = 'WEBF_ENABLE_PERFORMANCE_OVERLAY';
+const String BUNDLE_URL = 'FLUTTER_DOM_BUNDLE_URL';
+const String BUNDLE_PATH = 'FLUTTER_DOM_BUNDLE_PATH';
+const String ENABLE_DEBUG = 'FLUTTER_DOM_ENABLE_DEBUG';
+const String ENABLE_PERFORMANCE_OVERLAY = 'FLUTTER_DOM_ENABLE_PERFORMANCE_OVERLAY';
 const _white = Color(0xFFFFFFFF);
 
 String? getBundleURLFromEnv() {
@@ -27,7 +28,7 @@ String? getBundlePathFromEnv() {
 }
 
 void launch(
-    {WebFBundle? bundle,
+    {FlutterDomBundle? bundle,
     bool? debugEnableInspector,
     Color background = _white,
     DevToolsService? devToolsService,
@@ -38,18 +39,18 @@ void launch(
 
   VoidCallback? _ordinaryOnMetricsChanged = window.onMetricsChanged;
 
-  Future<void> _initWebFApp() async {
-    WebFNativeChannel channel = WebFNativeChannel();
+  Future<void> _initFlutterDomApp() async {
+    FlutterDomNativeChannel channel = FlutterDomNativeChannel();
 
     if (bundle == null) {
       String? backendEntrypointUrl = getBundleURLFromEnv() ?? getBundlePathFromEnv();
       backendEntrypointUrl ??= await channel.getUrl();
       if (backendEntrypointUrl != null) {
-        bundle = WebFBundle.fromUrl(backendEntrypointUrl);
+        bundle = FlutterDomBundle.fromUrl(backendEntrypointUrl);
       }
     }
 
-    WebFController controller = WebFController(
+    FlutterDomController controller = FlutterDomController(
       null,
       window.physicalSize.width / window.devicePixelRatio,
       window.physicalSize.height / window.devicePixelRatio,
@@ -75,7 +76,7 @@ void launch(
         return;
       }
 
-      await _initWebFApp();
+      await _initFlutterDomApp();
 
       // Should proxy to ordinary window.onMetricsChanged callbacks.
       if (_ordinaryOnMetricsChanged != null) {
@@ -85,6 +86,6 @@ void launch(
       }
     };
   } else {
-    await _initWebFApp();
+    await _initFlutterDomApp();
   }
 }

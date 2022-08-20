@@ -1,13 +1,14 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'module_manager.dart';
 
-typedef WebFNavigationDecisionHandler = Future<WebFNavigationActionPolicy> Function(WebFNavigationAction action);
-typedef WebFNavigationErrorHandler = void Function(Object error, Object stack);
+typedef FlutterDomNavigationDecisionHandler = Future<FlutterDomNavigationActionPolicy> Function(FlutterDomNavigationAction action);
+typedef FlutterDomNavigationErrorHandler = void Function(Object error, Object stack);
 
-enum WebFNavigationActionPolicy {
+enum FlutterDomNavigationActionPolicy {
   // allow kraken to perform navigate.
   allow,
 
@@ -16,7 +17,7 @@ enum WebFNavigationActionPolicy {
 }
 
 // https://www.w3.org/TR/navigation-timing-2/#sec-performance-navigation-types
-enum WebFNavigationType {
+enum FlutterDomNavigationType {
   // Navigation where the history handling behavior is set to "default"
   // or "replace" and the navigation was not initiated by a prerender hint.
   navigate,
@@ -48,7 +49,7 @@ class NavigationModule extends BaseModule {
     Uri sourceUri = Uri.parse(sourceUrl);
 
     await moduleManager!.controller.view.handleNavigationAction(
-        sourceUrl, targetUrl, targetUri == sourceUri ? WebFNavigationType.reload : WebFNavigationType.navigate);
+        sourceUrl, targetUrl, targetUri == sourceUri ? FlutterDomNavigationType.reload : FlutterDomNavigationType.navigate);
   }
 
   @override
@@ -62,8 +63,8 @@ class NavigationModule extends BaseModule {
   }
 }
 
-class WebFNavigationAction {
-  WebFNavigationAction(this.source, this.target, this.navigationType);
+class FlutterDomNavigationAction {
+  FlutterDomNavigationAction(this.source, this.target, this.navigationType);
 
   // The current source url.
   String? source;
@@ -72,27 +73,27 @@ class WebFNavigationAction {
   String target;
 
   // The navigation type.
-  WebFNavigationType navigationType;
+  FlutterDomNavigationType navigationType;
 
   @override
-  String toString() => 'WebFNavigationType(source:$source, target:$target, navigationType:$navigationType)';
+  String toString() => 'FlutterDomNavigationType(source:$source, target:$target, navigationType:$navigationType)';
 }
 
-Future<WebFNavigationActionPolicy> defaultDecisionHandler(WebFNavigationAction action) async {
-  return WebFNavigationActionPolicy.allow;
+Future<FlutterDomNavigationActionPolicy> defaultDecisionHandler(FlutterDomNavigationAction action) async {
+  return FlutterDomNavigationActionPolicy.allow;
 }
 
-class WebFNavigationDelegate {
+class FlutterDomNavigationDelegate {
   // Called when an error occurs during navigation.
-  WebFNavigationErrorHandler? errorHandler;
+  FlutterDomNavigationErrorHandler? errorHandler;
 
-  WebFNavigationDecisionHandler _decisionHandler = defaultDecisionHandler;
+  FlutterDomNavigationDecisionHandler _decisionHandler = defaultDecisionHandler;
 
-  void setDecisionHandler(WebFNavigationDecisionHandler handler) {
+  void setDecisionHandler(FlutterDomNavigationDecisionHandler handler) {
     _decisionHandler = handler;
   }
 
-  Future<WebFNavigationActionPolicy> dispatchDecisionHandler(WebFNavigationAction action) async {
+  Future<FlutterDomNavigationActionPolicy> dispatchDecisionHandler(FlutterDomNavigationAction action) async {
     return await _decisionHandler(action);
   }
 }

@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'package:flutter/rendering.dart';
 import 'package:flutter_dom/launcher.dart';
@@ -11,7 +12,7 @@ class RenderViewportBox extends RenderProxyBox with RenderObjectWithControllerMi
     required Size viewportSize,
     RenderBox? child,
     this.background,
-    required WebFController controller,
+    required FlutterDomController controller,
   })  : _viewportSize = viewportSize,
         super(child) {
     this.controller = controller;

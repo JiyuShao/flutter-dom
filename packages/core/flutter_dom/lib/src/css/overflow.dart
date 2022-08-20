@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
 import 'package:flutter/animation.dart';
@@ -108,8 +109,8 @@ mixin ElementOverflowMixin on ElementBase {
   // The duration time for element scrolling to a significant place.
   static const SCROLL_DURATION = Duration(milliseconds: 250);
 
-  WebFScrollable? _scrollableX;
-  WebFScrollable? _scrollableY;
+  FlutterDomScrollable? _scrollableX;
+  FlutterDomScrollable? _scrollableY;
 
   void disposeScrollable() {
     _scrollableX?.position?.dispose();
@@ -134,7 +135,7 @@ mixin ElementOverflowMixin on ElementBase {
         case CSSOverflowType.scroll:
           // If the render has been offset when previous overflow is auto or scroll, _scrollableX should not reset.
           if (_scrollableX == null) {
-            _scrollableX = WebFScrollable(axisDirection: AxisDirection.right, scrollListener: scrollListener);
+            _scrollableX = FlutterDomScrollable(axisDirection: AxisDirection.right, scrollListener: scrollListener);
             renderBoxModel.scrollOffsetX = _scrollableX!.position;
           }
           // Reset canDrag by overflow because hidden is can't drag.
@@ -168,7 +169,7 @@ mixin ElementOverflowMixin on ElementBase {
         case CSSOverflowType.scroll:
           // If the render has been offset when previous overflow is auto or scroll, _scrollableY should not reset.
           if (_scrollableY == null) {
-            _scrollableY = WebFScrollable(axisDirection: AxisDirection.down, scrollListener: scrollListener);
+            _scrollableY = FlutterDomScrollable(axisDirection: AxisDirection.down, scrollListener: scrollListener);
             renderBoxModel.scrollOffsetY = _scrollableY!.position;
           }
           // Reset canDrag by overflow because hidden is can't drag.
@@ -342,7 +343,7 @@ mixin ElementOverflowMixin on ElementBase {
   }
 
   double get scrollTop {
-    WebFScrollable? scrollableY = _getScrollable(Axis.vertical);
+    FlutterDomScrollable? scrollableY = _getScrollable(Axis.vertical);
     if (scrollableY != null) {
       return scrollableY.position?.pixels ?? 0;
     }
@@ -366,7 +367,7 @@ mixin ElementOverflowMixin on ElementBase {
   }
 
   double get scrollLeft {
-    WebFScrollable? scrollableX = _getScrollable(Axis.horizontal);
+    FlutterDomScrollable? scrollableX = _getScrollable(Axis.horizontal);
     if (scrollableX != null) {
       return scrollableX.position?.pixels ?? 0;
     }
@@ -378,7 +379,7 @@ mixin ElementOverflowMixin on ElementBase {
   }
 
   int get scrollHeight {
-    WebFScrollable? scrollable = _getScrollable(Axis.vertical);
+    FlutterDomScrollable? scrollable = _getScrollable(Axis.vertical);
     if (scrollable?.position?.maxScrollExtent != null) {
       // Viewport height + maxScrollExtent
       return renderBoxModel!.clientHeight + scrollable!.position!.maxScrollExtent.toInt();
@@ -389,7 +390,7 @@ mixin ElementOverflowMixin on ElementBase {
   }
 
   int get scrollWidth {
-    WebFScrollable? scrollable = _getScrollable(Axis.horizontal);
+    FlutterDomScrollable? scrollable = _getScrollable(Axis.horizontal);
     if (scrollable?.position?.maxScrollExtent != null) {
       return renderBoxModel!.clientWidth + scrollable!.position!.maxScrollExtent.toInt();
     }
@@ -440,8 +441,8 @@ mixin ElementOverflowMixin on ElementBase {
     }
   }
 
-  WebFScrollable? _getScrollable(Axis direction) {
-    WebFScrollable? scrollable;
+  FlutterDomScrollable? _getScrollable(Axis direction) {
+    FlutterDomScrollable? scrollable;
     if (renderer is RenderSliverListLayout) {
       RenderSliverListLayout recyclerLayout = renderer as RenderSliverListLayout;
       scrollable = direction == recyclerLayout.axis ? recyclerLayout.scrollable : null;
@@ -456,7 +457,7 @@ mixin ElementOverflowMixin on ElementBase {
   }
 
   void _scroll(num aim, Axis direction, {bool? withAnimation = false}) {
-    WebFScrollable? scrollable = _getScrollable(direction);
+    FlutterDomScrollable? scrollable = _getScrollable(direction);
     if (scrollable != null) {
       double distance = aim.toDouble();
 

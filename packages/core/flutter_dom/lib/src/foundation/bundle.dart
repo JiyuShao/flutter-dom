@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019-2022 The Kraken authors. All rights reserved.
- * Copyright (C) 2022-present The WebF authors. All rights reserved.
+ * Copyright (C) 2022-2022.08 The WebF authors. All rights reserved.
+ * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 import 'dart:convert';
 import 'dart:core';
@@ -21,14 +22,14 @@ final ContentType _cssContentType = ContentType('text', 'css', charset: UTF_8);
 final ContentType _javascriptContentType = ContentType('text', 'javascript', charset: UTF_8);
 final ContentType _javascriptApplicationContentType = ContentType('application', 'javascript', charset: UTF_8);
 final ContentType _xJavascriptContentType = ContentType('application', 'x-javascript', charset: UTF_8);
-final ContentType _webfBc1ContentType = ContentType('application', 'vnd.webf.bc1');
+final ContentType _flutterDomBc1ContentType = ContentType('application', 'vnd.flutterDom.bc1');
 
 const List<String> _supportedByteCodeVersions = ['1'];
 
 bool _isSupportedBytecode(String mimeType, Uri? uri) {
   if (uri != null) {
     for (int i = 0; i < _supportedByteCodeVersions.length; i++) {
-      if (mimeType.contains('application/vnd.webf.bc' + _supportedByteCodeVersions[i])) return true;
+      if (mimeType.contains('application/vnd.flutterDom.bc' + _supportedByteCodeVersions[i])) return true;
       // @NOTE: This is useful for most http server that did not recognize a .kbc1 file.
       // Simply treat some.kbc1 file as the bytecode.
       if (uri.path.endsWith('.kbc' + _supportedByteCodeVersions[i])) return true;
@@ -40,7 +41,7 @@ bool _isSupportedBytecode(String mimeType, Uri? uri) {
 // The default accept request header.
 // The order is HTML -> KBC -> JavaScript.
 String _acceptHeader() {
-  String bc = _supportedByteCodeVersions.map((String v) => 'application/vnd.webf.bc$v').join(',');
+  String bc = _supportedByteCodeVersions.map((String v) => 'application/vnd.flutterDom.bc$v').join(',');
   return 'text/html,$bc,application/javascript';
 }
 
@@ -68,8 +69,8 @@ void _failedToResolveBundle(String url) {
   throw FlutterError('Failed to resolve bundle for $url');
 }
 
-abstract class WebFBundle {
-  WebFBundle(this.url);
+abstract class FlutterDomBundle {
+  FlutterDomBundle(this.url);
 
   // Unique resource locator.
   final String url;
@@ -95,7 +96,7 @@ abstract class WebFBundle {
     // Source is input by user, do not trust it's a valid URL.
     _uri = Uri.tryParse(url);
     if (contextId != null && _uri != null) {
-      WebFController? controller = WebFController.getControllerOfJSContextId(contextId);
+      FlutterDomController? controller = FlutterDomController.getControllerOfJSContextId(contextId);
       if (controller != null) {
         _uri = controller.uriParser!.resolve(Uri.parse(controller.url), _uri!);
       }
@@ -108,7 +109,7 @@ abstract class WebFBundle {
     data = null;
   }
 
-  static WebFBundle fromUrl(String url, {Map<String, String>? additionalHttpHeaders}) {
+  static FlutterDomBundle fromUrl(String url, {Map<String, String>? additionalHttpHeaders}) {
     if (_isHttpScheme(url)) {
       return NetworkBundle(url, additionalHttpHeaders: additionalHttpHeaders);
     } else if (_isAssetsScheme(url)) {
@@ -124,12 +125,12 @@ abstract class WebFBundle {
     }
   }
 
-  static WebFBundle fromContent(String content, {String url = DEFAULT_URL}) {
+  static FlutterDomBundle fromContent(String content, {String url = DEFAULT_URL}) {
     return DataBundle.fromString(content, url, contentType: _javascriptContentType);
   }
 
-  static WebFBundle fromBytecode(Uint8List data, {String url = DEFAULT_URL}) {
-    return DataBundle(data, url, contentType: _webfBc1ContentType);
+  static FlutterDomBundle fromBytecode(Uint8List data, {String url = DEFAULT_URL}) {
+    return DataBundle(data, url, contentType: _flutterDomBc1ContentType);
   }
 
   bool get isHTML => contentType.mimeType == ContentType.html.mimeType;
@@ -142,7 +143,7 @@ abstract class WebFBundle {
 }
 
 // The bundle that output input data.
-class DataBundle extends WebFBundle {
+class DataBundle extends FlutterDomBundle {
   DataBundle(Uint8List data, String url, {ContentType? contentType}) : super(url) {
     this.data = data;
     this.contentType = contentType ?? ContentType.binary;
@@ -162,7 +163,7 @@ class DataBundle extends WebFBundle {
 }
 
 // The bundle that source from http or https.
-class NetworkBundle extends WebFBundle {
+class NetworkBundle extends FlutterDomBundle {
   // Do not access this field directly; use [_httpClient] instead.
   // We set `autoUncompress` to false to ensure that we can trust the value of
   // the `Content-CSSLength` HTTP header. We automatically uncompress the content
@@ -184,7 +185,7 @@ class NetworkBundle extends WebFBundle {
     request.headers.set('Accept', _acceptHeader());
     additionalHttpHeaders?.forEach(request.headers.set);
     if (contextId != null) {
-      WebFHttpOverrides.setContextHeader(request.headers, contextId);
+      FlutterDomHttpOverrides.setContextHeader(request.headers, contextId);
     }
 
     final HttpClientResponse response = await request.close();
@@ -199,11 +200,11 @@ class NetworkBundle extends WebFBundle {
   }
 }
 
-class AssetsBundle extends WebFBundle with _ExtensionContentTypeResolver {
+class AssetsBundle extends FlutterDomBundle with _ExtensionContentTypeResolver {
   AssetsBundle(String url) : super(url);
 
   @override
-  Future<WebFBundle> resolve(int? contextId) async {
+  Future<FlutterDomBundle> resolve(int? contextId) async {
     super.resolve(contextId);
     final Uri? _resolvedUri = resolvedUri;
     if (_resolvedUri != null) {
@@ -231,11 +232,11 @@ class AssetsBundle extends WebFBundle with _ExtensionContentTypeResolver {
 }
 
 /// The bundle that source from local io.
-class FileBundle extends WebFBundle with _ExtensionContentTypeResolver {
+class FileBundle extends FlutterDomBundle with _ExtensionContentTypeResolver {
   FileBundle(String url) : super(url);
 
   @override
-  Future<WebFBundle> resolve(int? contextId) async {
+  Future<FlutterDomBundle> resolve(int? contextId) async {
     super.resolve(contextId);
 
     Uri uri = _uri!;
@@ -251,9 +252,9 @@ class FileBundle extends WebFBundle with _ExtensionContentTypeResolver {
   }
 }
 
-/// [_ExtensionContentTypeResolver] is useful for [WebFBundle] to determine
+/// [_ExtensionContentTypeResolver] is useful for [FlutterDomBundle] to determine
 /// content-type by uri's extension.
-mixin _ExtensionContentTypeResolver on WebFBundle {
+mixin _ExtensionContentTypeResolver on FlutterDomBundle {
   ContentType? _contentType;
 
   @override
@@ -265,7 +266,7 @@ mixin _ExtensionContentTypeResolver on WebFBundle {
     } else if (_isUriExt(uri, '.html')) {
       return ContentType.html;
     } else if (_isSupportedBytecode('', uri)) {
-      return _webfBc1ContentType;
+      return _flutterDomBc1ContentType;
     } else if (_isUriExt(uri, '.css')) {
       return _cssContentType;
     }
