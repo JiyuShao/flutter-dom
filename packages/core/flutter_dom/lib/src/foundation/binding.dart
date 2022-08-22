@@ -9,8 +9,7 @@ typedef BindingObjectOperation = void Function(BindingObject bindingObject);
 
 class BindingContext {
   final int contextId;
-  final pointer;
-  const BindingContext(this.contextId, this.pointer);
+  const BindingContext(this.contextId);
 }
 
 abstract class BindingObject {
@@ -20,7 +19,6 @@ abstract class BindingObject {
   final BindingContext? _context;
 
   int? get contextId => _context?.contextId;
-  get pointer => _context?.pointer;
 
   BindingObject([BindingContext? context]) : _context = context {
     _bind();

@@ -27,7 +27,7 @@ int initBridge() {
   }
 
   // Register methods first to share ptrs for bridge polyfill.
-  registerDartMethodsToCpp();
+  registerDartMethodsToNative();
 
   // Setup binding bridge.
   BindingBridge.setup();

@@ -74,7 +74,8 @@ abstract class LifecycleCallbacks {
 // void attributeChangedCallback();
 }
 
-abstract class Node extends EventTarget implements RenderObjectNode, LifecycleCallbacks {
+abstract class Node extends EventTarget
+    implements RenderObjectNode, LifecycleCallbacks {
   FlutterDomElementToFlutterElementAdaptor? flutterElement;
   FlutterDomElementToWidgetAdaptor? flutterWidget;
   List<Node> childNodes = [];
@@ -155,7 +156,8 @@ abstract class Node extends EventTarget implements RenderObjectNode, LifecycleCa
   }
 
   @override
-  RenderBox createRenderer() => throw FlutterError('[createRenderer] is not implemented.');
+  RenderBox createRenderer() =>
+      throw FlutterError('[createRenderer] is not implemented.');
 
   @override
   void willAttachRenderer() {}
@@ -295,7 +297,8 @@ abstract class Node extends EventTarget implements RenderObjectNode, LifecycleCa
   EventTarget? get parentEventTarget => parentNode;
 
   // Whether Kraken Node need to manage render object.
-  RenderObjectManagerType get renderObjectManagerType => RenderObjectManagerType.FLUTTER_DOM_NODE;
+  RenderObjectManagerType get renderObjectManagerType =>
+      RenderObjectManagerType.FLUTTER_DOM_NODE;
 }
 
 /// https://dom.spec.whatwg.org/#dom-node-nodetype

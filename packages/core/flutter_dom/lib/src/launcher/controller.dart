@@ -7,7 +7,6 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -17,7 +16,12 @@ import 'package:flutter/widgets.dart' show RenderObjectElement;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart' show RouteInformation, WidgetsBinding, WidgetsBindingObserver, AnimationController;
+import 'package:flutter/widgets.dart'
+    show
+        RouteInformation,
+        WidgetsBinding,
+        WidgetsBindingObserver,
+        AnimationController;
 import 'package:flutter_dom/bridge.dart';
 import 'package:flutter_dom/dom.dart';
 import 'package:flutter_dom/foundation.dart';
@@ -65,10 +69,8 @@ abstract class DevToolsService {
 }
 
 // An kraken View Controller designed for multiple kraken view control.
-class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindingObserver {
-  static Map<int, Pointer<NativeBindingObject>> documentNativePtrMap = {};
-  static Map<int, Pointer<NativeBindingObject>> windowNativePtrMap = {};
-
+class FlutterDomViewController
+    implements WidgetsBindingObserver, ElementsBindingObserver {
   FlutterDomController rootController;
 
   // The methods of the KrakenNavigateDelegation help you implement custom behaviors that are triggered
@@ -130,7 +132,10 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
       originalViewport.controller = rootController;
       viewport = originalViewport;
     } else {
-      viewport = RenderViewportBox(background: background, viewportSize: ui.Size(viewportWidth, viewportHeight), controller: rootController);
+      viewport = RenderViewportBox(
+          background: background,
+          viewportSize: ui.Size(viewportWidth, viewportHeight),
+          controller: rootController);
     }
 
     if (kProfileMode) {
@@ -143,7 +148,7 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
     defineBuiltInElements();
 
     document = Document(
-      BindingContext(_contextId, documentNativePtrMap[_contextId]!),
+      BindingContext(_contextId),
       viewport: viewport,
       controller: rootController,
       gestureListener: gestureListener,
@@ -151,7 +156,7 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
     );
     _setEventTarget(DOCUMENT_ID, document);
 
-    window = Window(BindingContext(_contextId, windowNativePtrMap[_contextId]!), document);
+    window = Window(BindingContext(_contextId), document);
     _registerPlatformBrightnessChange();
     _setEventTarget(WINDOW_ID, window);
 
@@ -159,19 +164,23 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
     if (gestureListener != null) {
       GestureListener listener = gestureListener!;
       if (listener.onTouchStart != null) {
-        document.addEventListener(EVENT_TOUCH_START, (Event event) => listener.onTouchStart!(event as TouchEvent));
+        document.addEventListener(EVENT_TOUCH_START,
+            (Event event) => listener.onTouchStart!(event as TouchEvent));
       }
 
       if (listener.onTouchMove != null) {
-        document.addEventListener(EVENT_TOUCH_MOVE, (Event event) => listener.onTouchMove!(event as TouchEvent));
+        document.addEventListener(EVENT_TOUCH_MOVE,
+            (Event event) => listener.onTouchMove!(event as TouchEvent));
       }
 
       if (listener.onTouchEnd != null) {
-        document.addEventListener(EVENT_TOUCH_END, (Event event) => listener.onTouchEnd!(event as TouchEvent));
+        document.addEventListener(EVENT_TOUCH_END,
+            (Event event) => listener.onTouchEnd!(event as TouchEvent));
       }
 
       if (listener.onDrag != null) {
-        document.addEventListener(EVENT_DRAG, (Event event) => listener.onDrag!(event as GestureEvent));
+        document.addEventListener(EVENT_DRAG,
+            (Event event) => listener.onDrag!(event as GestureEvent));
       }
     }
 
@@ -262,12 +271,14 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
   VoidCallback? _originalOnPlatformBrightnessChanged;
 
   void _registerPlatformBrightnessChange() {
-    _originalOnPlatformBrightnessChanged = ui.window.onPlatformBrightnessChanged;
+    _originalOnPlatformBrightnessChanged =
+        ui.window.onPlatformBrightnessChanged;
     ui.window.onPlatformBrightnessChanged = _onPlatformBrightnessChanged;
   }
 
   void _unregisterPlatformBrightnessChange() {
-    ui.window.onPlatformBrightnessChanged = _originalOnPlatformBrightnessChanged;
+    ui.window.onPlatformBrightnessChanged =
+        _originalOnPlatformBrightnessChanged;
     _originalOnPlatformBrightnessChanged = null;
   }
 
@@ -354,7 +365,9 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
         completer.completeError(Exception(msg));
         return completer.future;
       }
-      var node = eventTargetId == null ? document.documentElement : _getEventTargetById<EventTarget>(eventTargetId);
+      var node = eventTargetId == null
+          ? document.documentElement
+          : _getEventTargetById<EventTarget>(eventTargetId);
       if (node is Element) {
         if (!node.isRendererAttached) {
           String msg = 'toImage: the element is not attached to document tree.';
@@ -365,7 +378,8 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
         node.toBlob(devicePixelRatio: devicePixelRatio).then((Uint8List bytes) {
           completer.complete(bytes);
         }).catchError((e, stack) {
-          String msg = 'toBlob: failed to export image data from element id: $eventTargetId. error: $e}.\n$stack';
+          String msg =
+              'toBlob: failed to export image data from element id: $eventTargetId. error: $e}.\n$stack';
           completer.completeError(Exception(msg));
         });
       } else {
@@ -378,54 +392,67 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
     return completer.future;
   }
 
-  void createElement(int targetId, Pointer<NativeBindingObject> nativePtr, String tagName) {
+  void createElement(int targetId, String tagName) {
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_CREATE_ELEMENT_START, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_CREATE_ELEMENT_START, uniqueId: targetId);
     }
-    assert(!_existsTarget(targetId), 'ERROR: Can not create element with same id "$targetId"');
-    Element element = document.createElement(tagName.toUpperCase(), BindingContext(_contextId, nativePtr));
+    assert(!_existsTarget(targetId),
+        'ERROR: Can not create element with same id "$targetId"');
+    Element element = document.createElement(
+        tagName.toUpperCase(), BindingContext(_contextId));
     _setEventTarget(targetId, element);
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_CREATE_ELEMENT_END, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_CREATE_ELEMENT_END, uniqueId: targetId);
     }
   }
 
-  void createTextNode(int targetId, Pointer<NativeBindingObject> nativePtr, String data) {
+  void createTextNode(int targetId, String data) {
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_CREATE_TEXT_NODE_START, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_CREATE_TEXT_NODE_START, uniqueId: targetId);
     }
-    TextNode textNode = document.createTextNode(data, BindingContext(_contextId, nativePtr));
+    TextNode textNode =
+        document.createTextNode(data, BindingContext(_contextId));
     _setEventTarget(targetId, textNode);
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_CREATE_TEXT_NODE_END, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_CREATE_TEXT_NODE_END, uniqueId: targetId);
     }
   }
 
-  void createComment(int targetId, Pointer<NativeBindingObject> nativePtr) {
+  void createComment(int targetId) {
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_CREATE_COMMENT_START, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_CREATE_COMMENT_START, uniqueId: targetId);
     }
-    Comment comment = document.createComment(BindingContext(_contextId, nativePtr));
+    Comment comment = document.createComment(BindingContext(_contextId));
     _setEventTarget(targetId, comment);
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_CREATE_COMMENT_END, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_CREATE_COMMENT_END, uniqueId: targetId);
     }
   }
 
-  void createDocumentFragment(int targetId, Pointer<NativeBindingObject> nativePtr) {
+  void createDocumentFragment(int targetId) {
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_CREATE_DOCUMENT_FRAGMENT_START, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_CREATE_DOCUMENT_FRAGMENT_START, uniqueId: targetId);
     }
-    DocumentFragment fragment = document.createDocumentFragment(BindingContext(_contextId, nativePtr));
+    DocumentFragment fragment =
+        document.createDocumentFragment(BindingContext(_contextId));
     _setEventTarget(targetId, fragment);
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_CREATE_DOCUMENT_FRAGMENT_END, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_CREATE_DOCUMENT_FRAGMENT_END, uniqueId: targetId);
     }
   }
 
   void addEvent(int targetId, String eventType) {
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_ADD_EVENT_START, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_ADD_EVENT_START, uniqueId: targetId);
     }
     if (!_existsTarget(targetId)) return;
     EventTarget? target = _getEventTargetById<EventTarget>(targetId);
@@ -440,7 +467,8 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
 
   void removeEvent(int targetId, String eventType) {
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_REMOVE_EVENT_START, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_REMOVE_EVENT_START, uniqueId: targetId);
     }
     assert(_existsTarget(targetId), 'targetId: $targetId event: $eventType');
 
@@ -450,7 +478,8 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
     }
 
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_REMOVE_EVENT_END, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_REMOVE_EVENT_END, uniqueId: targetId);
     }
   }
 
@@ -474,7 +503,8 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
 
   void removeNode(int targetId) {
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_REMOVE_NODE_START, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_REMOVE_NODE_START, uniqueId: targetId);
     }
 
     assert(_existsTarget(targetId), 'targetId: $targetId');
@@ -485,7 +515,8 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
     _debugDOMTreeChanged();
 
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_REMOVE_NODE_END, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_REMOVE_NODE_END, uniqueId: targetId);
     }
   }
 
@@ -498,11 +529,14 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
   /// <!-- afterend -->
   void insertAdjacentNode(int targetId, String position, int newTargetId) {
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_INSERT_ADJACENT_NODE_START, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_INSERT_ADJACENT_NODE_START, uniqueId: targetId);
     }
 
-    assert(_existsTarget(targetId), 'targetId: $targetId position: $position newTargetId: $newTargetId');
-    assert(_existsTarget(newTargetId), 'newTargetId: $newTargetId position: $position');
+    assert(_existsTarget(targetId),
+        'targetId: $targetId position: $position newTargetId: $newTargetId');
+    assert(_existsTarget(newTargetId),
+        'newTargetId: $newTargetId position: $position');
 
     Node target = _getEventTargetById<Node>(targetId)!;
     Node newNode = _getEventTargetById<Node>(newTargetId)!;
@@ -524,7 +558,8 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
         } else {
           targetParentNode.insertBefore(
             newNode,
-            targetParentNode.childNodes[targetParentNode.childNodes.indexOf(target) + 1],
+            targetParentNode
+                .childNodes[targetParentNode.childNodes.indexOf(target) + 1],
           );
         }
         break;
@@ -533,16 +568,19 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
     _debugDOMTreeChanged();
 
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_INSERT_ADJACENT_NODE_END, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_INSERT_ADJACENT_NODE_END, uniqueId: targetId);
     }
   }
 
   void setAttribute(int targetId, String key, String value) {
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_SET_PROPERTIES_START, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_SET_PROPERTIES_START, uniqueId: targetId);
     }
 
-    assert(_existsTarget(targetId), 'targetId: $targetId key: $key value: $value');
+    assert(
+        _existsTarget(targetId), 'targetId: $targetId key: $key value: $value');
     Node target = _getEventTargetById<Node>(targetId)!;
 
     if (target is Element) {
@@ -551,11 +589,13 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
     } else if (target is TextNode && (key == 'data' || key == 'nodeValue')) {
       target.data = value;
     } else {
-      debugPrint('Only element has properties, try setting $key to Node(#$targetId).');
+      debugPrint(
+          'Only element has properties, try setting $key to Node(#$targetId).');
     }
 
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_SET_PROPERTIES_END, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_SET_PROPERTIES_END, uniqueId: targetId);
     }
   }
 
@@ -586,7 +626,8 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
 
   void removeAttribute(int targetId, String key) {
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_SET_PROPERTIES_START, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_SET_PROPERTIES_START, uniqueId: targetId);
     }
     assert(_existsTarget(targetId), 'targetId: $targetId key: $key');
     Node target = _getEventTargetById<Node>(targetId)!;
@@ -597,16 +638,19 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
       // @TODO: property is not attribute.
       target.data = '';
     } else {
-      debugPrint('Only element has attributes, try removing $key from Node(#$targetId).');
+      debugPrint(
+          'Only element has attributes, try removing $key from Node(#$targetId).');
     }
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_SET_PROPERTIES_END, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_SET_PROPERTIES_END, uniqueId: targetId);
     }
   }
 
   void setInlineStyle(int targetId, String key, String value) {
     if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_SET_STYLE_START, uniqueId: targetId);
+      PerformanceTiming.instance()
+          .mark(PERF_SET_STYLE_START, uniqueId: targetId);
     }
     assert(_existsTarget(targetId), 'id: $targetId key: $key value: $value');
     Node? target = _getEventTargetById<Node>(targetId);
@@ -615,7 +659,8 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
     if (target is Element) {
       target.setInlineStyle(key, value);
     } else {
-      debugPrint('Only element has style, try setting style.$key from Node(#$targetId).');
+      debugPrint(
+          'Only element has style, try setting style.$key from Node(#$targetId).');
     }
     if (kProfileMode) {
       PerformanceTiming.instance().mark(PERF_SET_STYLE_END, uniqueId: targetId);
@@ -630,7 +675,8 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
     if (target is Element) {
       target.style.flushPendingProperties();
     } else {
-      debugPrint('Only element has style, try flushPendingStyleProperties from Node(#$targetId).');
+      debugPrint(
+          'Only element has style, try flushPendingStyleProperties from Node(#$targetId).');
     }
   }
 
@@ -643,13 +689,16 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
     }
   }
 
-  Future<void> handleNavigationAction(String? sourceUrl, String targetUrl, FlutterDomNavigationType navigationType) async {
-    FlutterDomNavigationAction action = FlutterDomNavigationAction(sourceUrl, targetUrl, navigationType);
+  Future<void> handleNavigationAction(String? sourceUrl, String targetUrl,
+      FlutterDomNavigationType navigationType) async {
+    FlutterDomNavigationAction action =
+        FlutterDomNavigationAction(sourceUrl, targetUrl, navigationType);
 
     FlutterDomNavigationDelegate _delegate = navigationDelegate!;
 
     try {
-      FlutterDomNavigationActionPolicy policy = await _delegate.dispatchDecisionHandler(action);
+      FlutterDomNavigationActionPolicy policy =
+          await _delegate.dispatchDecisionHandler(action);
       if (policy == FlutterDomNavigationActionPolicy.cancel) return;
 
       switch (action.navigationType) {
@@ -704,7 +753,8 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
 
   @override
   void didChangeMetrics() {
-    double bottomInset = ui.window.viewInsets.bottom / ui.window.devicePixelRatio;
+    double bottomInset =
+        ui.window.viewInsets.bottom / ui.window.devicePixelRatio;
     if (_prevViewInsets.bottom > ui.window.viewInsets.bottom) {
       // Hide keyboard
       viewport.bottomInset = bottomInset;
@@ -716,7 +766,8 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
         if (renderer != null && renderer.hasSize) {
           Offset focusOffset = renderer.localToGlobal(Offset.zero);
           // FOCUS_VIEWINSET_BOTTOM_OVERALL to meet border case.
-          if (focusOffset.dy > viewportHeight - bottomInset - FOCUS_VIEWINSET_BOTTOM_OVERALL) {
+          if (focusOffset.dy >
+              viewportHeight - bottomInset - FOCUS_VIEWINSET_BOTTOM_OVERALL) {
             shouldScrollByToCenter = true;
           }
         }
@@ -760,7 +811,8 @@ class FlutterDomViewController implements WidgetsBindingObserver, ElementsBindin
   }
 
   @override
-  Future<bool> didPushRouteInformation(RouteInformation routeInformation) async {
+  Future<bool> didPushRouteInformation(
+      RouteInformation routeInformation) async {
     // TODO: implement didPushRouteInformation
     return false;
   }
@@ -783,7 +835,8 @@ class FlutterDomModuleController with TimerMixin, ScheduleFrameMixin {
 }
 
 class FlutterDomController {
-  static final SplayTreeMap<int, FlutterDomController?> _controllerMap = SplayTreeMap();
+  static final SplayTreeMap<int, FlutterDomController?> _controllerMap =
+      SplayTreeMap();
   static final Map<String, int> _nameIdMap = {};
 
   UriParser? uriParser;
@@ -900,13 +953,16 @@ class FlutterDomController {
     _module = FlutterDomModuleController(this, contextId);
 
     if (entrypoint != null) {
-      HistoryModule historyModule = module.moduleManager.getModule<HistoryModule>('History')!;
+      HistoryModule historyModule =
+          module.moduleManager.getModule<HistoryModule>('History')!;
       historyModule.add(entrypoint);
     }
 
-    assert(!_controllerMap.containsKey(contextId), 'found exist contextId of FlutterDomController, contextId: $contextId');
+    assert(!_controllerMap.containsKey(contextId),
+        'found exist contextId of FlutterDomController, contextId: $contextId');
     _controllerMap[contextId] = this;
-    assert(!_nameIdMap.containsKey(name), 'found exist name of FlutterDomController, name: $name');
+    assert(!_nameIdMap.containsKey(name),
+        'found exist name of FlutterDomController, name: $name');
     if (name != null) {
       _nameIdMap[name] = contextId;
     }
@@ -980,14 +1036,16 @@ class FlutterDomController {
   }
 
   String? get _url {
-    HistoryModule historyModule = module.moduleManager.getModule<HistoryModule>('History')!;
+    HistoryModule historyModule =
+        module.moduleManager.getModule<HistoryModule>('History')!;
     return historyModule.stackTop?.url;
   }
 
   String get url => _url ?? '';
 
   _addHistory(FlutterDomBundle bundle) {
-    HistoryModule historyModule = module.moduleManager.getModule<HistoryModule>('History')!;
+    HistoryModule historyModule =
+        module.moduleManager.getModule<HistoryModule>('History')!;
     historyModule.add(bundle);
   }
 
@@ -1075,7 +1133,10 @@ class FlutterDomController {
 
   String get origin => Uri.parse(url).origin;
 
-  Future<void> executeEntrypoint({bool shouldResolve = true, bool shouldEvaluate = true, AnimationController? animationController}) async {
+  Future<void> executeEntrypoint(
+      {bool shouldResolve = true,
+      bool shouldEvaluate = true,
+      AnimationController? animationController}) async {
     if (_entrypoint != null && shouldResolve) {
       await _resolveEntrypoint();
       if (_entrypoint!.isResolved && shouldEvaluate) {
@@ -1136,7 +1197,8 @@ class FlutterDomController {
     if (_entrypoint != null) {
       FlutterDomBundle entrypoint = _entrypoint!;
       int contextId = _view.contextId;
-      assert(entrypoint.isResolved, 'The flutterDom bundle $entrypoint is not resolved to evaluate.');
+      assert(entrypoint.isResolved,
+          'The flutterDom bundle $entrypoint is not resolved to evaluate.');
 
       if (kProfileMode) {
         PerformanceTiming.instance().mark(PERF_JS_BUNDLE_EVAL_START);
@@ -1148,7 +1210,9 @@ class FlutterDomController {
       Uint8List data = entrypoint.data!;
       if (entrypoint.isJavascript) {
         // Prefer sync decode in loading entrypoint.
-        evaluateScripts(contextId, await resolveStringFromData(data, preferSync: true), url: url);
+        evaluateScripts(
+            contextId, await resolveStringFromData(data, preferSync: true),
+            url: url);
       } else if (entrypoint.isBytecode) {
         evaluateQuickjsByteCode(contextId, data);
       } else if (entrypoint.isHTML) {
@@ -1156,7 +1220,9 @@ class FlutterDomController {
       } else if (entrypoint.contentType.primaryType == 'text') {
         // Fallback treating text content as JavaScript.
         try {
-          evaluateScripts(contextId, await resolveStringFromData(data, preferSync: true), url: url);
+          evaluateScripts(
+              contextId, await resolveStringFromData(data, preferSync: true),
+              url: url);
         } catch (error) {
           print('Fallback to execute JavaScript content of $url');
           rethrow;

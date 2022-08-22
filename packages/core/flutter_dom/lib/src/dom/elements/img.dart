@@ -52,7 +52,8 @@ class ImageElement extends Element {
   bool _isListeningStream = false;
 
   // Useful for img to operate RenderPlaced is in lazy rendering.
-  bool get _isInLazyLoading => (renderBoxModel as RenderReplaced?)?.isInLazyRendering == true;
+  bool get _isInLazyLoading =>
+      (renderBoxModel as RenderReplaced?)?.isInLazyRendering == true;
   set _isInLazyRendering(bool value) {
     (renderBoxModel as RenderReplaced?)?.isInLazyRendering = value;
   }
@@ -68,9 +69,12 @@ class ImageElement extends Element {
   bool get complete {
     // @TODO: Implement the srcset.
     if (src.isEmpty) return true;
-    if (_currentRequest != null && _currentRequest!.available && _pendingRequest == null) return true;
-    if (_currentRequest != null && _currentRequest!.state == _ImageRequestState.broken && _pendingRequest == null)
-      return true;
+    if (_currentRequest != null &&
+        _currentRequest!.available &&
+        _pendingRequest == null) return true;
+    if (_currentRequest != null &&
+        _currentRequest!.state == _ImageRequestState.broken &&
+        _pendingRequest == null) return true;
     return true;
   }
 
@@ -92,7 +96,8 @@ class ImageElement extends Element {
 
   ImageStreamCompleterHandle? _completerHandle;
 
-  ImageElement([BindingContext? context]) : super(context, isReplacedElement: true, defaultStyle: _defaultStyle) {}
+  ImageElement([BindingContext? context])
+      : super(context, isReplacedElement: true, defaultStyle: _defaultStyle) {}
 
   // Bindings.
   @override
@@ -216,8 +221,8 @@ class ImageElement extends Element {
   }
 
   ImageStreamListener? _imageStreamListener;
-  ImageStreamListener get _listener =>
-      _imageStreamListener ??= ImageStreamListener(_handleImageFrame, onError: _onImageError);
+  ImageStreamListener get _listener => _imageStreamListener ??=
+      ImageStreamListener(_handleImageFrame, onError: _onImageError);
 
   void _listenToStream() {
     if (_isListeningStream) return;
@@ -277,14 +282,16 @@ class ImageElement extends Element {
 
   int get width {
     // Width calc priority: style > attr > intrinsic.
-    final double borderBoxWidth = _styleWidth ?? _attrWidth ?? renderStyle.getWidthByAspectRatio();
+    final double borderBoxWidth =
+        _styleWidth ?? _attrWidth ?? renderStyle.getWidthByAspectRatio();
 
     return borderBoxWidth.round();
   }
 
   int get height {
     // Height calc priority: style > attr > intrinsic.
-    final double borderBoxHeight = _styleHeight ?? _attrHeight ?? renderStyle.getHeightByAspectRatio();
+    final double borderBoxHeight =
+        _styleHeight ?? _attrHeight ?? renderStyle.getHeightByAspectRatio();
 
     return borderBoxHeight.round();
   }
@@ -373,7 +380,9 @@ class ImageElement extends Element {
     super.removeAttribute(key);
     if (key == 'src') {
       _stopListeningStream(keepStreamAlive: true);
-    } else if (key == 'loading' && _isInLazyLoading && _currentImageProvider == null) {
+    } else if (key == 'loading' &&
+        _isInLazyLoading &&
+        _currentImageProvider == null) {
       _removeIntersectionChangeListener();
       _stopListeningStream(keepStreamAlive: true);
     }
@@ -389,7 +398,9 @@ class ImageElement extends Element {
   void _stopListeningStream({bool keepStreamAlive = false}) {
     if (!_isListeningStream) return;
 
-    if (keepStreamAlive && _completerHandle == null && _cachedImageStream?.completer != null) {
+    if (keepStreamAlive &&
+        _completerHandle == null &&
+        _cachedImageStream?.completer != null) {
       _completerHandle = _cachedImageStream!.completer!.keepAlive();
     }
 
@@ -435,11 +446,17 @@ class ImageElement extends Element {
     }
 
     // Try to make sure that this image can be encoded into a smaller size.
-    int? cachedWidth = width > 0 && width.isFinite ? (width * ui.window.devicePixelRatio).toInt() : null;
-    int? cachedHeight = height > 0 && height.isFinite ? (height * ui.window.devicePixelRatio).toInt() : null;
-    ImageConfiguration imageConfiguration = _shouldScaling && cachedWidth != null && cachedHeight != null
-        ? ImageConfiguration(size: Size(cachedWidth.toDouble(), cachedHeight.toDouble()))
-        : ImageConfiguration.empty;
+    int? cachedWidth = width > 0 && width.isFinite
+        ? (width * ui.window.devicePixelRatio).toInt()
+        : null;
+    int? cachedHeight = height > 0 && height.isFinite
+        ? (height * ui.window.devicePixelRatio).toInt()
+        : null;
+    ImageConfiguration imageConfiguration =
+        _shouldScaling && cachedWidth != null && cachedHeight != null
+            ? ImageConfiguration(
+                size: Size(cachedWidth.toDouble(), cachedHeight.toDouble()))
+            : ImageConfiguration.empty;
     _updateSourceStream(provider.resolve(imageConfiguration));
   }
 
@@ -577,14 +594,16 @@ class ImageElement extends Element {
   void _resolveResourceUri(String src) {
     String base = ownerDocument.controller.url;
     try {
-      _resolvedUri = ownerDocument.controller.uriParser!.resolve(Uri.parse(base), Uri.parse(src));
+      _resolvedUri = ownerDocument.controller.uriParser!
+          .resolve(Uri.parse(base), Uri.parse(src));
     } catch (_) {
       // Ignoring the failure of resolving, but to remove the resolved hyperlink.
       _resolvedUri = null;
     }
   }
 
-  void _stylePropertyChanged(String property, String? original, String present) {
+  void _stylePropertyChanged(
+      String property, String? original, String present) {
     if (property == WIDTH || property == HEIGHT) {
       // Resize image
       if (_shouldScaling) {
@@ -638,10 +657,12 @@ class ImageRequest {
   /// When an image request's state is either partially available or completely available,
   /// the image request is said to be available.
   bool get available =>
-      state == _ImageRequestState.completelyAvailable || state == _ImageRequestState.partiallyAvailable;
+      state == _ImageRequestState.completelyAvailable ||
+      state == _ImageRequestState.partiallyAvailable;
 
   Future<Uint8List> _obtainImage(int? contextId) async {
-    final FlutterDomBundle bundle = FlutterDomBundle.fromUrl(currentUri.toString());
+    final FlutterDomBundle bundle =
+        FlutterDomBundle.fromUrl(currentUri.toString());
 
     await bundle.resolve(contextId);
 

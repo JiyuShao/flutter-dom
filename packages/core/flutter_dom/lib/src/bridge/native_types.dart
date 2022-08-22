@@ -4,29 +4,16 @@
  * Copyright (C) 2022.08-present The FlutterDOM authors. All rights reserved.
  */
 
-import 'dart:ffi';
+import 'package:flutter_dom/src/dom/event.dart';
 
-import 'package:ffi/ffi.dart';
-
-import 'from_native.dart';
-import 'native_value.dart';
-
-// MUST READ:
-// All the class which extends Struct class has a corresponding struct in C++ code.
-// All class members include variables and functions must be follow the same order with C++ struct, to keep the same memory layout cross dart and C++ code.
-
-class NativeFlutterDomInfo extends Struct {
-  external Pointer<Utf8> app_name;
-  external Pointer<Utf8> app_version;
-  external Pointer<Utf8> app_revision;
-  external Pointer<Utf8> system_name;
+class NativeFlutterDomInfo {
+  external String? appName;
+  external String? appVersion;
+  external String? appRevision;
+  external String? systemName;
 }
 
-// For memory compatibility between NativeEvent and other struct which inherit NativeEvent(exp: NativeTouchEvent, NativeGestureEvent),
-// We choose to make all this structs have same memory layout. But dart lang did't provide semantically syntax to achieve this (like inheritance a class which extends Struct
-// or declare struct memory by value).
-// The only worked ways is use raw bytes to store NativeEvent members.
-class RawNativeEvent extends Struct {
+class RawNativeEvent {
 // Raw bytes represent the following fields.
 //   NativeString *type;
 //   int64_t bubbles;
@@ -35,12 +22,12 @@ class RawNativeEvent extends Struct {
 //   int64_t defaultPrevented;
 //   void *target;
 //   void *currentTarget;
-  external Pointer<Uint64> bytes;
-  @Int64()
+  external Map<String, dynamic> bytes;
+
   external int length;
 }
 
-class RawNativeInputEvent extends Struct {
+class RawNativeInputEvent {
 // Raw bytes represent the following fields.
 //   NativeString *type;
 //   int64_t bubbles;
@@ -51,12 +38,12 @@ class RawNativeInputEvent extends Struct {
 //   void *currentTarget;
 //   NativeString *inputType;
 //   NativeString *data
-  external Pointer<Uint64> bytes;
-  @Int64()
+  external Map<String, dynamic> bytes;
+
   external int length;
 }
 
-class RawNativeMediaErrorEvent extends Struct {
+class RawNativeMediaErrorEvent {
 // Raw bytes represent the following fields.
 //   NativeString *type;
 //   int64_t bubbles;
@@ -67,12 +54,12 @@ class RawNativeMediaErrorEvent extends Struct {
 //   void *currentTarget;
 //   int64_t code;
 //   NativeString *message;
-  external Pointer<Uint64> bytes;
-  @Int64()
+  external Map<String, dynamic> bytes;
+
   external int length;
 }
 
-class RawNativeMessageEvent extends Struct {
+class RawNativeMessageEvent {
 // Raw bytes represent the following fields.
 //   NativeString *type;
 //   int64_t bubbles;
@@ -83,13 +70,13 @@ class RawNativeMessageEvent extends Struct {
 //   void *currentTarget;
 //   NativeString *data;
 //   NativeString *origin;
-  external Pointer<Uint64> bytes;
-  @Int64()
+  external Map<String, dynamic> bytes;
+
   external int length;
 }
 
 //
-class RawNativeCustomEvent extends Struct {
+class RawNativeCustomEvent {
 // Raw bytes represent the following fields.
 //   NativeString *type;
 //   int64_t bubbles;
@@ -99,12 +86,12 @@ class RawNativeCustomEvent extends Struct {
 //   void *target;
 //   void *currentTarget;
 //   NativeString *detail;
-  external Pointer<Uint64> bytes;
-  @Int64()
+  external Map<String, dynamic> bytes;
+
   external int length;
 }
 
-class RawNativeMouseEvent extends Struct {
+class RawNativeMouseEvent {
 // Raw bytes represent the following fields.
 //   NativeString *type;
 //   int64_t bubbles;
@@ -117,12 +104,12 @@ class RawNativeMouseEvent extends Struct {
 //   double clientY;
 //   double offsetX;
 //   double offsetY;
-  external Pointer<Uint64> bytes;
-  @Int64()
+  external Map<String, dynamic> bytes;
+
   external int length;
 }
 
-class RawNativeGestureEvent extends Struct {
+class RawNativeGestureEvent {
 // Raw bytes represent the following fields.
 //   NativeString *type;
 //   int64_t bubbles;
@@ -139,12 +126,12 @@ class RawNativeGestureEvent extends Struct {
 //   double velocityY;
 //   double scale;
 //   double rotation;
-  external Pointer<Uint64> bytes;
-  @Int64()
+  external Map<String, dynamic> bytes;
+
   external int length;
 }
 
-class RawNativeCloseEvent extends Struct {
+class RawNativeCloseEvent {
 // Raw bytes represent the following fields.
 //   NativeString *type;
 //   int64_t bubbles;
@@ -156,12 +143,12 @@ class RawNativeCloseEvent extends Struct {
 //   int64_t code;
 //   NativeString *reason;
 //   int64_t wasClean;
-  external Pointer<Uint64> bytes;
-  @Int64()
+  external Map<String, dynamic> bytes;
+
   external int length;
 }
 
-class RawNativeIntersectionChangeEvent extends Struct {
+class RawNativeIntersectionChangeEvent {
 // Raw bytes represent the following fields.
 //   NativeString *type;
 //   int64_t bubbles;
@@ -171,12 +158,12 @@ class RawNativeIntersectionChangeEvent extends Struct {
 //   void *target;
 //   void *currentTarget;
 //   double intersectionRatio;
-  external Pointer<Uint64> bytes;
-  @Int64()
+  external Map<String, dynamic> bytes;
+
   external int length;
 }
 
-class RawNativeTouchEvent extends Struct {
+class RawNativeTouchEvent {
 // Raw bytes represent the following fields.
 //   NativeString *type;
 //   int64_t bubbles;
@@ -196,112 +183,99 @@ class RawNativeTouchEvent extends Struct {
 //   int64_t metaKey;
 //   int64_t ctrlKey;
 //   int64_t shiftKey;
-  external Pointer<Uint64> bytes;
-  @Int64()
+  external Map<String, dynamic> bytes;
+
   external int length;
 }
 
-class NativeTouch extends Struct {
-  @Int64()
+class NativeTouch {
   external int identifier;
 
-  external Pointer<NativeBindingObject> target;
+  external NativeBindingObject target;
 
-  @Double()
   external double clientX;
 
-  @Double()
   external double clientY;
 
-  @Double()
   external double screenX;
 
-  @Double()
   external double screenY;
 
-  @Double()
   external double pageX;
 
-  @Double()
   external double pageY;
 
-  @Double()
   external double radiusX;
 
-  @Double()
   external double radiusY;
 
-  @Double()
   external double rotationAngle;
 
-  @Double()
   external double force;
 
-  @Double()
   external double altitudeAngle;
 
-  @Double()
   external double azimuthAngle;
 
-  @Int64()
   external int touchType;
 }
 
-class NativeBoundingClientRect extends Struct {
-  @Double()
+class NativeBoundingClientRect {
   external double x;
 
-  @Double()
   external double y;
 
-  @Double()
   external double width;
 
-  @Double()
   external double height;
 
-  @Double()
   external double top;
 
-  @Double()
   external double right;
 
-  @Double()
   external double bottom;
 
-  @Double()
   external double left;
 }
 
-typedef NativeDispatchEvent = Int32 Function(Int32 contextId, Pointer<NativeBindingObject> nativeBindingObject,
-    Pointer<NativeString> eventType, Pointer<Void> nativeEvent, Int32 isCustomEvent);
-typedef NativeInvokeBindingMethod = Void Function(Pointer<Void> nativePtr, Pointer<NativeValue> returnValue,
-    Pointer<NativeString> method, Int32 argc, Pointer<NativeValue> argv);
+typedef NativeDispatchEvent = int Function(
+  int contextId,
+  NativeBindingObject nativeBindingObject,
+  String eventType,
+  Event nativeEvent,
+  int isCustomEvent,
+);
+typedef NativeInvokeBindingMethod = void Function(
+  void nativePtr,
+  dynamic returnValue,
+  String method,
+  int argc,
+  dynamic argv,
+);
 
-class NativeBindingObject extends Struct {
-  external Pointer<Void> instance;
-  external Pointer<NativeFunction<NativeDispatchEvent>> dispatchEvent;
+class NativeBindingObject {
+  external void instance;
+  external NativeDispatchEvent dispatchEvent;
   // Shared method called by JS side.
-  external Pointer<NativeFunction> invokeBindingMethod;
+  external Function invokeBindingMethod;
 }
 
-class NativeCanvasRenderingContext2D extends Struct {
-  external Pointer<NativeFunction> invokeBindingMethod;
+class NativeCanvasRenderingContext2D {
+  external Function invokeBindingMethod;
 }
 
-class NativePerformanceEntry extends Struct {
-  external Pointer<Utf8> name;
-  external Pointer<Utf8> entryType;
+class NativePerformanceEntry {
+  external String name;
 
-  @Double()
+  external String entryType;
+
   external double startTime;
-  @Double()
+
   external double duration;
 }
 
-class NativePerformanceEntryList extends Struct {
-  external Pointer<Uint64> entries;
+class NativePerformanceEntryList {
+  external String entries;
 
-  @Int32()
   external int length;
 }

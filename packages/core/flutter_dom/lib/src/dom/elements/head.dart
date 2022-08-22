@@ -23,14 +23,16 @@ const String NOSCRIPT = 'NOSCRIPT';
 const String SCRIPT = 'SCRIPT';
 
 class HeadElement extends Element {
-  HeadElement([BindingContext? context]) : super(context, defaultStyle: _defaultStyle);
+  HeadElement([BindingContext? context])
+      : super(context, defaultStyle: _defaultStyle);
 }
 
 const String _REL_STYLESHEET = 'stylesheet';
 
 // https://www.w3.org/TR/2011/WD-html5-author-20110809/the-link-element.html#the-link-element
 class LinkElement extends Element {
-  LinkElement([BindingContext? context]) : super(context, defaultStyle: _defaultStyle);
+  LinkElement([BindingContext? context])
+      : super(context, defaultStyle: _defaultStyle);
 
   Uri? _resolvedHyperlink;
   final Map<String, bool> _stylesheetLoaded = {};
@@ -125,7 +127,8 @@ class LinkElement extends Element {
     if (href != null) {
       String base = ownerDocument.controller.url;
       try {
-        _resolvedHyperlink = ownerDocument.controller.uriParser!.resolve(Uri.parse(base), Uri.parse(href));
+        _resolvedHyperlink = ownerDocument.controller.uriParser!
+            .resolve(Uri.parse(base), Uri.parse(href));
       } catch (_) {
         // Ignoring the failure of resolving, but to remove the resolved hyperlink.
         _resolvedHyperlink = null;
@@ -184,22 +187,26 @@ class LinkElement extends Element {
 }
 
 class MetaElement extends Element {
-  MetaElement([BindingContext? context]) : super(context, defaultStyle: _defaultStyle);
+  MetaElement([BindingContext? context])
+      : super(context, defaultStyle: _defaultStyle);
 }
 
 class TitleElement extends Element {
-  TitleElement([BindingContext? context]) : super(context, defaultStyle: _defaultStyle);
+  TitleElement([BindingContext? context])
+      : super(context, defaultStyle: _defaultStyle);
 }
 
 class NoScriptElement extends Element {
-  NoScriptElement([BindingContext? context]) : super(context, defaultStyle: _defaultStyle);
+  NoScriptElement([BindingContext? context])
+      : super(context, defaultStyle: _defaultStyle);
 }
 
 const String _CSS_MIME = 'text/css';
 
 // https://www.w3.org/TR/2011/WD-html5-author-20110809/the-style-element.html
 class StyleElement extends Element {
-  StyleElement([BindingContext? context]) : super(context, defaultStyle: _defaultStyle);
+  StyleElement([BindingContext? context])
+      : super(context, defaultStyle: _defaultStyle);
   final String _type = _CSS_MIME;
   CSSStyleSheet? _styleSheet;
 

@@ -17,7 +17,11 @@ const Map<String, dynamic> _defaultStyle = {
 };
 
 class TextareaElement extends TextFormControlElement {
-  TextareaElement(context) : super(context, isMultiline: true, defaultStyle: _defaultStyle, isReplacedElement: true);
+  TextareaElement(context)
+      : super(context,
+            isMultiline: true,
+            defaultStyle: _defaultStyle,
+            isReplacedElement: true);
 
   // Bindings.
   @override
@@ -211,8 +215,9 @@ class TextareaElement extends TextFormControlElement {
   double? get _defaultHeight {
     // rows defaults to 2.
     // https://html.spec.whatwg.org/multipage/form-elements.html#attr-textarea-rows
-    double computedLineHeight =
-        renderStyle.lineHeight != CSSLengthValue.normal ? renderStyle.lineHeight.computedValue : avgCharHeight;
+    double computedLineHeight = renderStyle.lineHeight != CSSLengthValue.normal
+        ? renderStyle.lineHeight.computedValue
+        : avgCharHeight;
 
     return computedLineHeight * double.parse(attributes[ROWS] ?? '2');
   }
@@ -247,12 +252,16 @@ class TextareaElement extends TextFormControlElement {
     _updateDefaultHeight();
   }
 
-  void _stylePropertyChanged(String property, String? original, String present) {
+  void _stylePropertyChanged(
+      String property, String? original, String present) {
     if (property == WIDTH) {
-      _styleWidth = renderStyle.width.isNotAuto ? renderStyle.width.computedValue : null;
+      _styleWidth =
+          renderStyle.width.isNotAuto ? renderStyle.width.computedValue : null;
       _updateDefaultWidth();
     } else if (property == HEIGHT) {
-      _styleHeight = renderStyle.height.isNotAuto ? renderStyle.height.computedValue : null;
+      _styleHeight = renderStyle.height.isNotAuto
+          ? renderStyle.height.computedValue
+          : null;
       _updateDefaultHeight();
     } else if (property == LINE_HEIGHT) {
       _updateDefaultHeight();

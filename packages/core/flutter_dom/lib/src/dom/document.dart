@@ -102,8 +102,10 @@ class Document extends Node {
         element.setRenderStyleProperty(OVERFLOW_X, CSSOverflowType.scroll);
         element.setRenderStyleProperty(OVERFLOW_Y, CSSOverflowType.scroll);
         // Init with viewport size.
-        element.renderStyle.width = CSSLengthValue(viewport.viewportSize.width, CSSLengthType.PX);
-        element.renderStyle.height = CSSLengthValue(viewport.viewportSize.height, CSSLengthType.PX);
+        element.renderStyle.width =
+            CSSLengthValue(viewport.viewportSize.width, CSSLengthType.PX);
+        element.renderStyle.height =
+            CSSLengthValue(viewport.viewportSize.height, CSSLengthType.PX);
       } else {
         // Detach document element.
         viewport.child = null;

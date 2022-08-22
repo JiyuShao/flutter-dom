@@ -36,10 +36,12 @@ class ScriptRunner {
   // Indicate the sync pending scripts.
   int _resolvingCount = 0;
 
-  static void _evaluateScriptBundle(int contextId, FlutterDomBundle bundle, {bool async = false}) async {
+  static void _evaluateScriptBundle(int contextId, FlutterDomBundle bundle,
+      {bool async = false}) async {
     // Evaluate bundle.
     if (bundle.isJavascript) {
-      final String contentInString = await resolveStringFromData(bundle.data!, preferSync: !async);
+      final String contentInString =
+          await resolveStringFromData(bundle.data!, preferSync: !async);
       evaluateScripts(contextId, contentInString, url: bundle.url);
     } else if (bundle.isBytecode) {
       evaluateQuickjsByteCode(contextId, bundle.data!);
@@ -144,7 +146,8 @@ class ScriptRunner {
 
 // https://www.w3.org/TR/2011/WD-html5-author-20110809/the-link-element.html
 class ScriptElement extends Element {
-  ScriptElement([BindingContext? context]) : super(context, defaultStyle: _defaultStyle);
+  ScriptElement([BindingContext? context])
+      : super(context, defaultStyle: _defaultStyle);
 
   final String _type = _MIME_TEXT_JAVASCRIPT;
 
@@ -266,7 +269,8 @@ class ScriptElement extends Element {
   void _resolveSource(String source) {
     String base = ownerDocument.controller.url;
     try {
-      _resolvedSource = ownerDocument.controller.uriParser!.resolve(Uri.parse(base), Uri.parse(source));
+      _resolvedSource = ownerDocument.controller.uriParser!
+          .resolve(Uri.parse(base), Uri.parse(source));
     } catch (_) {
       // Ignoring the failure of resolving, but to remove the resolved hyperlink.
       _resolvedSource = null;

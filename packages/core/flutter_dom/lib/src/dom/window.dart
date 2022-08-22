@@ -52,9 +52,11 @@ class Window extends EventTarget {
     switch (method) {
       case 'scroll':
       case 'scrollTo':
-        return scrollTo(castToType<double>(args[0]), castToType<double>(args[1]));
+        return scrollTo(
+            castToType<double>(args[0]), castToType<double>(args[1]));
       case 'scrollBy':
-        return scrollBy(castToType<double>(args[0]), castToType<double>(args[1]));
+        return scrollBy(
+            castToType<double>(args[0]), castToType<double>(args[1]));
       case 'open':
         return open(castToType<String>(args[0]));
       default:
@@ -64,7 +66,8 @@ class Window extends EventTarget {
 
   void open(String url) {
     String? sourceUrl = document.controller.view.rootController.url;
-    document.controller.view.handleNavigationAction(sourceUrl, url, FlutterDomNavigationType.navigate);
+    document.controller.view.handleNavigationAction(
+        sourceUrl, url, FlutterDomNavigationType.navigate);
   }
 
   double get scrollX => document.documentElement!.scrollLeft;
@@ -83,7 +86,8 @@ class Window extends EventTarget {
       ..scrollBy(x, y);
   }
 
-  String get colorScheme => window.platformBrightness == Brightness.light ? 'light' : 'dark';
+  String get colorScheme =>
+      window.platformBrightness == Brightness.light ? 'light' : 'dark';
 
   double get devicePixelRatio => window.devicePixelRatio;
 
@@ -106,7 +110,9 @@ class Window extends EventTarget {
   @override
   void dispatchEvent(Event event) {
     // Events such as EVENT_DOM_CONTENT_LOADED need to ensure that listeners are flushed and registered.
-    if (event.type == EVENT_DOM_CONTENT_LOADED || event.type == EVENT_LOAD || event.type == EVENT_ERROR) {
+    if (event.type == EVENT_DOM_CONTENT_LOADED ||
+        event.type == EVENT_LOAD ||
+        event.type == EVENT_ERROR) {
       flushUICommand();
     }
     super.dispatchEvent(event);

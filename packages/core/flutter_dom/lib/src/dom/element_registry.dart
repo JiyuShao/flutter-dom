@@ -114,5 +114,4 @@ void defineBuiltInElements() {
   defineElement(HTML, (context) => HTMLElement(context));
   defineElement(BODY, (context) => BodyElement(context));
   defineElement(IMAGE, (context) => ImageElement(context));
-  defineElement(CANVAS, (context) => CanvasElement(context));
 }

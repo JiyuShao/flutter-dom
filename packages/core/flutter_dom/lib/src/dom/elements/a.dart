@@ -19,9 +19,10 @@ class AnchorElement extends Element {
     if (href != null && href.isNotEmpty) {
       String baseUrl = ownerDocument.controller.url;
       Uri baseUri = Uri.parse(baseUrl);
-      Uri resolvedUri = ownerDocument.controller.uriParser!.resolve(baseUri, Uri.parse(href));
-      ownerDocument.controller.view
-          .handleNavigationAction(baseUrl, resolvedUri.toString(), _getNavigationType(resolvedUri.scheme));
+      Uri resolvedUri =
+          ownerDocument.controller.uriParser!.resolve(baseUri, Uri.parse(href));
+      ownerDocument.controller.view.handleNavigationAction(baseUrl,
+          resolvedUri.toString(), _getNavigationType(resolvedUri.scheme));
     }
   }
 
@@ -210,7 +211,9 @@ class AnchorElement extends Element {
     String? host;
     Uri? resolved = _resolvedHyperlink;
     if (resolved != null) {
-      host = resolved.host + ':' + (resolved.hasPort ? resolved.port.toString() : '');
+      host = resolved.host +
+          ':' +
+          (resolved.hasPort ? resolved.port.toString() : '');
     }
     return _DOMString(host);
   }
@@ -227,7 +230,8 @@ class AnchorElement extends Element {
       port = split[1];
     }
 
-    _resolvedHyperlink = _resolvedHyperlink!.replace(host: host, port: int.parse(port));
+    _resolvedHyperlink =
+        _resolvedHyperlink!.replace(host: host, port: int.parse(port));
     _reflectToAttributeHref();
   }
 
@@ -292,7 +296,8 @@ class AnchorElement extends Element {
   void _resolveHyperlink(String href) {
     String base = ownerDocument.controller.url;
     try {
-      _resolvedHyperlink = ownerDocument.controller.uriParser!.resolve(Uri.parse(base), Uri.parse(href));
+      _resolvedHyperlink = ownerDocument.controller.uriParser!
+          .resolve(Uri.parse(base), Uri.parse(href));
     } catch (_) {
       // Ignoring the failure of resolving, but to remove the resolved hyperlink.
       _resolvedHyperlink = null;

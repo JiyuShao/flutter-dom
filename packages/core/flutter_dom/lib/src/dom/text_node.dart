@@ -16,7 +16,8 @@ const String TAB_CHAR = '\t';
 class TextNode extends Node {
   static const String NORMAL_SPACE = '\u0020';
 
-  TextNode(this._data, [BindingContext? context]) : super(NodeType.TEXT_NODE, context);
+  TextNode(this._data, [BindingContext? context])
+      : super(NodeType.TEXT_NODE, context);
 
   // Must be existed after text node is attached, and all text update will after text attached.
   RenderTextBox? _renderTextBox;
@@ -59,12 +60,16 @@ class TextNode extends Node {
       _renderTextBox!.renderStyle = _parentElement.renderStyle;
       _renderTextBox!.data = data;
 
-      FlutterDomRenderParagraph renderParagraph = _renderTextBox!.child as FlutterDomRenderParagraph;
+      FlutterDomRenderParagraph renderParagraph =
+          _renderTextBox!.child as FlutterDomRenderParagraph;
       renderParagraph.markNeedsLayout();
 
-      RenderLayoutBox parentRenderLayoutBox = _parentElement.renderBoxModel as RenderLayoutBox;
-      parentRenderLayoutBox = parentRenderLayoutBox.renderScrollingContent ?? parentRenderLayoutBox;
-      _setTextSizeType(parentRenderLayoutBox.widthSizeType, parentRenderLayoutBox.heightSizeType);
+      RenderLayoutBox parentRenderLayoutBox =
+          _parentElement.renderBoxModel as RenderLayoutBox;
+      parentRenderLayoutBox =
+          parentRenderLayoutBox.renderScrollingContent ?? parentRenderLayoutBox;
+      _setTextSizeType(parentRenderLayoutBox.widthSizeType,
+          parentRenderLayoutBox.heightSizeType);
     }
   }
 
@@ -83,10 +88,13 @@ class TextNode extends Node {
     createRenderer();
 
     // If element attach WidgetElement, render object should be attach to render tree when mount.
-    if (parent.renderObjectManagerType == RenderObjectManagerType.FLUTTER_DOM_NODE &&
+    if (parent.renderObjectManagerType ==
+            RenderObjectManagerType.FLUTTER_DOM_NODE &&
         parent.renderBoxModel is RenderLayoutBox) {
-      RenderLayoutBox parentRenderLayoutBox = parent.renderBoxModel as RenderLayoutBox;
-      parentRenderLayoutBox = parentRenderLayoutBox.renderScrollingContent ?? parentRenderLayoutBox;
+      RenderLayoutBox parentRenderLayoutBox =
+          parent.renderBoxModel as RenderLayoutBox;
+      parentRenderLayoutBox =
+          parentRenderLayoutBox.renderScrollingContent ?? parentRenderLayoutBox;
       parentRenderLayoutBox.insert(_renderTextBox!, after: after);
     }
 
@@ -97,7 +105,8 @@ class TextNode extends Node {
   void _detachRenderTextBox() {
     if (isRendererAttached) {
       RenderTextBox renderTextBox = _renderTextBox!;
-      ContainerRenderObjectMixin parent = renderTextBox.parent as ContainerRenderObjectMixin;
+      ContainerRenderObjectMixin parent =
+          renderTextBox.parent as ContainerRenderObjectMixin;
       parent.remove(renderTextBox);
     }
   }
@@ -114,7 +123,8 @@ class TextNode extends Node {
     if (_renderTextBox != null) {
       return _renderTextBox!;
     }
-    return _renderTextBox = RenderTextBox(data, renderStyle: parentElement!.renderStyle);
+    return _renderTextBox =
+        RenderTextBox(data, renderStyle: parentElement!.renderStyle);
   }
 
   @override

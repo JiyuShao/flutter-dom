@@ -18,7 +18,8 @@ const Map<String, dynamic> _defaultStyle = {
 };
 
 class InputElement extends TextFormControlElement {
-  InputElement(context) : super(context, defaultStyle: _defaultStyle, isReplacedElement: true);
+  InputElement(context)
+      : super(context, defaultStyle: _defaultStyle, isReplacedElement: true);
 
   // Bindings.
   @override
@@ -265,9 +266,11 @@ class InputElement extends TextFormControlElement {
     _updateDefaultWidth();
   }
 
-  void _stylePropertyChanged(String property, String? original, String present) {
+  void _stylePropertyChanged(
+      String property, String? original, String present) {
     if (property == WIDTH) {
-      _styleWidth = renderStyle.width.isNotAuto ? renderStyle.width.computedValue : null;
+      _styleWidth =
+          renderStyle.width.isNotAuto ? renderStyle.width.computedValue : null;
       _updateDefaultWidth();
     } else if (property == LINE_HEIGHT) {
       // Need to mark RenderTextControlLeaderLayer as needsLayout manually cause
