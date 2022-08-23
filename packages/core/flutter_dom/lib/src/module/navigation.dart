@@ -9,10 +9,10 @@ typedef FlutterDomNavigationDecisionHandler = Future<FlutterDomNavigationActionP
 typedef FlutterDomNavigationErrorHandler = void Function(Object error, Object stack);
 
 enum FlutterDomNavigationActionPolicy {
-  // allow kraken to perform navigate.
+  // allow flutter_dom to perform navigate.
   allow,
 
-  // cancel kraken default's navigate action.
+  // cancel flutter_dom default's navigate action.
   cancel
 }
 
@@ -41,7 +41,7 @@ class NavigationModule extends BaseModule {
   @override
   void dispose() {}
 
-  // Navigate kraken page to target Url.
+  // Navigate flutter_dom page to target Url.
   Future<void> goTo(String targetUrl) async {
     String? sourceUrl = moduleManager!.controller.url;
 

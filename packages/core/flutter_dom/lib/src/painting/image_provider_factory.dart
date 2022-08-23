@@ -14,7 +14,7 @@ import 'package:flutter_dom/foundation.dart';
 import 'package:flutter_dom/painting.dart';
 import 'package:flutter_dom/src/module/navigator.dart';
 
-/// This class allows user to customize Kraken's image loading.
+/// This class allows user to customize image loading.
 
 class ImageProviderParams {
   int? cachedWidth;

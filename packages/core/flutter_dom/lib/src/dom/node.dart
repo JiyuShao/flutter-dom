@@ -296,7 +296,7 @@ abstract class Node extends EventTarget
   @override
   EventTarget? get parentEventTarget => parentNode;
 
-  // Whether Kraken Node need to manage render object.
+  // Whether FlutterDOM Node need to manage render object.
   RenderObjectManagerType get renderObjectManagerType =>
       RenderObjectManagerType.FLUTTER_DOM_NODE;
 }

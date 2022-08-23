@@ -1038,7 +1038,7 @@ abstract class Element extends Node
     return attributes.containsKey(qualifiedName);
   }
 
-  // FIXME: only compatible with kraken plugins
+  // FIXME: only compatible with flutter_dom plugins
   @deprecated
   void setStyle(String property, value) {
     setRenderStyle(property, value);

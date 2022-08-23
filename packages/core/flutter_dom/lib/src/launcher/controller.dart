@@ -68,13 +68,13 @@ abstract class DevToolsService {
   void dispose();
 }
 
-// An kraken View Controller designed for multiple kraken view control.
+// An flutter_dom View Controller designed for multiple flutter_dom view control.
 class FlutterDomViewController
     implements WidgetsBindingObserver, ElementsBindingObserver {
   FlutterDomController rootController;
 
-  // The methods of the KrakenNavigateDelegation help you implement custom behaviors that are triggered
-  // during a kraken view's process of loading, and completing a navigation request.
+  // The methods of the avigateDelegation help you implement custom behaviors that are triggered
+  // during a flutter_dom view's process of loading, and completing a navigation request.
   FlutterDomNavigationDelegate? navigationDelegate;
 
   GestureListener? gestureListener;
@@ -109,7 +109,7 @@ class FlutterDomViewController
       this.navigationDelegate,
       this.gestureListener,
       this.widgetDelegate,
-      // Viewport won't change when kraken page reload, should reuse previous page's viewportBox.
+      // Viewport won't change when flutter_dom page reload, should reuse previous page's viewportBox.
       RenderViewportBox? originalViewport}) {
     if (enableDebug) {
       debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
@@ -207,7 +207,7 @@ class FlutterDomViewController
   // Enable print debug message when rendering.
   bool enableDebug;
 
-  // Kraken have already disposed.
+  // have already disposed.
   bool _disposed = false;
 
   bool get disposed => _disposed;
@@ -237,7 +237,7 @@ class FlutterDomViewController
     }
   }
 
-  // Attach kraken's renderObject to an renderObject.
+  // Attach flutter_dom's renderObject to an renderObject.
   void attachTo(RenderObject parent, [RenderObject? previousSibling]) {
     if (parent is ContainerRenderObjectMixin) {
       parent.insert(document.renderer!, after: previousSibling);
@@ -818,7 +818,7 @@ class FlutterDomViewController
   }
 }
 
-// An controller designed to control kraken's functional modules.
+// An controller designed to control flutter_dom's functional modules.
 class FlutterDomModuleController with TimerMixin, ScheduleFrameMixin {
   late ModuleManager _moduleManager;
   ModuleManager get moduleManager => _moduleManager;
@@ -900,7 +900,7 @@ class FlutterDomController {
 
   final GestureListener? _gestureListener;
 
-  // The kraken view entrypoint bundle.
+  // The flutter_dom view entrypoint bundle.
   FlutterDomBundle? _entrypoint;
 
   FlutterDomController(
@@ -1108,13 +1108,13 @@ class FlutterDomController {
     _pendingCallbacks.clear();
   }
 
-  // Pause all timers and callbacks if kraken page are invisible.
+  // Pause all timers and callbacks if flutter_dom page are invisible.
   void pause() {
     _paused = true;
     module.pauseInterval();
   }
 
-  // Resume all timers and callbacks if kraken page now visible.
+  // Resume all timers and callbacks if flutter_dom page now visible.
   void resume() {
     _paused = false;
     flushPendingCallbacks();
@@ -1300,6 +1300,6 @@ class FlutterDomController {
 }
 
 mixin RenderObjectWithControllerMixin {
-  // Kraken controller reference which control all kraken created renderObjects.
+  // controller reference which control all flutter_dom created renderObjects.
   FlutterDomController? controller;
 }

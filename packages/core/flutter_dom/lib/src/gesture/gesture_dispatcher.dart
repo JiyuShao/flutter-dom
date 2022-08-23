@@ -329,7 +329,7 @@ class GestureDispatcher {
       return;
     }
 
-    // When Kraken wraps the Flutter Widget, Kraken need to calculate the global coordinates relative to self.
+    // When FlutterDOM wraps the Flutter Widget, FlutterDOM need to calculate the global coordinates relative to self.
     Offset globalOffset = root.globalToLocal(Offset(globalPosition.dx, globalPosition.dy));
     double clientX = globalOffset.dx;
     double clientY = globalOffset.dy;

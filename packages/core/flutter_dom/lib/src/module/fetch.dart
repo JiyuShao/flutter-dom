@@ -60,7 +60,7 @@ class FetchModule extends BaseModule {
   @visibleForTesting
   Future<HttpClientRequest> getRequest(Uri uri, String? method, Map? headers, data) {
     return httpClient.openUrl(method ?? 'GET', uri).then((HttpClientRequest request) {
-      // Reset Kraken UA.
+      // Reset UA.
       request.headers.removeAll(HttpHeaders.userAgentHeader);
       request.headers.add(HttpHeaders.userAgentHeader, _getDefaultUserAgent());
 

@@ -32,9 +32,9 @@ class Screen extends BindingObject {
   //   - The available area of the rendering surface of the output device, in CSS pixels.
   //   - The area of the output device, in CSS pixels.
   //   - The area of the viewport, in CSS pixels.
-  // @NOTE: Why using physicalSize: in most cases, kraken is integrated into host native app,
-  //        so the size of kraken view is depending on how big is the flutter view, for users
-  //        they can not adjust size of kraken view. The [window.physicalSize] is the size of
+  // @NOTE: Why using physicalSize: in most cases, flutter_dom is integrated into host native app,
+  //        so the size of flutter_dom view is depending on how big is the flutter view, for users
+  //        they can not adjust size of flutter_dom view. The [window.physicalSize] is the size of
   //        native flutter view. (@zeroling)
   int get availWidth => window.physicalSize.width ~/ window.devicePixelRatio;
 

@@ -21,7 +21,7 @@ abstract class FlutterDomDynamicLibrary {
     _dynamicLibraryPath = value;
   }
 
-  // The kraken library name.
+  // The flutter_dom library name.
   static String libName = 'libflutterDom';
 
   static String get _nativeDynamicLibraryName {

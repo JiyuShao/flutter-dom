@@ -552,7 +552,7 @@ class TextFormControlElement extends Element implements TextInputClient, TickerP
     if (ownerDocument.focusedElement != this) {
       // Blur current focused element.
       ownerDocument.focusedElement?.blur();
-      // Focus kraken widget to get focus from other widgets.
+      // Focus flutter_dom widget to get focus from other widgets.
       WidgetDelegate? widgetDelegate = ownerDocument.widgetDelegate;
       widgetDelegate?.requestFocus();
       ownerDocument.focusedElement = this;
