@@ -101,7 +101,7 @@ packages:
     source: hosted
     version: "0.6.4"
   js_runtime:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       path: "../js_runtime"
       relative: true

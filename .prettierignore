@@ -192,5 +192,4 @@ dist
 packages/**/lib
 packages/**/bin
 packages/**/dist
-packages/core
 __tests__/coverage

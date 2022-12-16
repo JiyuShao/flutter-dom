@@ -5,8 +5,7 @@
   "packageManager": "yarn@3.1.1",
   "workspaces": {
     "packages": [
-      "packages/core/*",
-      "packages/scaffold/*"
+      "packages/*"
     ]
   },
   "description": "基于 W3C 标准与 Flutter 渲染的多端渲染引擎",

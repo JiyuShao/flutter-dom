@@ -190,8 +190,8 @@ dist
 .yarn/
 .fvm/
 .eslintrc.js
+packages/**/assets
 packages/**/lib
 packages/**/bin
 packages/**/dist
-packages/core
 __tests__/coverage

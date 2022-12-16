@@ -1,8 +1,0 @@
-{
-  "extends": "@flutter-dom/tsconfig/monorepo",
-  "compilerOptions": {},
-  "include": ["."],
-  "exclude": ["node_modules"],
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Logger"
-}
