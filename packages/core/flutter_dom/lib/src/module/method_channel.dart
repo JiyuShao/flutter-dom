@@ -133,13 +133,6 @@ class FlutterDomNativeChannel extends FlutterDomMethodChannel {
     if (url != null && url.isEmpty) url = null;
     return url;
   }
-
-  static Future<void> syncDynamicLibraryPath() async {
-    String? path = await _nativeChannel.invokeMethod('getDynamicLibraryPath');
-    if (path != null) {
-      FlutterDomDynamicLibrary.dynamicLibraryPath = path;
-    }
-  }
 }
 
 Future<dynamic> _invokeMethodFromJavaScript(FlutterDomController? controller, String method, List args) {

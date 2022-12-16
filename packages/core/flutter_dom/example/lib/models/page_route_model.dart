@@ -7,7 +7,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_dom_example/screens/error_screen.dart';
-import 'package:flutter_dom_example/screens/js_example_screen.dart';
+import 'package:flutter_dom_example/screens/flutter_dom_example_screen.dart';
 import 'package:flutter_dom_example/screens/not_found_screen.dart';
 import 'package:flutter_dom_example/screens/entry_screen.dart';
 import 'package:flutter_dom_example/utils/routes/page_routes/fade_page_route.dart';
@@ -43,10 +43,10 @@ List<PageRouteModel> routeListConfig = [
   ),
   // JS 示例页面路径
   PageRouteModel(
-    path: JSExampleScreen.routeName,
+    path: FlutterDommExampleScreen.routeName,
     routeGenerator: (_) => FadePageRoute(
-      pageBuilder: (_, __, ___) => const JSExampleScreen(),
-      settings: const RouteSettings(name: JSExampleScreen.routeName),
+      pageBuilder: (_, __, ___) => const FlutterDommExampleScreen(),
+      settings: const RouteSettings(name: FlutterDommExampleScreen.routeName),
     ),
   ),
 ];

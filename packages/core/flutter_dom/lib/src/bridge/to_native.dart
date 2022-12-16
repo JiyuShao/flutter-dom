@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_dom/dom.dart';
 import 'package:flutter_dom/flutter_dom.dart';
+import 'package:js_runtime/js_runtime.dart';
 
 // Register getFlutterDomInfo
 class FlutterDomInfo {
@@ -102,8 +103,11 @@ int createScreen(double width, double height) {
 }
 
 // Register evaluateScripts
-void _evaluateScripts(int contextId, String code, String url, int line) {
-  // TODO: 待实现
+Future<void> _evaluateScripts(
+    int contextId, String code, String url, int line) async {
+  JsRuntime jsRuntime = JsRuntime();
+  await jsRuntime.waitUntilInited;
+  jsRuntime.evaluate(code);
   return null as dynamic;
 }
 

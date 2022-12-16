@@ -33,7 +33,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   logger: ^1.1.0
-  js_runtime: ^0.0.1
+  flutter_dom: ^0.0.1
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +52,8 @@ dev_dependencies:
 # The example app is bundled with the plugin so we use a path dependency on
 # the parent directory to use the current plugin's version.
 dependency_overrides:
+  flutter_dom:
+    path: ../../flutter_dom
   js_runtime:
     path: ../../js_runtime
 
@@ -95,3 +97,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+  assets:
+    - assets/
+    - assets/demos/

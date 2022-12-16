@@ -5,8 +5,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "flutter_dom",
-      "cwd": "packages/core/flutter_dom",
+      "name": "flutter_dom example",
+      "cwd": "packages/core/flutter_dom/example",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "js_runtime example",
+      "cwd": "packages/core/js_runtime/example",
       "request": "launch",
       "type": "dart"
     },

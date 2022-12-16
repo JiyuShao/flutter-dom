@@ -32,6 +32,7 @@ dependencies:
 
   quiver: ^3.1.0
   shared_preferences: ^2.0.15
+  js_runtime: ^0.0.1
 
 dev_dependencies:
   flutter_test:

@@ -287,10 +287,3 @@ dist
 tsconfig.tsbuildinfo
 packages/**/bin
 packages/**/dist
-
-# template .yalc files
-packages/**/.yalc
-packages/**/yalc.lock
-__tests__/coverage
-.yalc/
-yalc.lock
