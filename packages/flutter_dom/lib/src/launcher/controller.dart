@@ -101,29 +101,28 @@ class FlutterDomViewController
 
   WidgetDelegate? widgetDelegate;
 
-  FlutterDomViewController(this._viewportWidth, this._viewportHeight,
-      {this.background,
-      this.enableDebug = false,
-      int? contextId,
-      required this.rootController,
-      this.navigationDelegate,
-      this.gestureListener,
-      this.widgetDelegate,
-      // Viewport won't change when flutter_dom page reload, should reuse previous page's viewportBox.
-      RenderViewportBox? originalViewport}) {
+  late Future? _initPromise;
+  Future get waitUntilInited => _initPromise ?? Future.value();
+
+  FlutterDomViewController(
+    this._viewportWidth,
+    this._viewportHeight, {
+    this.background,
+    this.enableDebug = false,
+    int? contextId,
+    required this.rootController,
+    this.navigationDelegate,
+    this.gestureListener,
+    this.widgetDelegate,
+    // Viewport won't change when flutter_dom page reload, should reuse previous page's viewportBox.
+    RenderViewportBox? originalViewport,
+  }) {
     if (enableDebug) {
       debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
       debugPaintSizeEnabled = true;
     }
     if (kProfileMode) {
       PerformanceTiming.instance().mark(PERF_VIEW_CONTROLLER_PROPERTY_INIT);
-      PerformanceTiming.instance().mark(PERF_BRIDGE_INIT_START);
-    }
-    BindingBridge.setup();
-    _contextId = contextId ?? initBridge();
-
-    if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_BRIDGE_INIT_END);
       PerformanceTiming.instance().mark(PERF_CREATE_VIEWPORT_START);
     }
 
@@ -133,9 +132,10 @@ class FlutterDomViewController
       viewport = originalViewport;
     } else {
       viewport = RenderViewportBox(
-          background: background,
-          viewportSize: ui.Size(viewportWidth, viewportHeight),
-          controller: rootController);
+        background: background,
+        viewportSize: ui.Size(viewportWidth, viewportHeight),
+        controller: rootController,
+      );
     }
 
     if (kProfileMode) {
@@ -143,6 +143,27 @@ class FlutterDomViewController
       PerformanceTiming.instance().mark(PERF_ELEMENT_MANAGER_INIT_START);
     }
 
+    _initPromise = _initBridge(contextId);
+  }
+
+  Future<void> _initBridge(int? contextId) async {
+    if (kProfileMode) {
+      PerformanceTiming.instance().mark(PERF_VIEW_CONTROLLER_PROPERTY_INIT);
+      PerformanceTiming.instance().mark(PERF_BRIDGE_INIT_START);
+    }
+
+    if (kProfileMode) {
+      PerformanceTiming.instance().mark(PERF_BRIDGE_INIT_END);
+      PerformanceTiming.instance().mark(PERF_CREATE_VIEWPORT_START);
+    }
+    _contextId = contextId ?? await initBridge();
+    _initElementManager();
+  }
+
+  void _initElementManager() {
+    if (kProfileMode) {
+      PerformanceTiming.instance().mark(PERF_ELEMENT_MANAGER_INIT_START);
+    }
     _setupObserver();
 
     defineBuiltInElements();
@@ -216,9 +237,9 @@ class FlutterDomViewController
   late Document document;
   late Window window;
 
-  void evaluateJavaScripts(String code) {
+  void evaluateJavaScript(String code) {
     assert(!_disposed, 'FlutterDom have already disposed');
-    evaluateScripts(_contextId, code);
+    evaluateScript(_contextId, code);
   }
 
   void _setupObserver() {
@@ -903,6 +924,9 @@ class FlutterDomController {
   // The flutter_dom view entrypoint bundle.
   FlutterDomBundle? _entrypoint;
 
+  late Future? _initPromise;
+  Future get waitUntilInited => _initPromise ?? Future.value();
+
   FlutterDomController(
     String? name,
     double viewportWidth,
@@ -948,36 +972,40 @@ class FlutterDomController {
       PerformanceTiming.instance().mark(PERF_VIEW_CONTROLLER_INIT_END);
     }
 
-    final int contextId = _view.contextId;
+    _initPromise = view.waitUntilInited;
 
-    _module = FlutterDomModuleController(this, contextId);
+    view.waitUntilInited.then((value) {
+      final int contextId = _view.contextId;
 
-    if (entrypoint != null) {
-      HistoryModule historyModule =
-          module.moduleManager.getModule<HistoryModule>('History')!;
-      historyModule.add(entrypoint);
-    }
+      _module = FlutterDomModuleController(this, contextId);
 
-    assert(!_controllerMap.containsKey(contextId),
-        'found exist contextId of FlutterDomController, contextId: $contextId');
-    _controllerMap[contextId] = this;
-    assert(!_nameIdMap.containsKey(name),
-        'found exist name of FlutterDomController, name: $name');
-    if (name != null) {
-      _nameIdMap[name] = contextId;
-    }
+      if (entrypoint != null) {
+        HistoryModule historyModule =
+            module.moduleManager.getModule<HistoryModule>('History')!;
+        historyModule.add(entrypoint);
+      }
 
-    setupHttpOverrides(httpClientInterceptor, contextId: contextId);
+      assert(!_controllerMap.containsKey(contextId),
+          'found exist contextId of FlutterDomController, contextId: $contextId');
+      _controllerMap[contextId] = this;
+      assert(!_nameIdMap.containsKey(name),
+          'found exist name of FlutterDomController, name: $name');
+      if (name != null) {
+        _nameIdMap[name] = contextId;
+      }
 
-    uriParser ??= UriParser();
+      setupHttpOverrides(httpClientInterceptor, contextId: contextId);
 
-    if (devToolsService != null) {
-      devToolsService!.init(this);
-    }
+      uriParser ??= UriParser();
 
-    if (autoExecuteEntrypoint) {
-      executeEntrypoint();
-    }
+      if (devToolsService != null) {
+        devToolsService!.init(this);
+      }
+
+      if (autoExecuteEntrypoint) {
+        executeEntrypoint();
+      }
+    });
   }
 
   late FlutterDomViewController _view;
@@ -1210,7 +1238,7 @@ class FlutterDomController {
       Uint8List data = entrypoint.data!;
       if (entrypoint.isJavascript) {
         // Prefer sync decode in loading entrypoint.
-        evaluateScripts(
+        evaluateScript(
             contextId, await resolveStringFromData(data, preferSync: true),
             url: url);
       } else if (entrypoint.isBytecode) {
@@ -1220,7 +1248,7 @@ class FlutterDomController {
       } else if (entrypoint.contentType.primaryType == 'text') {
         // Fallback treating text content as JavaScript.
         try {
-          evaluateScripts(
+          evaluateScript(
               contextId, await resolveStringFromData(data, preferSync: true),
               url: url);
         } catch (error) {

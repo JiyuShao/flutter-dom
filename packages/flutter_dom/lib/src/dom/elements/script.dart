@@ -42,7 +42,7 @@ class ScriptRunner {
     if (bundle.isJavascript) {
       final String contentInString =
           await resolveStringFromData(bundle.data!, preferSync: !async);
-      evaluateScripts(contextId, contentInString, url: bundle.url);
+      evaluateScript(contextId, contentInString, url: bundle.url);
     } else if (bundle.isBytecode) {
       evaluateQuickjsByteCode(contextId, bundle.data!);
     } else {
@@ -305,7 +305,7 @@ class ScriptElement extends Element {
       // Eval script context: <script> console.log(1) </script>
       String? script = collectElementChildText();
       if (script != null && script.isNotEmpty) {
-        evaluateScripts(contextId, script);
+        evaluateScript(contextId, script);
       }
     }
   }

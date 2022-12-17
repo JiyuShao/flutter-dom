@@ -11,7 +11,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_dom/dom.dart';
 import 'package:flutter_dom/flutter_dom.dart';
-import 'package:js_runtime/js_runtime.dart';
+import 'package:js_runtime/common/logger.dart';
+import 'utils/page_pool.dart';
 
 // Register getFlutterDomInfo
 class FlutterDomInfo {
@@ -102,17 +103,9 @@ int createScreen(double width, double height) {
   return _createScreen(width, height);
 }
 
-// Register evaluateScripts
-Future<void> _evaluateScripts(
-    int contextId, String code, String url, int line) async {
-  JsRuntime jsRuntime = JsRuntime();
-  await jsRuntime.waitUntilInited;
-  jsRuntime.evaluate(code);
-  return null as dynamic;
-}
-
+// Register evaluateScript
 int _anonymousScriptEvaluationId = 0;
-void evaluateScripts(int contextId, String code, {String? url, int line = 0}) {
+void evaluateScript(int contextId, String code, {String? url, int line = 0}) {
   if (FlutterDomController.getControllerOfJSContextId(contextId) == null) {
     return;
   }
@@ -122,105 +115,60 @@ void evaluateScripts(int contextId, String code, {String? url, int line = 0}) {
     _anonymousScriptEvaluationId++;
   }
   try {
-    _evaluateScripts(contextId, code, url, line);
+    pagePoolIns.evaluateScript(contextId, code, url: url, line: line);
   } catch (e, stack) {
-    print('$e\n$stack');
+    logger.d('$e\n$stack');
   }
 }
 
 // Register evaluateQuickjsByteCode
-void _evaluateQuickjsByteCode(int contextId, List bytes, int length) {
-  // TODO: 待实现
-  return null as dynamic;
-}
-
 void evaluateQuickjsByteCode(int contextId, List bytes) {
   if (FlutterDomController.getControllerOfJSContextId(contextId) == null) {
     return;
   }
-  _evaluateQuickjsByteCode(contextId, bytes, bytes.length);
-}
-
-// Register parseHTML
-void _parseHTML(int contextId, String code, int length) {
   // TODO: 待实现
   return null as dynamic;
 }
 
+// Register parseHTML
 void parseHTML(int contextId, String code) {
   if (FlutterDomController.getControllerOfJSContextId(contextId) == null) {
     return;
   }
   try {
-    _parseHTML(contextId, code, code.length);
+    // TODO: 待实现
+    // _parseHTML(contextId, code, code.length);
   } catch (e, stack) {
-    print('$e\n$stack');
+    logger.d('$e\n$stack');
   }
 }
 
 // Register initJSPagePool
-void _initJSPagePool(int contextId) {
-  // TODO: 待实现
-  return null as dynamic;
-}
-
+PagePool pagePoolIns = PagePool();
 void initJSPagePool(int poolSize) {
-  _initJSPagePool(poolSize);
+  pagePoolIns.initJSPagePool(poolSize);
 }
 
 // Register disposePage
-void _disposePage(int contextId) {
-  // TODO: 待实现
-  return null as dynamic;
-}
-
 void disposePage(int contextId) {
-  _disposePage(contextId);
+  pagePoolIns.disposePage(contextId);
 }
 
 // Register allocateNewPage
-int _allocateNewPage(int contextId) {
-  // TODO: 待实现
-  return null as dynamic;
-}
-
-int allocateNewPage([int targetContextId = -1]) {
-  return _allocateNewPage(targetContextId);
-}
-
-// Register registerPluginByteCode
-
-void _registerPluginByteCode(List bytes, int length, String name) {
-  // TODO: 待实现
-  return null as dynamic;
-}
-
-void registerPluginByteCode(List bytes, String name) {
-  _registerPluginByteCode(bytes, bytes.length, name);
+Future<int> allocateNewPage([int contextId = -1]) {
+  return pagePoolIns.allocateNewPage(contextId);
 }
 
 // Register profileModeEnabled
-
-int _profileModeEnabled() {
-  // TODO: 待实现
-  return null as dynamic;
-}
-
-const _CODE_ENABLED = 1;
 bool profileModeEnabled() {
-  return _profileModeEnabled() == _CODE_ENABLED;
+  return pagePoolIns.profileModeEnabled();
 }
 
 // Register reloadJSContext
-void _reloadJSContext(int contextId) {
-  // TODO: 待实现
-  return null as dynamic;
-}
-
 Future<void> reloadJSContext(int contextId) async {
   Completer completer = Completer<void>();
   Future.microtask(() {
-    _reloadJSContext(contextId);
+    pagePoolIns.reloadJSContext(contextId);
     completer.complete();
   });
   return completer.future;
@@ -285,7 +233,7 @@ List<UICommand> readUICommand(int contextId) {
       for (int i = 0; i < command.args.length; i++) {
         printMsg += ' args[$i]: ${command.args[i]}';
       }
-      print(printMsg);
+      logger.d(printMsg);
     }
   }
   clearUICommand(contextId);
@@ -387,7 +335,7 @@ void flushUICommand() {
             break;
         }
       } catch (e, stack) {
-        print('$e\n$stack');
+        logger.d('$e\n$stack');
       }
     }
 
@@ -396,7 +344,7 @@ void flushUICommand() {
       try {
         controller.view.flushPendingStyleProperties(id);
       } catch (e, stack) {
-        print('$e\n$stack');
+        logger.d('$e\n$stack');
       }
     }
     pendingStylePropertiesTargets.clear();

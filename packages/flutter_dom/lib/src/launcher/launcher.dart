@@ -62,6 +62,7 @@ void launch(
       httpClientInterceptor: httpClientInterceptor,
       autoExecuteEntrypoint: false,
     );
+    await controller.waitUntilInited;
 
     controller.view.attachTo(RendererBinding.instance.renderView);
 

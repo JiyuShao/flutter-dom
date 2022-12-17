@@ -129,7 +129,8 @@ class FlutterDom extends StatefulWidget {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<double>('viewportWidth', viewportWidth));
-    properties.add(DiagnosticsProperty<double>('viewportHeight', viewportHeight));
+    properties
+        .add(DiagnosticsProperty<double>('viewportHeight', viewportHeight));
   }
 
   @override
@@ -183,7 +184,9 @@ class _FlutterDomState extends State<FlutterDom> with RouteAware {
 
 class FlutterDomRenderObjectWidget extends SingleChildRenderObjectWidget {
   // Creates a widget that visually hides its child.
-  const FlutterDomRenderObjectWidget(FlutterDom widget, WidgetDelegate widgetDelegate, {Key? key})
+  const FlutterDomRenderObjectWidget(
+      FlutterDom widget, WidgetDelegate widgetDelegate,
+      {Key? key})
       : _flutterDomWidget = widget,
         _widgetDelegate = widgetDelegate,
         super(key: key);
@@ -197,71 +200,87 @@ class FlutterDomRenderObjectWidget extends SingleChildRenderObjectWidget {
       PerformanceTiming.instance().mark(PERF_CONTROLLER_INIT_START);
     }
 
-    double viewportWidth = _flutterDomWidget.viewportWidth ?? window.physicalSize.width / window.devicePixelRatio;
-    double viewportHeight = _flutterDomWidget.viewportHeight ?? window.physicalSize.height / window.devicePixelRatio;
+    double viewportWidth = _flutterDomWidget.viewportWidth ??
+        window.physicalSize.width / window.devicePixelRatio;
+    double viewportHeight = _flutterDomWidget.viewportHeight ??
+        window.physicalSize.height / window.devicePixelRatio;
 
     if (viewportWidth == 0.0 && viewportHeight == 0.0) {
-      throw FlutterError('''Can't get viewportSize from window. Please set viewportWidth and viewportHeight manually.
+      throw FlutterError(
+          '''Can't get viewportSize from window. Please set viewportWidth and viewportHeight manually.
 This situation often happened when you trying creating flutterDom when FlutterView not initialized.''');
     }
 
-    FlutterDomController controller = FlutterDomController(shortHash(_flutterDomWidget.hashCode), viewportWidth, viewportHeight,
-        background: _flutterDomWidget.background,
-        showPerformanceOverlay: Platform.environment[ENABLE_PERFORMANCE_OVERLAY] != null,
-        entrypoint: _flutterDomWidget.bundle,
-        // Execute entrypoint when mount manually.
-        autoExecuteEntrypoint: false,
-        onLoad: _flutterDomWidget.onLoad,
-        onLoadError: _flutterDomWidget.onLoadError,
-        onJSError: _flutterDomWidget.onJSError,
-        methodChannel: _flutterDomWidget.javaScriptChannel,
-        gestureListener: _flutterDomWidget.gestureListener,
-        navigationDelegate: _flutterDomWidget.navigationDelegate,
-        devToolsService: _flutterDomWidget.devToolsService,
-        httpClientInterceptor: _flutterDomWidget.httpClientInterceptor,
-        widgetDelegate: _widgetDelegate,
-        uriParser: _flutterDomWidget.uriParser);
+    FlutterDomController controller = FlutterDomController(
+      shortHash(_flutterDomWidget.hashCode), viewportWidth, viewportHeight,
+      background: _flutterDomWidget.background,
+      showPerformanceOverlay:
+          Platform.environment[ENABLE_PERFORMANCE_OVERLAY] != null,
+      entrypoint: _flutterDomWidget.bundle,
+      // Execute entrypoint when mount manually.
+      autoExecuteEntrypoint: false,
+      onLoad: _flutterDomWidget.onLoad,
+      onLoadError: _flutterDomWidget.onLoadError,
+      onJSError: _flutterDomWidget.onJSError,
+      methodChannel: _flutterDomWidget.javaScriptChannel,
+      gestureListener: _flutterDomWidget.gestureListener,
+      navigationDelegate: _flutterDomWidget.navigationDelegate,
+      devToolsService: _flutterDomWidget.devToolsService,
+      httpClientInterceptor: _flutterDomWidget.httpClientInterceptor,
+      widgetDelegate: _widgetDelegate,
+      uriParser: _flutterDomWidget.uriParser,
+    );
 
-    OnControllerCreated? onControllerCreated = _flutterDomWidget.onControllerCreated;
-    if (onControllerCreated != null) {
-      onControllerCreated(controller);
-    }
-
-    if (kProfileMode) {
-      PerformanceTiming.instance().mark(PERF_CONTROLLER_INIT_END);
-    }
-
+    controller.waitUntilInited.then((value) {
+      OnControllerCreated? onControllerCreated =
+          _flutterDomWidget.onControllerCreated;
+      if (onControllerCreated != null) {
+        onControllerCreated(controller);
+      }
+      if (kProfileMode) {
+        PerformanceTiming.instance().mark(PERF_CONTROLLER_INIT_END);
+      }
+    });
     return controller.view.getRootRenderObject();
   }
 
   @override
-  void updateRenderObject(BuildContext context, covariant RenderObject renderObject) {
+  void updateRenderObject(
+      BuildContext context, covariant RenderObject renderObject) {
     super.updateRenderObject(context, renderObject);
-    FlutterDomController controller = (renderObject as RenderObjectWithControllerMixin).controller!;
+    FlutterDomController controller =
+        (renderObject as RenderObjectWithControllerMixin).controller!;
     controller.name = shortHash(_flutterDomWidget.hashCode);
 
-    bool viewportWidthHasChanged = controller.view.viewportWidth != _flutterDomWidget.viewportWidth;
-    bool viewportHeightHasChanged = controller.view.viewportHeight != _flutterDomWidget.viewportHeight;
+    bool viewportWidthHasChanged =
+        controller.view.viewportWidth != _flutterDomWidget.viewportWidth;
+    bool viewportHeightHasChanged =
+        controller.view.viewportHeight != _flutterDomWidget.viewportHeight;
 
-    double viewportWidth = _flutterDomWidget.viewportWidth ?? window.physicalSize.width / window.devicePixelRatio;
-    double viewportHeight = _flutterDomWidget.viewportHeight ?? window.physicalSize.height / window.devicePixelRatio;
+    double viewportWidth = _flutterDomWidget.viewportWidth ??
+        window.physicalSize.width / window.devicePixelRatio;
+    double viewportHeight = _flutterDomWidget.viewportHeight ??
+        window.physicalSize.height / window.devicePixelRatio;
 
     if (controller.view.document.documentElement == null) return;
 
     if (viewportWidthHasChanged) {
       controller.view.viewportWidth = viewportWidth;
-      controller.view.document.documentElement!.renderStyle.width = CSSLengthValue(viewportWidth, CSSLengthType.PX);
+      controller.view.document.documentElement!.renderStyle.width =
+          CSSLengthValue(viewportWidth, CSSLengthType.PX);
     }
 
     if (viewportHeightHasChanged) {
       controller.view.viewportHeight = viewportHeight;
-      controller.view.document.documentElement!.renderStyle.height = CSSLengthValue(viewportHeight, CSSLengthType.PX);
+      controller.view.document.documentElement!.renderStyle.height =
+          CSSLengthValue(viewportHeight, CSSLengthType.PX);
     }
   }
 
   @override
   void didUnmountRenderObject(covariant RenderObject renderObject) {
-    FlutterDomController controller = (renderObject as RenderObjectWithControllerMixin).controller!;
+    FlutterDomController controller =
+        (renderObject as RenderObjectWithControllerMixin).controller!;
     controller.dispose();
   }
 
@@ -272,28 +291,34 @@ This situation often happened when you trying creating flutterDom when FlutterVi
 }
 
 class _FlutterDomRenderObjectElement extends SingleChildRenderObjectElement {
-  _FlutterDomRenderObjectElement(FlutterDomRenderObjectWidget widget) : super(widget);
+  _FlutterDomRenderObjectElement(FlutterDomRenderObjectWidget widget)
+      : super(widget);
 
   @override
   void mount(Element? parent, Object? newSlot) async {
     super.mount(parent, newSlot);
 
-    FlutterDomController controller = (renderObject as RenderObjectWithControllerMixin).controller!;
+    FlutterDomController controller =
+        (renderObject as RenderObjectWithControllerMixin).controller!;
 
     // We should make sure every flutter elements created under flutterDom can be walk up to the root.
     // So we bind _FlutterDomRenderObjectElement into FlutterDomController, and widgetElements created by controller can follow this to the root.
     controller.rootFlutterElement = this;
-    await controller.executeEntrypoint(animationController: widget._flutterDomWidget.animationController);
+    await controller.waitUntilInited;
+    await controller.executeEntrypoint(
+        animationController: widget._flutterDomWidget.animationController);
   }
 
   // RenderObjects created by flutterDom are manager by flutterDom itself. There are no needs to operate renderObjects on _FlutterDomRenderObjectElement.
   @override
   void insertRenderObjectChild(RenderObject child, Object? slot) {}
   @override
-  void moveRenderObjectChild(RenderObject child, Object? oldSlot, Object? newSlot) {}
+  void moveRenderObjectChild(
+      RenderObject child, Object? oldSlot, Object? newSlot) {}
   @override
   void removeRenderObjectChild(RenderObject child, Object? slot) {}
 
   @override
-  FlutterDomRenderObjectWidget get widget => super.widget as FlutterDomRenderObjectWidget;
+  FlutterDomRenderObjectWidget get widget =>
+      super.widget as FlutterDomRenderObjectWidget;
 }

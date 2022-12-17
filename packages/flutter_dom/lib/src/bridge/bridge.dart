@@ -21,7 +21,7 @@ int kFlutterDomJSPagePoolSize = 1024;
 bool _firstView = true;
 
 /// Init bridge
-int initBridge() {
+Future<int>initBridge() async {
   if (kProfileMode) {
     PerformanceTiming.instance().mark(PERF_BRIDGE_REGISTER_DART_METHOD_START);
   }
@@ -53,12 +53,11 @@ int initBridge() {
   if (_firstView) {
     initJSPagePool(kFlutterDomJSPagePoolSize);
     _firstView = false;
-    contextId = 0;
-  } else {
-    contextId = allocateNewPage();
-    if (contextId == -1) {
-      throw Exception('Can\' allocate new flutterDom bridge: bridge count had reach the maximum size.');
-    }
+  }
+  contextId = await allocateNewPage();
+  if (contextId == -1) {
+    throw Exception(
+        'Can\' allocate new flutterDom bridge: bridge count had reach the maximum size.');
   }
 
   return contextId;

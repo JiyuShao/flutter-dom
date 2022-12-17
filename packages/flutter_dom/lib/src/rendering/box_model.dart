@@ -240,14 +240,14 @@ class RenderLayoutBox extends RenderBoxModel
       if (_childrenNeedsSort) {
         children.sort((RenderBox left, RenderBox right) {
           // @FIXME: Add patch to handle nested fixed element paint priority, need to remove
-          // this logic after FlutterDOM has implemented stacking context tree.
+          // this logic after FlutterDom has implemented stacking context tree.
           if (left is RenderBoxModel &&
               left.renderStyle.position == CSSPositionType.fixed &&
               right is RenderBoxModel &&
               right.renderStyle.position == CSSPositionType.fixed) {
             // Child element always paint after parent element when their position are both fixed
             // as W3C stacking context specified.
-            // FlutterDOM will place these two renderObjects as siblings of the children of HTML renderObject
+            // FlutterDom will place these two renderObjects as siblings of the children of HTML renderObject
             // due to lack stacking context support, so it needs to add this patch to handle this case.
             if (right.renderStyle.isAncestorOf(left.renderStyle)) return 1;
             if (left.renderStyle.isAncestorOf(right.renderStyle)) return -1;
@@ -1013,7 +1013,7 @@ class RenderBoxModel extends RenderBox
   // Call this method before content box layout.
   void beforeLayout() {
     BoxConstraints contentConstraints;
-    // @FIXME: Normally constraints is calculated in getConstraints by parent RenderLayoutBox in FlutterDOM,
+    // @FIXME: Normally constraints is calculated in getConstraints by parent RenderLayoutBox in FlutterDom,
     // except in sliver layout, constraints is calculated by [RenderSliverList] which flutter_dom can not control,
     // so it needs to invoke getConstraints here for sliver container's direct child.
     if (parent is RenderSliverList) {

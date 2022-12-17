@@ -10,7 +10,11 @@ export default function getWebpackConfig(
     entry: {
       JsRuntimePolyfill: path.resolve(
         __dirname,
-        '../src/js-runtime-polyfill.ts'
+        '../src/js-runtime-polyfill/index.ts'
+      ),
+      FlutterDomBridge: path.resolve(
+        __dirname,
+        '../src/flutter-dom-bridge/index.ts'
       ),
     },
     output: {
@@ -45,6 +49,8 @@ export default function getWebpackConfig(
           loader: 'ts-loader',
           include: path.resolve(__dirname, '../src'),
           options: {
+            // 忽略 ts 错误
+            transpileOnly: true,
             // 与 tsconfig 配置的不同，只需要编译需要的文件
             onlyCompileBundledFiles: true,
             compilerOptions: {

@@ -194,4 +194,5 @@ packages/**/assets
 packages/**/lib
 packages/**/bin
 packages/**/dist
+packages/polyfill/src/flutter-dom-bridge
 __tests__/coverage
