@@ -190,8 +190,9 @@ dist
 .yarn/
 .fvm/
 .eslintrc.js
+packages/**/assets
 packages/**/lib
 packages/**/bin
 packages/**/dist
-packages/core/*/web
+packages/bridge/src/flutter-dom-bridge
 __tests__/coverage

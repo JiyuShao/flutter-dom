@@ -1,0 +1,9 @@
+{
+  "name": "@flutter-dom/flutter_dom_example",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jiyu Shao <jiyu.shao@gmail.com>",
+  "license": "MIT"
+}

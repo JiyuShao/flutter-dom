@@ -1,0 +1,12 @@
+{
+  "extends": "@flutter-dom/tsconfig/base",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
+    "outDir": "dist"
+  },
+  "include": ["scripts", "src"],
+  "exclude": ["node_modules"],
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "BRIDGE"
+}

@@ -25,7 +25,6 @@ module.exports = {
     indent: 'off',
     'global-require': 'off',
     semi: ['error', 'always'],
-    quotes: ['error', 'single'],
     'guard-for-in': 'off',
     'no-unused-expressions': [
       'error',

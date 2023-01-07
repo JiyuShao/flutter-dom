@@ -1,0 +1,44 @@
+{
+  "name": "@flutter-dom/bridge",
+  "private": true,
+  "version": "0.0.1",
+  "description": "",
+  "author": "Jiyu Shao <jiyu.shao@gmail.com>",
+  "scripts": {
+    "dev": "yarn run clean && yarn run dev:rollup && yarn run dev:webpack",
+    "dev:webpack": "cross-env NODE_ENV=development ts-node --project ./tsconfig.json ./scripts/debug.ts",
+    "dev:rollup": "cross-env NODE_ENV=development rollup --config ./scripts/rollup.config.mjs",
+    "build": "yarn run clean && yarn run build:webpack",
+    "build:webpack": "cross-env NODE_ENV=production ts-node --project ./tsconfig.json ./scripts/build.ts",
+    "build:rollup": "cross-env NODE_ENV=production rollup --config ./scripts/rollup.config.mjs",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "bridge",
+    "polyfill"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-replace": "^5.0.2",
+    "@rollup/plugin-typescript": "^10.0.1",
+    "@types/jsdom": "^20",
+    "@types/rimraf": "^3",
+    "@types/uuid": "^8",
+    "cross-env": "^7.0.3",
+    "crypto-browserify": "^3.12.0",
+    "jsdom": "^20.0.3",
+    "quickjs-emscripten": "^0.21.0",
+    "quickjs-emscripten-sync": "^1.4.0",
+    "rimraf": "^3.0.2",
+    "rollup": "^3.7.5",
+    "rollup-plugin-bundle-size": "^1.0.3",
+    "rollup-plugin-terser": "^7.0.2",
+    "ts-loader": "^9.3.1",
+    "uuid": "^8.3.2",
+    "webpack": "^5.73.0",
+    "webpack-dev-server": "^4.9.3"
+  }
+}

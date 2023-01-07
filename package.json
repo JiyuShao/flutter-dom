@@ -5,8 +5,7 @@
   "packageManager": "yarn@3.1.1",
   "workspaces": {
     "packages": [
-      "packages/core/*",
-      "packages/scaffold/*"
+      "packages/*"
     ]
   },
   "description": "基于 W3C 标准与 Flutter 渲染的多端渲染引擎",
@@ -17,7 +16,8 @@
     "lint-staged": "lint-staged",
     "commitlint": "commitlint",
     "changelog": "conventional-changelog -p angular -i docs/CHANGELOG.md -s -r 0",
-    "build": "yarn workspaces foreach --topological --exclude \"@flutter-dom/cli\" exec \"pwd && yarn :cli -v\"",
+    "dev": "yarn workspaces foreach --topological run dev",
+    "build": "yarn workspaces foreach --topological run build",
     "lint": "yarn run lint:es && yarn run lint:prettier",
     "lint:es": "eslint --ext .js,.jsx,.ts,.tsx ./ --cache --resolve-plugins-relative-to .",
     "lint:prettier": "prettier --list-different \"**/*.{css,less,js,jsx,ts,tsx,json,yml,yaml,md}\"",

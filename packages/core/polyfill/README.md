@@ -1,1 +1,0 @@
-# @osake/editor-simple-project

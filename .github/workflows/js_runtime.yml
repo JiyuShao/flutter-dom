@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest]
-        wd: [packages/core/js_runtime]
+        wd: [packages/js_runtime]
 
     steps:
       - name: Checkout
@@ -48,7 +48,7 @@ jobs:
         api-level: [29]
         target: [default]
         arch: [x86]
-        wd: [packages/core/js_runtime]
+        wd: [packages/js_runtime]
 
     steps:
       - name: Checkout
