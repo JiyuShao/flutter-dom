@@ -8,25 +8,44 @@ export default function getWebpackConfig(
   const config: Configuration = {
     mode,
     entry: {
-      JsRuntimePolyfill: path.resolve(
+      JsRuntimeBridge: path.resolve(
         __dirname,
-        '../src/js-runtime-polyfill/index.ts'
+        '../src/js-runtime-bridge/index.ts'
       ),
-      FlutterDomBridge: path.resolve(
-        __dirname,
-        '../src/flutter-dom-bridge/index.ts'
-      ),
+      // webpack build is not compatible with quickjs
+      // FlutterDomBridge: path.resolve(
+      //   __dirname,
+      //   '../src/flutter-dom-bridge/index.ts'
+      // ),
     },
     output: {
       path: path.resolve(__dirname, '../dist'),
       filename: '[name].js',
-      library: ['__FLUTTER_DOM_POLYFILL__', '[name]'],
+      library: ['__FLUTTER_DOM_BRIDGE__', '[name]'],
       // 如果设置的是 umd 的话，在 flutter web 中会走 amd define 导致逻辑出错
       libraryTarget: 'window',
       libraryExport: 'default',
     },
     devServer: {
       port: 3000,
+      devMiddleware: {
+        writeToDisk: true,
+      },
+      // useing webpack dev server to serve both webpack & rollup dev dist outputs
+      // eg: http://localhost:3000/dist/JsRuntimeBridge.js
+      setupMiddlewares(middlewares, devServer) {
+        if (!devServer) {
+          throw new Error('webpack-dev-server is not defined');
+        }
+        devServer.app?.get('/dist/*', (req, res) => {
+          try {
+            res.sendFile(path.join(__dirname, `../${req.path}`));
+          } catch (error) {
+            console.error('Read dist file failed:', error);
+          }
+        });
+        return middlewares;
+      },
     },
     devtool: 'source-map',
     resolve: {
@@ -57,7 +76,7 @@ export default function getWebpackConfig(
               // 需要输出，否则会编译失败
               noEmit: false,
               // 输出类型文件
-              declaration: true,
+              declaration: false,
               // 指定类型文件输出目录
               outDir: path.resolve(__dirname, '../dist'),
             },

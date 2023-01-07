@@ -15,8 +15,7 @@ class PagePool {
   final Map<int, JsRuntime> _pageContextPool = {};
   String _bridgeJsCode = '';
 
-  Future<String> _getPolyfillCode() async {
-    String url = 'http://localhost:3000/FlutterDomBridge.js';
+  Future<String> _fetchCode(String url) async {
     Uri? uri = Uri.tryParse(url);
 
     final HttpClientRequest request = await HttpClient().getUrl(uri!);
@@ -30,7 +29,22 @@ class PagePool {
       ]);
     }
     final Uint8List bytes = await consolidateHttpClientResponseBytes(response);
-    return utf8.decode(bytes);
+    String code = utf8.decode(bytes);
+    return code;
+  }
+
+  Future<String> _getBridgeCode() async {
+    List<String> urls = [
+      'http://localhost:3000/dist/JsDom.js',
+      // 'http://localhost:3000/dist/FlutterDomBridge.js'
+    ];
+    String finalCode = """
+    """;
+    for (var url in urls) {
+      String code = await _fetchCode(url);
+      finalCode += code;
+    }
+    return finalCode;
   }
 
   void _disposeAllPages() {
@@ -76,7 +90,7 @@ class PagePool {
       return contextId;
     }
     if (_bridgeJsCode.isEmpty) {
-      _bridgeJsCode = await _getPolyfillCode();
+      _bridgeJsCode = await _getBridgeCode();
     }
     JsRuntime jsRuntime = JsRuntime();
     _pageContextPool[contextId] = jsRuntime;
@@ -108,6 +122,6 @@ class PagePool {
     if (!_checkPage(contextId)) {
       return;
     }
-     _pageContextPool[contextId]?.evaluate(code);
+    _pageContextPool[contextId]?.evaluate(code);
   }
 }

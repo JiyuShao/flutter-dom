@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:js_runtime/common/logger.dart';
 import 'package:js_runtime/common/runtime.dart';
-import './polyfill.dart' as polyfill;
+import './bridge.dart' as bridge;
 
 class JsRuntime extends RuntimeInterface {
   String? _instanceId;
@@ -14,10 +14,10 @@ class JsRuntime extends RuntimeInterface {
   }
 
   _init() async {
-    loggerNoStack.d("Loading JsRuntime Polyfill...");
-    await polyfill.loadPolyfillScript();
+    loggerNoStack.d("Loading JsRuntime Bridge...");
+    await bridge.loadBridgeScript();
     loggerNoStack.d("Creating JsRuntime...");
-    _instanceId = await polyfill.createRuntime();
+    _instanceId = await bridge.createRuntime();
     loggerNoStack.d("JsRuntime Created($_instanceId)");
     _defineEventLoop();
   }
@@ -25,7 +25,7 @@ class JsRuntime extends RuntimeInterface {
   _defineEventLoop() {
     Timer.periodic(RuntimeInterface.eventLoopDuration, (timer) {
       _eventLoopTimer = timer;
-      polyfill.executePendingJobs(_instanceId!);
+      bridge.executePendingJobs(_instanceId!);
     });
   }
 
@@ -38,7 +38,7 @@ class JsRuntime extends RuntimeInterface {
       throw "JsRuntime not inited, please using \"await waitUntilInited\"";
     }
     loggerNoStack.d("Evaluate JsRuntime($_instanceId): $code");
-    dynamic result = polyfill.evaluate(_instanceId!, code);
+    dynamic result = bridge.evaluate(_instanceId!, code);
     return result;
   }
 
@@ -56,7 +56,7 @@ class JsRuntime extends RuntimeInterface {
     loggerNoStack.d("Destorying JsRuntime($_instanceId)");
     _eventLoopTimer?.cancel();
     _eventLoopTimer = null;
-    polyfill.destoryRuntime(_instanceId!);
+    bridge.destoryRuntime(_instanceId!);
     _instanceId = null;
   }
 }

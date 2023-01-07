@@ -4,7 +4,7 @@ import 'dart:js_util';
 import 'package:js/js.dart';
 import './load_script.dart' as load_script;
 
-const libraryName = '__FLUTTER_DOM_POLYFILL__.JsRuntimePolyfill';
+const libraryName = '__FLUTTER_DOM_BRIDGE__.JsRuntimeBridge';
 
 // get all runtime ids
 @JS('$libraryName.getAllRuntimeIds')
@@ -41,8 +41,8 @@ external int executePendingJobs(String instanceId);
 @JS('$libraryName.destoryRuntime')
 external void destoryRuntime(String instanceId);
 
-Future<void> loadPolyfillScript() {
-  String url = "http://localhost:3000/JsRuntimePolyfill.js";
+Future<void> loadBridgeScript() {
+  String url = "http://localhost:3000/dist/JsRuntimeBridge.js";
   if (load_script.isLoaded(url)) {
     return Future.value();
   }
